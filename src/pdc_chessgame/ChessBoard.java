@@ -34,12 +34,27 @@ public class ChessBoard
                 this.board[i][j] = null;
     }
     
+    public boolean setPiece(Pieces p, int x, int y)
+    {
+        if(this.board[x][y] != null)
+        {
+            this.board[x][y] = p;
+            return true;
+        }
+        return false;
+    }
+    
     public void printBoard()
     {
+        
         for(int i = 0; i < this.height; i++)
         {
             for(int k = 1; k < 4; k++)
             { // three rows
+                if(k == 2)
+                    System.out.print(" "+(i+1)+"  ");
+                else
+                    System.out.print("    ");
                 
                 for(int j = 0; j < this.width; j++)
                 {
