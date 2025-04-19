@@ -11,16 +11,16 @@ package pdc_chessgame;
 public class Pawn extends Pieces {
 
 
-    public Pawn(int xInitPosition, int yInitPosition) {//can this init function be simplified (is it nessisary
+    public Pawn(Team pieceTeam) {//can this init function be simplified (is it nessisary
         
-        super("Pawn");
+        super("");
         
-        this.xPosition = xInitPosition;
-        this.yPosition = yInitPosition;
+        this.pieceTeam = pieceTeam;
+
     }
     
     @Override
-    public boolean movePiece() {
+    public boolean movePiece() {//must feed in POSITIONAL DATA
         return false; //move incomplete
         //make sure to include en passant
     }

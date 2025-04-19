@@ -10,23 +10,28 @@ package pdc_chessgame;
  */
 public abstract class Pieces { //its an abstract class btw
     
-    public String piecesName = "";
+    
+    
+    public String pieceUnicode = "?"; //maybe makes thise private as tje getFunction is included
     public double value = 0;
     
-    public int xPosition = 0;
-    public int yPosition = 0;    
+    public Team pieceTeam;
+            
+    //public int xPosition = 0;
+    //public int yPosition = 0;    
 
-    public Pieces(String name) {
-        this.piecesName = name;
+    public Pieces(String pieceUnicode) {
+        this.pieceUnicode = pieceUnicode;
     }
 
-    public void printInfo() {
-        System.out.println(this.piecesName);
+    public String getPieceUnicode() {
+        
+        return this.pieceUnicode;
 
     }
 
-    public void setName(String newName) {
-        this.piecesName = newName;
+    public void setTeamColour(String pieceUnicode) {//is this nessisary as a function?
+        this.pieceUnicode = pieceUnicode;
     }
 
     //returns True if move move completes successfully
