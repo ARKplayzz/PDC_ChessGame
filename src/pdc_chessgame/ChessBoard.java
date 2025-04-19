@@ -4,10 +4,55 @@
  */
 package pdc_chessgame;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author ARKen
  */
-public class ChessBoard {
+public class ChessBoard 
+{
+    /*
+        When changing to graphical for part2 make a tile class that
+        holds piece and colour.
+    */
+    private ArrayList<Pieces>[][] board;
     
+    public int width;
+    public int height;
+    
+    public ChessBoard(int width, int height)
+    {
+        // init board
+        this.board = new ArrayList[width][height];
+        this.width = width;
+        this.height = height;
+        
+        // Set all to NULL, not neccecery on most systems but some might play up without it
+        for (int i = 0; i < this.height; i++)
+            for(int j = 0; j < this.width; j++)
+                this.board[i][j] = null;
+    }
+    
+    public void printBoard()
+    {
+        for(int i = 0; i < this.height; i++)
+        {
+            for(int j = 0; j < this.width; j++)
+            {
+                if(this.board[i][j] == null)
+                { // no piece on this tile
+                    if(GameTools.isOdd(i+1) == GameTools.isOdd(j+1))
+                        System.out.print("█");
+                    else
+                        System.out.print(" ");
+                }
+                else
+                { // theres a piece on this tile
+                    System.out.print(this.board[i][j].getPieceUnicode());
+                }
+            }
+            System.out.print("\n");
+        }
+    }
 }

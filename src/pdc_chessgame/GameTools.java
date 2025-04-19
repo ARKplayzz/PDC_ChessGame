@@ -8,6 +8,12 @@ package pdc_chessgame;
  *
  * @author ARKen
  */
-public class GameTools {
-    
+public class GameTools 
+{
+    public static boolean isOdd(int n)
+    {
+        if(n % 2 == 0)
+            return true;
+        return false;
+    }
 }
