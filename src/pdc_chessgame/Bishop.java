@@ -8,6 +8,19 @@ package pdc_chessgame;
  *
  * @author ARKen
  */
-public class Bishop {
+public class Bishop extends Pieces {
+
+
+    public Bishop(Team pieceTeam) {
+        
+        super(pieceTeam == Team.BLACK ? "♝" : "♗");
+        this.pieceTeam = pieceTeam;
+
+    }
     
+    @Override
+    public boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board) {
+    
+        return false;
+    }
 }

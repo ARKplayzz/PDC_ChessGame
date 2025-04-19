@@ -30,16 +30,47 @@ public class ChessBoard
         for (int i = 0; i < this.height; i++)
             for(int j = 0; j < this.width; j++)
                 this.board[i][j] = null;
+        
+        initializeBoard();  //Could put this is a better space (can also reset board)
+    }
+    
+    public void initializeBoard() {
+        //place white pawns
+        for (int col = 0; col < 8; col++) {
+            setTile(new Pawn(Team.WHITE), 1, col);
+        }
+
+        //place black pawns
+        for (int col = 0; col < 8; col++) {
+            setTile(new Pawn(Team.BLACK), 6, col);
+        }
+
+        //place white back row
+        setTile(new Rook(Team.WHITE), 0, 0);
+        setTile(new Knight(Team.WHITE), 0, 1);
+        setTile(new Bishop(Team.WHITE), 0, 2);
+        setTile(new Queen(Team.WHITE), 0, 3);
+        setTile(new King(Team.WHITE), 0, 4);
+        setTile(new Bishop(Team.WHITE), 0, 5);
+        setTile(new Knight(Team.WHITE), 0, 6);
+        setTile(new Rook(Team.WHITE), 0, 7);
+
+        //place black back row
+        setTile(new Rook(Team.BLACK), 7, 0);
+        setTile(new Knight(Team.BLACK), 7, 1);
+        setTile(new Bishop(Team.BLACK), 7, 2);
+        setTile(new Queen(Team.BLACK), 7, 3);
+        setTile(new King(Team.BLACK), 7, 4);
+        setTile(new Bishop(Team.BLACK), 7, 5);
+        setTile(new Knight(Team.BLACK), 7, 6);
+        setTile(new Rook(Team.BLACK), 7, 7);
     }
     
     public boolean setTile(Pieces p, int x, int y)
     {
-        if(this.board[x][y] != null)
-        {
-            this.board[x][y] = p;
-            return true;
-        }
-        return false;
+        this.board[x][y] = p; //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
+        return true;
+        
     }
     
     public Pieces getTile(int x, int y)
@@ -69,16 +100,16 @@ public class ChessBoard
                     if(k == 2 && this.board[i][j] != null)
                     {
                         if(GameTools.isOdd(i+1) == GameTools.isOdd(j+1))
-                            System.out.print("■"+ this.board[i][j].getPieceUnicode() +"■");
+                            System.out.print(" ■ "+ this.board[i][j].getPieceUnicode() +" ■");
                         else
-                            System.out.print(" "+ this.board[i][j].getPieceUnicode() +" ");
+                            System.out.print("   "+ this.board[i][j].getPieceUnicode() +"  ");
                     }
                     else
                     {
                         if(GameTools.isOdd(i+1) == GameTools.isOdd(j+1))
-                            System.out.print("■■■");
+                            System.out.print(" ■ ■ ■");
                         else
-                            System.out.print("   ");
+                            System.out.print("      ");
                     }
                 }
                 System.out.print("\n");
@@ -89,7 +120,7 @@ public class ChessBoard
         System.out.print("\n    ");
         for(int i = 0; i < this.width; i++)
         {
-            System.out.print(" "+(char)(i+65)+" ");
+            System.out.print("   "+(char)(i+65)+"  ");
         }
         System.out.print("\n");
     }

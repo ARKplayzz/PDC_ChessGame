@@ -9,7 +9,7 @@ package pdc_chessgame;
  * @author finlay
  */
 public class Input extends Thread
-{ 
+{
     /*
         have this class running a sperate thread monitoring input
     */

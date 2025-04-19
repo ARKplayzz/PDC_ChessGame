@@ -10,7 +10,7 @@ package pdc_chessgame;
  */
 public abstract class Pieces { //its an abstract class btw
     
-    
+    //Unicode doesnt work in netbeans so we will use letters ):
     
     public String pieceUnicode = "?"; //maybe makes thise private as tje getFunction is included
     public double value = 0;
@@ -28,7 +28,11 @@ public abstract class Pieces { //its an abstract class btw
     public String getPieceUnicode() {
         
         return this.pieceUnicode;
-
+    }
+    
+    public Team getPieceTeam() {
+        
+        return this.pieceTeam;
     }
 
     public void setTeamColour(String pieceUnicode) {//is this nessisary as a function?
