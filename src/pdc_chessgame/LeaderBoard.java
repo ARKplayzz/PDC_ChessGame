@@ -8,6 +8,7 @@ package pdc_chessgame;
  *
  * @author ARKen
  */
-public class LeaderBoard {
+public class LeaderBoard 
+{
     
 }

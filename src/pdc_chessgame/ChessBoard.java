@@ -36,23 +36,6 @@ public class ChessBoard
     
     public void printBoard()
     {
-        for(int i = 0; i < this.height; i++)
-        {
-            for(int j = 0; j < this.width; j++)
-            {
-                if(this.board[i][j] == null)
-                { // no piece on this tile
-                    if(GameTools.isOdd(i+1) == GameTools.isOdd(j+1))
-                        System.out.print("█");
-                    else
-                        System.out.print(" ");
-                }
-                else
-                { // theres a piece on this tile
-                    System.out.print(this.board[i][j].getPieceUnicode());
-                }
-            }
-            System.out.print("\n");
-        }
+        
     }
 }
