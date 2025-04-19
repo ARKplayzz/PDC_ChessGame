@@ -20,7 +20,7 @@ public class Pawn extends Pieces {
     
     @Override
     public boolean canMove(int fromX, int fromY, int toX, int toY) {//must feed in POSITIONAL DATA
-        ChessBoard board = new ChessBoard();
+        ChessBoard board = ChessBoard.getCurrentBoard();
         if (fromX == toX){
             if (toY == fromY++ && ChessBoard.checkBoard(toX, toY) == null)
                 return true; //standard move
