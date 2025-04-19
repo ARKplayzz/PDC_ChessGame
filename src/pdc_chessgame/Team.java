@@ -9,5 +9,6 @@ package pdc_chessgame;
  * @author ARKen
  */
 public enum Team {
-    
+    BLACK, WHITE;
 }
+
