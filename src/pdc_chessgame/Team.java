@@ -8,7 +8,13 @@ package pdc_chessgame;
  *
  * @author ARKen
  */
-public enum Team {
+public enum Team 
+{
     BLACK, WHITE;
+    
+    public String teamName()
+    {
+        return this.toString();
+    }
 }
 

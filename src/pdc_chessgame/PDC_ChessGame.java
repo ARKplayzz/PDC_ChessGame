@@ -15,6 +15,7 @@ public class PDC_ChessGame {
     /**
      * @param args the command line arguments
      */
+    @SuppressWarnings("ConvertToTryWithResources")
     public static void main(String[] args) 
     {
         
@@ -60,6 +61,8 @@ public class PDC_ChessGame {
             if (i == 50) {
                 checkmate = true;
             }
+            
+            Display.clearConsole(); //  can confirm this function doesn't work, redo it to account for more than 1 type of console
         }
         
         scanner.close();

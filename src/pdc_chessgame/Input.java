@@ -14,14 +14,26 @@ public class Input extends Thread
         have this class running a sperate thread monitoring input
         I merged moveInput into this as having two input classes is
         redundant plus we'll refactor this later anyway
+    
+        If you want to keep MoveInput as a seperate class then I do have
+        a back up of the files before they were merged
     */
     
     @Override
     public void run()
     { // multithreading stuff
-        
+        while(!this.quit)
+        {
+            
+        }
     }
     
+    public void terminate()
+    {
+        this.quit = true;
+    }
+    
+    private boolean quit = false; // set to true to exit the thread
     public int fromX, fromY, toX, toY; // efficent storing for move cases
 
     /*

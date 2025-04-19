@@ -31,10 +31,11 @@ public class ChessBoard
             for(int j = 0; j < this.width; j++)
                 this.board[i][j] = null;
         
-        initializeBoard();  //Could put this is a better space (can also reset board)
+        initialiseBoard();  //Could put this is a better space (can also reset board)
     }
     
-    public void initializeBoard() {
+    private void initialiseBoard() 
+    {
         //place white pawns
         for (int col = 0; col < 8; col++) {
             setTile(new Pawn(Team.WHITE), 1, col);
