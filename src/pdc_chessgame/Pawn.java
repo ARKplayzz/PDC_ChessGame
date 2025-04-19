@@ -11,22 +11,23 @@ package pdc_chessgame;
 public class Pawn extends Pieces {
 
 
-    public Pawn(Team pieceTeam) {//can this init function be simplified (is it nessisary
+    public Pawn(Team pieceTeam) {
         
-        if (pieceTeam == Team.BLACK){//check if can be made more effient
-            this.pieceUnicode = "♟"; 
-        }
-        else {
-            this.pieceUnicode = "♙"; 
-        }
-        
-        super("");//WHAT IS SUPER FOR
+        super(pieceTeam == Team.BLACK ? "♟" : "♙");
         this.pieceTeam = pieceTeam;
 
     }
     
     @Override
-    public boolean movePiece() {//must feed in POSITIONAL DATA
+    public boolean canMove(int fromX, int fromY, int toX, int toY) {//must feed in POSITIONAL DATA
+        ChessBoard board = new ChessBoard();
+        if (fromX == toX){
+            if (toY == fromY++ && ChessBoard.checkBoard(toX, toY) == null)
+                return true; //standard move
+        }
+        else if
+                
+                
         return false; //move incomplete
         //make sure to include en passant
     }
