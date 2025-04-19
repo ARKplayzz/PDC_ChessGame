@@ -4,23 +4,15 @@
  */
 package pdc_chessgame;
 
-import java.util.HashMap;
-
 /**
  *
- * @author ARKen
+ * @author finlay
  */
-public class Ranking 
+public class Display 
 {
-    private HashMap<String, Integer> leaderboard = new HashMap<>();
-    
-    public void getElo(String file)
+    public void clearConsole()
     {
-        
-    }
-    
-    public void printRankings()
-    {
-        
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }

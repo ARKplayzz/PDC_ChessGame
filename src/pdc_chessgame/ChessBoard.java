@@ -84,5 +84,13 @@ public class ChessBoard
                 System.out.print("\n");
             }
         }
+        
+        
+        System.out.print("\n    ");
+        for(int i = 0; i < this.width; i++)
+        {
+            System.out.print(" "+(char)(i+65)+" ");
+        }
+        System.out.print("\n");
     }
 }
