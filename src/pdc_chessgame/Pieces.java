@@ -16,7 +16,8 @@ public abstract class Pieces { //its an abstract class btw
     public double value = 0;
     
     public Team pieceTeam;
-            
+
+    
     //public int xPosition = 0;
     //public int yPosition = 0;    
 

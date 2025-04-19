@@ -11,7 +11,7 @@ package pdc_chessgame;
 public class Pawn extends Pieces {
 
 
-    public Pawn(Team pieceTeam) {
+    public Pawn(Team pieceTeam, ChessBoard board) {
         
         super(pieceTeam == Team.BLACK ? "♟" : "♙");
         this.pieceTeam = pieceTeam;
@@ -19,13 +19,14 @@ public class Pawn extends Pieces {
     }
     
     @Override
-    public boolean canMove(int fromX, int fromY, int toX, int toY) {//must feed in POSITIONAL DATA
-        ChessBoard board = ChessBoard.getCurrentBoard();
+    public boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board) {//must feed in POSITIONAL DATA
+        
+        
         if (fromX == toX){
-            if (toY == fromY++ && ChessBoard.checkBoard(toX, toY) == null)
+            if (toY == fromY++ && board.getTile(toX, toY) == null)
                 return true; //standard move
         }
-        else if
+        //else if
                 
                 
         return false; //move incomplete
