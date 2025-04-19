@@ -11,7 +11,7 @@ package pdc_chessgame;
 public class Pawn extends Pieces {
 
 
-    public Pawn(Team pieceTeam, ChessBoard board) {
+    public Pawn(Team pieceTeam) {
         
         super(pieceTeam == Team.BLACK ? "♟" : "♙");
         this.pieceTeam = pieceTeam;
