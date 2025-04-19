@@ -11,7 +11,7 @@ package pdc_chessgame;
 public class Display 
 {
     public void clearConsole()
-    {
+    { // FIX LATER MIGHT NOT WORK ON SOME CONSOLES
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
