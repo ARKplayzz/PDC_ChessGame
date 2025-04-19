@@ -43,8 +43,8 @@ public class PDC_ChessGame {
         int i = 0; //THIS IS TEMPORRARY untill checkmate exists
         
         
-        while(!checkmate){
-
+        while(!checkmate)
+        {
             board.printBoard();
             
             System.out.println("");
@@ -55,15 +55,14 @@ public class PDC_ChessGame {
             System.out.println("");
             System.out.println("P1> "); //eg E9, b7
             
-            
-            MoveInput(String input = scanner.nextLine().trim().toUpperCase();)
+            Input.getMove(scanner.nextLine().trim().toUpperCase()); // CHANGE THIS LATER
             i++;
             if (i == 50) {
                 checkmate = true;
             }
         }
         
-    scanner.close();
+        scanner.close();
     }
     
     

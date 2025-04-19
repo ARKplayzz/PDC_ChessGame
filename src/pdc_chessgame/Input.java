@@ -12,5 +12,51 @@ public class Input extends Thread
 {
     /*
         have this class running a sperate thread monitoring input
+        I merged moveInput into this as having two input classes is
+        redundant plus we'll refactor this later anyway
     */
+    
+    @Override
+    public void run()
+    { // multithreading stuff
+        
+    }
+    
+    public int fromX, fromY, toX, toY; // efficent storing for move cases
+
+    /*
+        Will redo alot of this later
+    */
+    
+    public Input(int fromRow, int fromCol, int toRow, int toCol) {
+        this.fromX = fromRow;
+        this.fromY = fromCol;
+        this.toX = toRow;
+        this.toY = toCol;
+    }
+    
+    public static Input getMove(String userMovement) { //IM NOT SURE IF THIS WORKS YET
+        
+        String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces
+        
+        if (parts.length != 2 || !isValidTile(parts[0]) || !isValidTile(parts[1])) {
+            System.out.println("> " +userMovement+ " < Is an invalid input format, try something Like > A1 A2");
+            return null;
+        }
+        
+        int fromY = parts[0].charAt(0) - 'A'; // A to H, 1 to 8
+        int fromX = 8 - Character.getNumericValue(parts[0].charAt(1)); 
+
+        int toY = parts[1].charAt(0) - 'A'; 
+        int toX = 8 - Character.getNumericValue(parts[1].charAt(1));
+
+        return new Input(fromX, fromY, toX, toY);
+    }
+        
+    private static boolean isValidTile(String pos) 
+    {
+        if (pos.length() != 2) return false;
+
+        return pos.charAt(0) >= 'A' && pos.charAt(0) <= 'H' && pos.charAt(1) >= '1' && pos.charAt(1) <= '8';
+    }
 }
