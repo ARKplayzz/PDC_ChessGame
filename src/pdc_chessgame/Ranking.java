@@ -8,6 +8,10 @@ package pdc_chessgame;
  *
  * @author ARKen
  */
-public class Ranking {
-    
+public class Ranking 
+{
+    public void getElo(String file)
+    {
+        
+    }
 }

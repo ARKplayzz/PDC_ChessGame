@@ -4,8 +4,6 @@
  */
 package pdc_chessgame;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author ARKen
@@ -34,7 +32,7 @@ public class ChessBoard
                 this.board[i][j] = null;
     }
     
-    public boolean setPiece(Pieces p, int x, int y)
+    public boolean setTile(Pieces p, int x, int y)
     {
         if(this.board[x][y] != null)
         {
@@ -42,6 +40,16 @@ public class ChessBoard
             return true;
         }
         return false;
+    }
+    
+    public Pieces getTile(int x, int y)
+    { // will return null if the tile is empty
+        return this.board[x][y];
+    }
+    
+    public Pieces[][] getBoard()
+    {
+        return this.board;
     }
     
     public void printBoard()
