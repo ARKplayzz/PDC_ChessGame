@@ -8,6 +8,24 @@ package pdc_chessgame;
  *
  * @author ARKen
  */
-public class Pawn {
+public class Pawn extends Pieces {
+
+
+    public Pawn(int xInitPosition, int yInitPosition) {//can this init function be simplified (is it nessisary
+        
+        super("Pawn");
+        
+        this.xPosition = xInitPosition;
+        this.yPosition = yInitPosition;
+    }
     
+    @Override
+    public boolean movePiece() {
+        return false; //move incomplete
+        //make sure to include en passant
+    }
+    
+    public boolean PawnPromotion() {
+        return false; //checks if a pawn upgrade is possible
+    }
 }
