@@ -13,8 +13,14 @@ public class Pawn extends Pieces {
 
     public Pawn(Team pieceTeam) {//can this init function be simplified (is it nessisary
         
-        super("");
+        if (pieceTeam == Team.BLACK){//check if can be made more effient
+            this.pieceUnicode = "♟"; 
+        }
+        else {
+            this.pieceUnicode = "♙"; 
+        }
         
+        super("");//WHAT IS SUPER FOR
         this.pieceTeam = pieceTeam;
 
     }
