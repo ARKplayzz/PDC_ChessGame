@@ -4,6 +4,9 @@
  */
 package pdc_chessgame;
 
+//import pdc_chessgame.*; //IS THIS THE BEST WAY TO DO THIS???? Idk sub classess suck
+
+
 /**
  *
  * @author ARKen
@@ -18,32 +21,43 @@ public class Pawn extends Pieces {
 
     }
     
+    
+    //en pessaunt needs to know the prior move.. we may need move history. 
+    
     @Override
-    public boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board) {//must feed in POSITIONAL DATA
+    public boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board) { // TRY MINAMISE THESE VARIABLES 
+        
+        Pieces targetPiece = board.getTile(toX, toY); // could pass this in?
 
-        if (board.getTile(toX, toY) == null){
+        int direction = (pieceTeam == Team.BLACK) ? -1 : 1; // directionality for pawns
 
-            if (toY == fromY++){
-
-                if (fromX == toX){//if not moving diaganaly AND
-                    System.out.println("bruh3");
-
-                        return true; //standard move TRUE (Cannot kill)
-                    }
-                }
-            else if (toX == fromX++ && board.getTile(toX, toY).getPieceTeam() != null) { // moving from++ & If peice ahead
-                if (board.getTile(toX, toY).getPieceTeam() != this.pieceTeam) {// if ENEMY ahead
-                    if (board.getTile(toX, toY) == null){//if tile empty
-
-                        return true;
-                        }
-                    }
-                }
+        // Normal forward move
+        if (toX == fromX && toY == fromY + direction && targetPiece == null) {
+            return true;
+        }
+        
+        // Starting 2 step move
+        int startRow = (pieceTeam == Team.BLACK) ? 6 : 1;
+        
+        if (toX == fromX && fromY == startRow && toY == fromY + 2 * direction) {
+            Pieces nextTile = board.getTile(fromX, fromY + direction);
+            if (nextTile == null && targetPiece == null) {
+                return true;
             }
-                
-        return false; //move incomplete
-        //make sure to include en passant
+        }
+
+        // Diagonal capture
+        if (Math.abs(toX - fromX) == 1 && toY == fromY + direction) {
+            if (targetPiece != null && targetPiece.getPieceTeam() != this.pieceTeam) {
+                return true;
+            }
+        }
+
+        // TODO: Add two-tile opening move and en passant later
+
+        return false;
     }
+
     
     public boolean PawnPromotion() {
         return false; //checks if a pawn upgrade is possible
