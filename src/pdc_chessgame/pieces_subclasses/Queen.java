@@ -13,7 +13,7 @@ public class Queen extends Pieces {
 
     public Queen(Team pieceTeam) {
         
-        super(pieceTeam == Team.BLACK ? "♛" : "♕");
+        super(pieceTeam == Team.BLACK ? "q" : "Q");
         this.pieceTeam = pieceTeam;
 
     }

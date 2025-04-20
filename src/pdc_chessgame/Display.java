@@ -4,7 +4,10 @@
  */
 package pdc_chessgame;
 
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -12,15 +15,32 @@ import java.util.Scanner;
  */
 public class Display 
 {
-    public static void clearConsole() {//online reference (for now)
-       //):
+    public static void clearConsole() 
+    { // Still doesn't work
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+        
+        if(System.getProperty("os.name").contains("Windows"))
+        {
+            try {  
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+    }
     
-    public static void gameWelcome(){
+    public static void gameWelcome()
+    {
         
     }
     
-    public static Input playerTurn(String player, Team colour, ChessBoard board){ //May be best to split this up a bit
+    
+    /*
+        bro what the fuck is this doing in the display class
+    */
+    public static Input playerTurn(String player, Team colour, ChessBoard board)
+    { //May be best to split this up a bit
         
         Scanner scanner = new Scanner(System.in);
         
@@ -30,14 +50,14 @@ public class Display
         
         String playerInput = scanner.nextLine();
  ;
-        if (playerInput.toUpperCase() == "X"){
+        if (playerInput.toUpperCase().equals("X")){
             System.out.println("----------------------------------------------------");
             System.out.println(player+" HAS RESIGNED ");
             
             return null;  //end
         }
         
-        if (playerInput.toUpperCase() == "H"){
+        if (playerInput.toUpperCase().equals("H")){
             System.out.println("----------------------------------------------------");
             System.out.println("CHESS HELP");
             System.out.println("Resign Game   > X");

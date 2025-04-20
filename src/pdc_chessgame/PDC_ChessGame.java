@@ -40,11 +40,10 @@ public class PDC_ChessGame {
         
         ChessBoard board = new ChessBoard(8, 8);
         
-        boolean checkmate = false;
         int i = 0; //THIS IS TEMPORRARY untill checkmate exists
         
         
-        while(!checkmate)
+        while(!board.checkmate)
         {
 
             board.printBoard();
@@ -57,7 +56,7 @@ public class PDC_ChessGame {
             
             i++;
             if (i == 50) {
-                checkmate = true;
+                board.checkmate = true;
             }
             
             Display.clearConsole(); //  can confirm this function doesn't work, redo it to account for more than 1 type of console

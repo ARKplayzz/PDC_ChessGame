@@ -15,6 +15,8 @@ public class ChessBoard
         holds piece and colour.
     */
     private Pieces[][] board;
+    // moved this here so that the mateChecker can easily modify it
+    public boolean checkmate = false;
     
     public int width;
     public int height;
