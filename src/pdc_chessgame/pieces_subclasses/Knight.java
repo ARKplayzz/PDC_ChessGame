@@ -26,7 +26,7 @@ public class Knight extends Pieces {
 
         Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
 
-        if ((dx == 2 && dy == 1) || (dx == 1 && dy == 2)) { // L shaped patern - needs testing
+        if ((dx == 2 && dy == 1) || (dx == 1 && dy == 2)) { // L shaped patern - needs testing (looks good)
         
             if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
                 return true;
