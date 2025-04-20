@@ -19,7 +19,7 @@ public class Bishop extends Pieces {
     }
     
     @Override
-    public boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board) {
+    public boolean canMove(Input moveSet, ChessBoard board) {
     
         return false;
     }

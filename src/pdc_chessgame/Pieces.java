@@ -40,6 +40,6 @@ public abstract class Pieces { //its an abstract class btw
     }
 
     //returns True if move move completes successfully
-    public abstract boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board);
+    public abstract boolean canMove(Input moveSet, ChessBoard board);
     
 }

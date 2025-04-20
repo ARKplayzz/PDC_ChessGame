@@ -24,30 +24,32 @@ public class Pawn extends Pieces {
     
     //en pessaunt needs to know the prior move.. we may need move history. 
     
+    //need to check if can accidently attack self?
+    
     @Override
-    public boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board) { // TRY MINAMISE THESE VARIABLES 
+    public boolean canMove(Input moveSet, ChessBoard board) { // TRY MINAMISE THESE VARIABLES 
         
-        Pieces targetPiece = board.getTile(toX, toY); // could pass this in?
+        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY); // could pass this in?
  
-        int direction = (pieceTeam == Team.BLACK) ? -1 : 1; // directionality for pawns
+        int direction = (this.pieceTeam == Team.BLACK) ? -1 : 1; // directionality for pawns
 
         // Normal forward move
-        if (toX == fromX && toY == fromY + direction && targetPiece == null) {
+        if (moveSet.toX == moveSet.fromX && moveSet.toY == moveSet.fromY + direction && targetPiece == null) {
             return true;
         }
         
         // Starting 2 step move
-        int startRow = (pieceTeam == Team.BLACK) ? 6 : 1;
+        int startRow = (this.pieceTeam == Team.BLACK) ? 6 : 1;
         
-        if (toX == fromX && fromY == startRow && toY == fromY + 2 * direction) {
-            Pieces nextTile = board.getTile(fromX, fromY + direction);
+        if (moveSet.toX == moveSet.fromX && moveSet.fromY == startRow && moveSet.toY == moveSet.fromY + 2 * direction) {
+            Pieces nextTile = board.getTile(moveSet.fromX, moveSet.fromY + direction);
             if (nextTile == null && targetPiece == null) {
                 return true;
             }
         }
 
         // Diagonal capture
-        if (Math.abs(toX - fromX) == 1 && toY == fromY + direction) {
+        if (Math.abs(moveSet.toX - moveSet.fromX) == 1 && moveSet.toY == moveSet.fromY + direction) {
             if (targetPiece != null && targetPiece.getPieceTeam() != this.pieceTeam) {
                 return true;
             }

@@ -67,8 +67,21 @@ public class Input extends Thread
         
     private static boolean isValidTile(String pos) 
     {
-        if (pos.length() != 2) return false;
-
+        if (pos.length() != 2) {
+            return false;
+        }
         return pos.charAt(0) >= 'A' && pos.charAt(0) <= 'H' && pos.charAt(1) >= '1' && pos.charAt(1) <= '8';
+    }
+    
+    public static int Xdifference(Input moveSet){
+        
+        int dx = Math.abs(moveSet.toX - moveSet.fromX);
+        return dx;
+    }
+    
+    public static int Ydifference(Input moveSet){
+        
+        int dy = Math.abs(moveSet.toY - moveSet.fromY);
+        return dy;
     }
 }

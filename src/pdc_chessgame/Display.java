@@ -53,9 +53,9 @@ public class Display
             return playerTurn(player, colour, board);  //try again
         }
         
-        if (!board.getTile(moveSet.fromX, moveSet.fromY).canMove(moveSet.fromX, moveSet.fromY, moveSet.toX, moveSet.toY, board)){
+        if (!board.getTile(moveSet.fromX, moveSet.fromY).canMove(moveSet, board)){
             System.out.println("----------------------------------------------------");
-            System.out.println(playerInput + " Is an Invalid Move, please try again");
+            System.out.println(playerInput + " Is an Invalid Chess Move, please try again");
             
             return playerTurn(player, colour, board);  //try again
         }
