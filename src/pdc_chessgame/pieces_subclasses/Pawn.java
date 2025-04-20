@@ -20,13 +20,11 @@ public class Pawn extends Pieces {
     
     @Override
     public boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board) {//must feed in POSITIONAL DATA
-        System.out.println("bruh0");
-        System.out.println(board.getTile(fromX, fromY));
-        System.out.println(board.getTile(toX, toY));
+
         if (board.getTile(toX, toY) == null){
-            System.out.println("bruh1");
+
             if (toY == fromY++){
-                System.out.println("bruh2");
+
                 if (fromX == toX){//if not moving diaganaly AND
                     System.out.println("bruh3");
 

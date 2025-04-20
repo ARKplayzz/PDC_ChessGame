@@ -69,14 +69,14 @@ public class ChessBoard
     
     public boolean setTile(Pieces p, int x, int y)
     {
-        this.board[x][y] = p; //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
+        this.board[y][x] = p; //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
         return true;
         
     }
     
     public Pieces getTile(int x, int y)
     { // will return null if the tile is empty
-        return this.board[x][y];
+        return this.board[y][x];
     }
     
     public Pieces[][] getBoard()

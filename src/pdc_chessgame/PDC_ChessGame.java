@@ -62,7 +62,7 @@ public class PDC_ChessGame {
             
             System.out.println(board.getTile(moveset.fromX, moveset.fromY));
 
-            System.out.println(board.getTile(moveset.fromX, moveset.fromY).canMove(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY, board));
+            System.out.println(board.getTile(moveset.fromX, moveset.fromX).canMove(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY, board));
             //System.out.println("");
             //System.out.println("P2> ");
             
