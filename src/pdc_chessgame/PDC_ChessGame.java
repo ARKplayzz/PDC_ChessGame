@@ -60,10 +60,37 @@ public class PDC_ChessGame {
             System.out.println("from >> "+ moveset.fromX +" "+ moveset.fromY+" to >> "+moveset.toX+" "+moveset.toY); // CHANGE THIS LATER
             
             
-            System.out.println(board.getTile(moveset.fromX, moveset.fromY));
-            System.out.println(board.getTile(moveset.toX, moveset.toY));
+            if (board.getTile(moveset.fromX, moveset.fromY).getPieceTeam() == Team.BLACK){
+                if (board.getTile(moveset.fromX, moveset.fromY).canMove(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY, board)){
+                    board.moveTile(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY);
+                }
+            }
+            else {
+                System.out.println("not your piece numpty");
+            }
+            
+            board.printBoard();
+            
+            System.out.println("");
+            System.out.println("P1> "); //eg E9, b7
+            
+            
+            System.out.println(testinput.trim().toUpperCase());
+            
+            moveset = Input.getMove(testinput.trim().toUpperCase());
+            
+            System.out.println("from >> "+ moveset.fromX +" "+ moveset.fromY+" to >> "+moveset.toX+" "+moveset.toY); // CHANGE THIS LATER
+            
+            
+            if (board.getTile(moveset.fromX, moveset.fromY).getPieceTeam() == Team.WHITE){
+                if (board.getTile(moveset.fromX, moveset.fromY).canMove(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY, board)){
+                    board.moveTile(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY);
+                }
+            }
+            else {
+                System.out.println("not your piece numpty");
+            }
 
-            System.out.println(board.getTile(moveset.fromX, moveset.fromY).canMove(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY, board));
             //System.out.println("");
             //System.out.println("P2> ");
             

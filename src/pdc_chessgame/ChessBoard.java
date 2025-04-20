@@ -83,7 +83,8 @@ public class ChessBoard
     }
     
     public boolean moveTile(int fromX, int fromY, int toX, int toY) // Is there much point having returns here
-    {
+    {// Can prob include killTile within
+        
         Pieces movingPiece = board[fromY][fromX];
 
         if (movingPiece == null) {
@@ -93,7 +94,6 @@ public class ChessBoard
         board[toY][toX] = movingPiece;
         board[fromY][fromX] = null;
         return true;
-        
     }
     
     public Pieces getTile(int x, int y)

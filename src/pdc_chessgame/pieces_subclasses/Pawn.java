@@ -28,7 +28,7 @@ public class Pawn extends Pieces {
     public boolean canMove(int fromX, int fromY, int toX, int toY, ChessBoard board) { // TRY MINAMISE THESE VARIABLES 
         
         Pieces targetPiece = board.getTile(toX, toY); // could pass this in?
-
+ 
         int direction = (pieceTeam == Team.BLACK) ? -1 : 1; // directionality for pawns
 
         // Normal forward move
@@ -53,7 +53,7 @@ public class Pawn extends Pieces {
             }
         }
 
-        // TODO: Add two-tile opening move and en passant later
+        // Need to add en pesuant
 
         return false;
     }
