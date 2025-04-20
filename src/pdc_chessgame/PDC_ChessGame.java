@@ -60,9 +60,9 @@ public class PDC_ChessGame {
             System.out.println("from >> "+ moveset.fromX +" "+ moveset.fromY+" to >> "+moveset.toX+" "+moveset.toY); // CHANGE THIS LATER
             
             
-            System.out.println(board.getTile(moveset.fromY, moveset.fromX));
+            System.out.println(board.getTile(moveset.fromX, moveset.fromY));
 
-            System.out.println(board.getTile(moveset.fromY, moveset.fromX).canMove(moveset.fromY, moveset.fromX, moveset.toX, moveset.toY, board));
+            System.out.println(board.getTile(moveset.fromX, moveset.fromY).canMove(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY, board));
             //System.out.println("");
             //System.out.println("P2> ");
             

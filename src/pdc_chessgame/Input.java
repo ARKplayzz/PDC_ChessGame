@@ -57,12 +57,13 @@ public class Input extends Thread
             return null;
         }
         
-        int fromX = (parts[0].charAt(0) - 65); // A to H = 0 to 7
-        int fromY = 8 - Character.getNumericValue(parts[0].charAt(1)); // - 1Translates char to int (-1 for start point at 0)
-
-        int toX = (parts[1].charAt(0) - 65); // A to H = 0 to 7
-        int toY = 8 - Character.getNumericValue(parts[1].charAt(1)); // - 1 Translates char to int (-1 for start point at 0)
-
+        
+        int fromX = Character.getNumericValue(parts[0].charAt(1))- 1; // Translates char to int (-1 for start point at 0)
+        int fromY = (parts[0].charAt(0) - 65); // A to H = 0 to 7
+        
+        int toX = Character.getNumericValue(parts[1].charAt(1))-1; //  Translates char to int (-1 for start point at 0)
+        int toY = (parts[1].charAt(0) - 65); // A to H = 0 to 7
+        
         return new Input(fromX, fromY, toX, toY);
     }
         
