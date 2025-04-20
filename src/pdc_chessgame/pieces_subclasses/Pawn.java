@@ -16,7 +16,7 @@ public class Pawn extends Pieces {
 
     public Pawn(Team pieceTeam) {
         
-        super(pieceTeam == Team.BLACK ? "♟" : "♙");
+        super(pieceTeam == Team.BLACK ? "p" : "P");
         this.pieceTeam = pieceTeam;
 
     }
