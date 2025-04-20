@@ -47,7 +47,8 @@ public class Input extends Thread
         this.toY = toCol;
     }
     
-    public static Input getMove(String userMovement) { //IM NOT SURE IF THIS WORKS YET
+    
+    public static Input getMove(String userMovement) { // This should be working now
         
         String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces
         
@@ -56,11 +57,11 @@ public class Input extends Thread
             return null;
         }
         
-        int fromY = parts[0].charAt(0) - 'A'; // A to H, 1 to 8
-        int fromX = 8 - Character.getNumericValue(parts[0].charAt(1)); 
+        int fromX = (parts[0].charAt(0) - 65); // A to H = 0 to 7
+        int fromY = Character.getNumericValue(parts[0].charAt(1)) - 1; //Translates char to int (-1 for start point at 0)
 
-        int toY = parts[1].charAt(0) - 'A'; 
-        int toX = 8 - Character.getNumericValue(parts[1].charAt(1));
+        int toX = (parts[1].charAt(0) - 65); // A to H = 0 to 7
+        int toY = Character.getNumericValue(parts[1].charAt(1)) - 1; //Translates char to int (-1 for start point at 0)
 
         return new Input(fromX, fromY, toX, toY);
     }

@@ -49,14 +49,24 @@ public class PDC_ChessGame {
             board.printBoard();
             
             System.out.println("");
-            System.out.println("P1> ");
-            
-            board.printBoard();
-            
-            System.out.println("");
             System.out.println("P1> "); //eg E9, b7
             
-            Input.getMove(scanner.nextLine().trim().toUpperCase()); // CHANGE THIS LATER
+            String testinput = scanner.nextLine();
+            
+            System.out.println(testinput.trim().toUpperCase());
+            
+            Input moveset = Input.getMove(testinput.trim().toUpperCase());
+            
+            System.out.println("from >> "+ moveset.fromX +" "+ moveset.fromY+" to >> "+moveset.toX+" "+moveset.toY); // CHANGE THIS LATER
+            
+            
+            System.out.println(board.getTile(moveset.fromY, moveset.fromX));
+
+            System.out.println(board.getTile(moveset.fromY, moveset.fromX).canMove(moveset.fromY, moveset.fromX, moveset.toX, moveset.toY, board));
+            //System.out.println("");
+            //System.out.println("P2> ");
+            
+            //board.printBoard();
             i++;
             if (i == 50) {
                 checkmate = true;
