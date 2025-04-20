@@ -82,17 +82,17 @@ public class ChessBoard
         return false;
     }
     
-    public boolean moveTile(int fromX, int fromY, int toX, int toY) // Is there much point having returns here
+    public boolean moveTile(Input moveSet) // Is there much point having returns here
     {// Can prob include killTile within
         
-        Pieces movingPiece = board[fromY][fromX];
+        Pieces movingPiece = board[moveSet.fromY][moveSet.fromX];
 
         if (movingPiece == null) {
             return false;
         }
 
-        board[toY][toX] = movingPiece;
-        board[fromY][fromX] = null;
+        board[moveSet.toY][moveSet.toX] = movingPiece;
+        board[moveSet.fromY][moveSet.fromX] = null;
         return true;
     }
     

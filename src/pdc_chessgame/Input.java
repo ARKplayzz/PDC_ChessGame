@@ -53,7 +53,6 @@ public class Input extends Thread
         String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces
         
         if (parts.length != 2 || !isValidTile(parts[0]) || !isValidTile(parts[1])) {
-            System.out.println("> " +userMovement+ " < Is an invalid input format, try something Like > A1 A2");
             return null;
         }
         

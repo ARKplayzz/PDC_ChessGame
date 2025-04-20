@@ -46,55 +46,15 @@ public class PDC_ChessGame {
         
         while(!checkmate)
         {
-            board.printBoard();
-            
-            System.out.println("");
-            System.out.println("P1> "); //eg E9, b7
-            
-            String testinput = scanner.nextLine();
-            
-            System.out.println(testinput.trim().toUpperCase());
-            
-            Input moveset = Input.getMove(testinput.trim().toUpperCase());
-            
-            System.out.println("from >> "+ moveset.fromX +" "+ moveset.fromY+" to >> "+moveset.toX+" "+moveset.toY); // CHANGE THIS LATER
-            
-            
-            if (board.getTile(moveset.fromX, moveset.fromY).getPieceTeam() == Team.BLACK){
-                if (board.getTile(moveset.fromX, moveset.fromY).canMove(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY, board)){
-                    board.moveTile(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY);
-                }
-            }
-            else {
-                System.out.println("not your piece numpty");
-            }
-            
-            board.printBoard();
-            
-            System.out.println("");
-            System.out.println("P1> "); //eg E9, b7
-            
-            
-            System.out.println(testinput.trim().toUpperCase());
-            
-            moveset = Input.getMove(testinput.trim().toUpperCase());
-            
-            System.out.println("from >> "+ moveset.fromX +" "+ moveset.fromY+" to >> "+moveset.toX+" "+moveset.toY); // CHANGE THIS LATER
-            
-            
-            if (board.getTile(moveset.fromX, moveset.fromY).getPieceTeam() == Team.WHITE){
-                if (board.getTile(moveset.fromX, moveset.fromY).canMove(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY, board)){
-                    board.moveTile(moveset.fromX, moveset.fromY, moveset.toX, moveset.toY);
-                }
-            }
-            else {
-                System.out.println("not your piece numpty");
-            }
 
-            //System.out.println("");
-            //System.out.println("P2> ");
+            board.printBoard();
             
-            //board.printBoard();
+            board.moveTile(Display.playerTurn("P1", Team.BLACK, board));
+
+            board.printBoard();
+            
+            board.moveTile(Display.playerTurn("P2", Team.WHITE, board));
+            
             i++;
             if (i == 50) {
                 checkmate = true;
