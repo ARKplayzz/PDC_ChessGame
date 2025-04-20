@@ -19,20 +19,21 @@ public class King extends Pieces {
     }
     
     @Override
-    public boolean canMove(Input moveSet, ChessBoard board) { // TRY MINAMISE THESE VARIABLES 
+    public boolean canMove(Input moveSet, ChessBoard board) {
         
-        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY); 
+        int dx = Input.getXdifference(moveSet);
+        int dy = Input.getYdifference(moveSet);
+        
+        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
 
-        // Multi-directional movement
-        if (Math.abs(moveSet.toX - moveSet.fromX) == 1 && Math.abs(moveSet.toX - moveSet.fromX) == 1) {
-            if (targetPiece != null){
-                if (targetPiece.getPieceTeam() != this.pieceTeam) {
-                    return true;
-                }
+        if (dx <= 1 && dy <= 1 && (dx + dy > 0)) { // I think I overcomplicated this bit
+            
+            if(targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam) {
+            return true;    
             }
         }
-        
-        //need to ad check check
         return false;
+        
+        //need to add a check check
     }
 }

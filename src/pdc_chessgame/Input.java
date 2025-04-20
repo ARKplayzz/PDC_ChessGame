@@ -73,13 +73,13 @@ public class Input extends Thread
         return pos.charAt(0) >= 'A' && pos.charAt(0) <= 'H' && pos.charAt(1) >= '1' && pos.charAt(1) <= '8';
     }
     
-    public static int Xdifference(Input moveSet){
+    public static int getXdifference(Input moveSet){ //thoughts on this as a function
         
         int dx = Math.abs(moveSet.toX - moveSet.fromX);
         return dx;
     }
     
-    public static int Ydifference(Input moveSet){
+    public static int getYdifference(Input moveSet){
         
         int dy = Math.abs(moveSet.toY - moveSet.fromY);
         return dy;

@@ -25,14 +25,32 @@ public class Display
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("----------------------------------------------------");
-        System.out.println(colour.toString()+"'S MOVE");
+        System.out.println(colour.toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
         System.out.print(player+"> ");
         
         String playerInput = scanner.nextLine();
+        System.out.println(playerInput);
+        System.out.println(playerInput.toUpperCase());
+        if (playerInput.toUpperCase() == "X"){
+            System.out.println("----------------------------------------------------");
+            System.out.println(player+" HAS RESIGNED ");
+            
+            return null;  //end
+        }
+        
+        if (playerInput.toUpperCase() == "H"){
+            System.out.println("----------------------------------------------------");
+            System.out.println("CHESS HELP");
+            System.out.println("Resign Game   > X");
+            System.out.println("Chess Help    > H");
+            System.out.println("Move format   > From Tile -> 'A1 B2' <- To Tile");
+            
+            return playerTurn(player, colour, board);  //try again
+        }
         
         if (Input.getMove(playerInput.trim().toUpperCase()) == null){
             System.out.println("----------------------------------------------------");
-            System.out.println("'"+playerInput+ "' Is not a valid chess Input, Eg (From -> 'A1 B2' <- To) ");
+            System.out.println("'"+playerInput+ "' Is not a valid chess Input, Eg 'A1 B2'");
             
             return playerTurn(player, colour, board);  //try again
         }
@@ -40,7 +58,7 @@ public class Display
         
         if (board.getTile(moveSet.fromX, moveSet.fromY) == null){
             System.out.println("----------------------------------------------------");
-            System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Does not contain a piece, Eg (From -> 'A1 B2' <- To) ");
+            System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Does not contain a piece, Eg 'A1 B2'");
             
            return playerTurn(player, colour, board);  //try again
             
