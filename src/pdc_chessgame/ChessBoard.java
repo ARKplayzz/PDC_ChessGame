@@ -76,7 +76,7 @@ public class ChessBoard
     
     public Pieces getTile(int x, int y)
     { // will return null if the tile is empty
-        return this.board[y][x];
+        return this.board[x][y];
     }
     
     public Pieces[][] getBoard()
