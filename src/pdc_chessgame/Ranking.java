@@ -77,11 +77,9 @@ public class Ranking
             return false;
         }
         
-        System.out.println("Final set:");
         for(Map.Entry<String, Integer> entry : this.leaderboard.entrySet())
         {
             pw.println((String)entry.getKey() + " " + entry.getValue());
-            System.out.println(entry.getKey() + " " + entry.getValue());
         }
         
         pw.close();
