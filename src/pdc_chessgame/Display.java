@@ -29,8 +29,7 @@ public class Display
         System.out.print(player+"> ");
         
         String playerInput = scanner.nextLine();
-        System.out.println(playerInput);
-        System.out.println(playerInput.toUpperCase());
+ ;
         if (playerInput.toUpperCase() == "X"){
             System.out.println("----------------------------------------------------");
             System.out.println(player+" HAS RESIGNED ");
@@ -54,6 +53,7 @@ public class Display
             
             return playerTurn(player, colour, board);  //try again
         }
+        
         Input moveSet = Input.getMove(playerInput.trim().toUpperCase());
         
         if (board.getTile(moveSet.fromX, moveSet.fromY) == null){

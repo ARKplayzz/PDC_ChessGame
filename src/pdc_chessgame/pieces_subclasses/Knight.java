@@ -13,13 +13,27 @@ public class Knight extends Pieces {
 
     public Knight(Team pieceTeam) {
         
-        super(pieceTeam == Team.BLACK ? "♟" : "♙");
+        super(pieceTeam == Team.BLACK ? "n" : "N");
         this.pieceTeam = pieceTeam;
 
     }
     
     @Override
     public boolean canMove(Input moveSet, ChessBoard board) {
+        
+        int dx = Input.getXdifference(moveSet);
+        int dy = Input.getYdifference(moveSet);
+
+        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
+
+        if ((dx == 2 && dy == 1) || (dx == 1 && dy == 2)) { // L shaped patern - needs testing
+        
+            if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
+                return true;
+            }
+
+        }
+
     
         return false;
     }
