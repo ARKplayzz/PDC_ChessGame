@@ -37,14 +37,14 @@ public class ChessBoard
     private void initialiseBoard() 
     {
         //place white pawns
-        //for (int row = 0; row < 8; row++) {
-        //    setTile(new Pawn(Team.WHITE), row, 1);
-        //}
+        for (int row = 0; row < 8; row++) {
+            setTile(new Pawn(Team.WHITE), row, 1);
+        }
 
         //place black pawns
-        //for (int row = 0; row < 8; row++) {
-        //    setTile(new Pawn(Team.BLACK), row, 6);
-        //}
+        for (int row = 0; row < 8; row++) {
+            setTile(new Pawn(Team.BLACK), row, 6);
+        }
 
         //place white back row
         setTile(new Rook(Team.WHITE), 0, 0);
@@ -60,8 +60,8 @@ public class ChessBoard
         setTile(new Rook(Team.BLACK), 0, 7);
         setTile(new Knight(Team.BLACK), 1, 7);
         setTile(new Bishop(Team.BLACK), 2, 7);
-        setTile(new Queen(Team.BLACK), 3, 7);
-        setTile(new King(Team.BLACK), 4, 7);
+        setTile(new King(Team.BLACK), 3, 7);
+        setTile(new Queen(Team.BLACK), 4, 7);
         setTile(new Bishop(Team.BLACK), 5, 7);
         setTile(new Knight(Team.BLACK), 6, 7);
         setTile(new Rook(Team.BLACK), 7, 7);
