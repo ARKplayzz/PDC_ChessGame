@@ -69,14 +69,36 @@ public class ChessBoard
     
     public boolean setTile(Pieces p, int x, int y)
     {
-        this.board[x][y] = p; //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
+        this.board[y][x] = p; //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
+        return true;
+        
+    }
+    
+    public boolean killTile(int x, int y) { // Is there much point having returns here
+        if (board[y][x] != null) {
+            board[y][x] = null;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean moveTile(int fromX, int fromY, int toX, int toY) // Is there much point having returns here
+    {
+        Pieces movingPiece = board[fromY][fromX];
+
+        if (movingPiece == null) {
+            return false;
+        }
+
+        board[toY][toX] = movingPiece;
+        board[fromY][fromX] = null;
         return true;
         
     }
     
     public Pieces getTile(int x, int y)
     { // will return null if the tile is empty
-        return this.board[x][y];
+        return this.board[y][x];
     }
     
     public Pieces[][] getBoard()
