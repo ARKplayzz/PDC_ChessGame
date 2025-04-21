@@ -113,7 +113,7 @@ public class ChessBoard
                 
                 for(int y = 0; y < this.width; y++)
                 {
-                    if(k == 2 && this.board[x][y] != null)
+                    if(k == 2 && this.board[x][y].getPiece() != null)
                     {
                         if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1) && this.board[x][y].getPiece() != null)
                             System.out.print(" ■ "+ this.board[x][y].getPiece().getPieceUnicode() +" ■");
