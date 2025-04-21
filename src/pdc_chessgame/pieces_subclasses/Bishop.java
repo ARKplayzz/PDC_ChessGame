@@ -18,18 +18,18 @@ public class Bishop extends Pieces {
     {
         super(x, y, pieceTeam == Team.BLACK ? "b" : "B", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
-    
-    @Override
-    public List<Tile> canMove(ChessBoard board)
-    {        
-        List<Tile> possibleMoves = new ArrayList<>();
-
-        int[][] directions = {
+   
+   int[][] directions = {
             {-1, -1},   // up left
             {1, -1},    // up right
             {-1, 1},    // down left
             {1, 1}      // down right
         };
+    
+    @Override
+    public List<Tile> canMove(ChessBoard board)
+    {        
+        List<Tile> possibleMoves = new ArrayList<>();
 
         for (int[] dir : directions) {
             

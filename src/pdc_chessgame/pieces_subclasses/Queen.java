@@ -18,12 +18,7 @@ public class Queen extends Pieces {
         super(x, y, pieceTeam == Team.BLACK ? "q" : "Q", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
-    @Override
-    public List<Tile> canMove(ChessBoard board)
-    {        
-        List<Tile> possibleMoves = new ArrayList<>();
-
-        int[][] directions = {
+    int[][] directions = {
             {0, 1},     // up
             {0, -1},    // down
             {1, 0},     // right
@@ -33,6 +28,11 @@ public class Queen extends Pieces {
             {-1, 1},    // down left
             {1, 1}      // down right
         };
+    
+    @Override
+    public List<Tile> canMove(ChessBoard board)
+    {        
+        List<Tile> possibleMoves = new ArrayList<>();
 
         for (int[] dir : directions) {
             

@@ -19,17 +19,17 @@ public class Rook extends Pieces {
         super(x, y, pieceTeam == Team.BLACK ? "r" : "R", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
-    @Override
-    public List<Tile> canMove(ChessBoard board)
-    {        
-        List<Tile> possibleMoves = new ArrayList<>();
-
-        int[][] directions = {
+    int[][] directions = {
             {0, 1},     // up
             {0, -1},    // down
             {1, 0},     // right
             {-1, 0},    // left
         };
+    
+    @Override
+    public List<Tile> canMove(ChessBoard board)
+    {        
+        List<Tile> possibleMoves = new ArrayList<>();
 
         for (int[] dir : directions) {
             
