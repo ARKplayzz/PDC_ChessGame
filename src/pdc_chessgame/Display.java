@@ -84,14 +84,14 @@ public class Display
             
         }
         
-        if (board.getTile(moveSet.fromX, moveSet.fromY).pieceTeam != colour){
+        if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece().pieceTeam != colour){
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Is not your Piece, please try again");
             
             return playerTurn(player, colour, board);  //try again
         }
         
-        if (!board.getTile(moveSet.fromX, moveSet.fromY).canMove(moveSet, board)){
+        if (!board.getTile(moveSet.fromX, moveSet.fromY).getPiece().canMove(moveSet, board)){
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput + " Is an Invalid Chess Move, please try again");
             

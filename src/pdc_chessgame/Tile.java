@@ -35,9 +35,12 @@ public class Tile
         this.piece = null;
     }
     
-    public void movePieceTo(Tile tile)
+    public boolean movePieceTo(Tile tile)
     {
+        if(this.piece == null)
+            return false;
         tile.setPiece(this.piece);
         this.deletePiece();
+        return true;
     }
 }

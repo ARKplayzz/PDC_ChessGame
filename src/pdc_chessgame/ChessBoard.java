@@ -84,18 +84,9 @@ public class ChessBoard
         return false;
     }
     
-    public boolean moveTile(Input moveSet) // Is there much point having returns here
-    {// Can prob include killTile within
-        
-        Pieces movingPiece = board[moveSet.fromY][moveSet.fromX];
-
-        if (movingPiece == null) {
-            return false;
-        }
-
-        board[moveSet.toY][moveSet.toX] = movingPiece;
-        board[moveSet.fromY][moveSet.fromX] = null;
-        return true;
+    public boolean moveTile(Input moveSet) 
+    {
+        return this.board[moveSet.fromY][moveSet.fromX].movePieceTo(board[moveSet.toY][moveSet.toX]);
     }
     
     public Tile getTile(int x, int y)
