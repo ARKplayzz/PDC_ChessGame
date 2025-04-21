@@ -4,6 +4,7 @@
  */
 package pdc_chessgame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,27 +13,58 @@ import java.util.List;
  */
 public class Queen extends Pieces {
 
-
-    public Queen(Team pieceTeam) {
-        
-        super(pieceTeam == Team.BLACK ? "q" : "Q");
-        this.pieceTeam = pieceTeam;
-
+    public Queen(int x, int y, Team pieceTeam) 
+    {
+        super(x, y, pieceTeam == Team.BLACK ? "q" : "Q", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
     @Override
-    public List<Tile> canMove(ChessBoard board) 
-    {
+    public List<Tile> canMove(ChessBoard board)
+    {        
+        List<Tile> possibleMoves = new ArrayList<>();
 
-        if ((moveSet.isMoveDiagonal() || moveSet.isMoveStraight()) && moveSet.isPathClear(board)) { // Straight or Diagonal path is clear?
+        int[][] directions = {
+            {0, 1},     // up
+            {0, -1},    // down
+            {1, 0},     // right
+            {-1, 0},    // left
+            {-1, -1},   // up left
+            {1, -1},    // up right
+            {-1, 1},    // down left
+            {1, 1}      // down right
+        };
+
+        for (int[] dir : directions) {
             
-            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece();
-                    
-            if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
-                return true;
+            int xDirection = dir[0];
+            int yDirection = dir[1];
+            
+            int x = this.x + xDirection;
+            int y = this.y + yDirection;
+
+            while (x >= 0 && x < board.width && y >= 0 && y < board.height) {
+                
+                Tile targetTile = board.getTile(x, y); //these can be shrunken if tile did not exist (:
+                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
+
+                if (targetPiece == null) // if Tile empty or Contains enemy
+                { 
+                    possibleMoves.add(targetTile); 
+                } 
+                else 
+                {
+                    if (targetPiece.getPieceTeam() != this.getPieceTeam())
+                    {
+                        possibleMoves.add(targetTile); 
+                        break;
+                    }
+                } 
+                
+                x += xDirection;
+                y += yDirection;
             }
         }
-        
-        return false;
+
+        return possibleMoves;
     }
 }

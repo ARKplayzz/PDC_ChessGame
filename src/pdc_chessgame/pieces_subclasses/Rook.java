@@ -29,10 +29,6 @@ public class Rook extends Pieces {
             {0, -1},    // down
             {1, 0},     // right
             {-1, 0},    // left
-            {-1, -1},   // up left
-            {1, -1},    // up right
-            {-1, 1},    // down left
-            {1, 1}      // down right
         };
 
         for (int[] dir : directions) {
@@ -68,16 +64,4 @@ public class Rook extends Pieces {
 
         return possibleMoves;
     }
-
-        /*if (moveSet.isMoveStraight() && moveSet.isPathClear(board)) { // Straight path is clear?
-            
-            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece();
-            
-            if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
-                return true;
-            }
-        }
-        
-        return false;*/
-        
 }
