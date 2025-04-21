@@ -42,12 +42,12 @@ public class ChessBoard
     {
         //place white pawns
         for (int row = 0; row < 8; row++) {
-            setTile(new Pawn(Team.WHITE), row, 1);
+            setTile(new Pawn(Team.WHITE), 1, row);
         }
 
         //place black pawns
         for (int row = 0; row < 8; row++) {
-            setTile(new Pawn(Team.BLACK), row, 6);
+            setTile(new Pawn(Team.BLACK), 6, row);
         }
 
         //place white back row

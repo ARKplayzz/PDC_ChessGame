@@ -9,16 +9,14 @@ import java.util.List;
 
 /**
  *
- * @author ARKen
+ * @author Andrew & Finlay
  */
 public class Rook extends Pieces {
 
 
-    public Rook(Team pieceTeam) {
-        
-        super(pieceTeam == Team.BLACK ? "r" : "R");
-        this.pieceTeam = pieceTeam;
-
+    public Rook(int x, int y, Team pieceTeam) 
+    {
+        super(x, y, pieceTeam == Team.BLACK ? "r" : "R", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
     @Override
@@ -26,44 +24,45 @@ public class Rook extends Pieces {
     {        
         List<Tile> possibleMoves = new ArrayList<>();
 
-        // position
-        int startX = 0;
-        int startY = 0;
-
         int[][] directions = {
-            {0, 1},   // up
-            {0, -1},  // down
-            {1, 0},   // right
-            {-1, 0}   // left
+            {0, 1},     // up
+            {0, -1},    // down
+            {1, 0},     // right
+            {-1, 0},    // left
+            {-1, -1},   // up left
+            {1, -1},    // up right
+            {-1, 1},    // down left
+            {1, 1}      // down right
         };
 
         for (int[] dir : directions) {
-            int dx = dir[0];
-            int dy = dir[1];
-            int x = startX + dx;
-            int y = startY + dy;
+            
+            int xDirection = dir[0];
+            int yDirection = dir[1];
+            
+            int x = this.x + xDirection;
+            int y = this.y + yDirection;
 
             while (x >= 0 && x < board.width && y >= 0 && y < board.height) {
                 
-                Tile tile = board.getTile(x, y);
-                
-                if (tile == null) break;
+                Tile targetTile = board.getTile(x, y); //these can be shrunken if tile did not exist (:
+                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
 
-                Pieces targetPiece = tile.getPiece();
-
-                if (targetPiece == null) { // if empty
-                    
-                    possibleMoves.add(tile); 
-                } else {
-                    
-                    if (targetPiece.getPieceTeam() != this.getPieceTeam()) {
-                        possibleMoves.add(tile); // is enemy (fine)
+                if (targetPiece == null) // if Tile empty or Contains enemy
+                { 
+                    possibleMoves.add(targetTile); 
+                } 
+                else 
+                {
+                    if (targetPiece.getPieceTeam() != this.getPieceTeam())
+                    {
+                        possibleMoves.add(targetTile); 
+                        break;
                     }
-                    break; // hit a piece
                 }
 
-                x += dx;
-                y += dy;
+                x += xDirection;
+                y += yDirection;
             }
         }
 
@@ -81,6 +80,4 @@ public class Rook extends Pieces {
         
         return false;*/
         
-        
-    }
 }
