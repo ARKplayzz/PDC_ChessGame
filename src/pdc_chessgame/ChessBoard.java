@@ -115,9 +115,9 @@ public class ChessBoard
                 {
                     if(k == 2 && this.board[x][y] != null)
                     {
-                        if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1))
+                        if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1) && this.board[x][y].getPiece() != null)
                             System.out.print(" ■ "+ this.board[x][y].getPiece().getPieceUnicode() +" ■");
-                        else
+                        else if(this.board[x][y].getPiece() != null)
                             System.out.print("   "+ this.board[x][y].getPiece().getPieceUnicode() +"  ");
                     }
                     else
