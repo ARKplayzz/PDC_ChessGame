@@ -23,7 +23,7 @@ public class Bishop extends Pieces {
 
         if (moveSet.isMoveDiagonal() && moveSet.isPathClear(board)) { // Diagonal path is clear?
             
-            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
+            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece();
                     
             if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
                 return true;

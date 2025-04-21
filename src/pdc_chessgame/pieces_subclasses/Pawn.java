@@ -29,7 +29,7 @@ public class Pawn extends Pieces {
     @Override
     public boolean canMove(Input moveSet, ChessBoard board) { // TRY MINAMISE THESE VARIABLES 
         
-        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY); // could pass this in?
+        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece(); // could pass this in?
  
         int direction = (this.pieceTeam == Team.BLACK) ? -1 : 1; // directionality for pawns
 
@@ -42,7 +42,7 @@ public class Pawn extends Pieces {
         int startRow = (this.pieceTeam == Team.BLACK) ? 6 : 1;
         
         if (moveSet.toX == moveSet.fromX && moveSet.fromY == startRow && moveSet.toY == moveSet.fromY + 2 * direction) {
-            Pieces nextTile = board.getTile(moveSet.fromX, moveSet.fromY + direction);
+            Pieces nextTile = board.getTile(moveSet.fromX, moveSet.fromY + direction).getPiece();
             if (nextTile == null && targetPiece == null) {
                 return true;
             }

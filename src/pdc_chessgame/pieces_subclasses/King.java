@@ -24,7 +24,7 @@ public class King extends Pieces {
         int dx = Input.getXdifference(moveSet);
         int dy = Input.getYdifference(moveSet);
         
-        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
+        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece();
 
         if (dx <= 1 && dy <= 1 && (dx + dy > 0)) { // I think I overcomplicated this bit
             

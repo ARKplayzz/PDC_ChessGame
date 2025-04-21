@@ -33,7 +33,7 @@ public class ChessBoard
         // I changed it from i,j to x,y to hopefully clear some of the confusion we had last time
         for (int x = 0; x < this.height; x++)
             for(int y = 0; y < this.width; y++)
-                this.board[x][y] = null;
+                this.board[x][y] = new Tile(x, y);
         
         initialiseBoard();  //Could put this is a better space (can also reset board)
     }

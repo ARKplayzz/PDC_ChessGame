@@ -23,7 +23,7 @@ public class Queen extends Pieces {
 
         if ((moveSet.isMoveDiagonal() || moveSet.isMoveStraight()) && moveSet.isPathClear(board)) { // Straight or Diagonal path is clear?
             
-            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
+            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece();
                     
             if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
                 return true;

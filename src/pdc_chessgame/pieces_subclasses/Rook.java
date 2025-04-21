@@ -23,7 +23,7 @@ public class Rook extends Pieces {
 
         if (moveSet.isMoveStraight() && moveSet.isPathClear(board)) { // Straight path is clear?
             
-            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
+            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece();
             
             if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
                 return true;
