@@ -49,15 +49,17 @@ public class Display
         System.out.print(player+"> ");
         
         String playerInput = scanner.nextLine();
- ;
-        if (playerInput.toUpperCase().equals("X")){
+ 
+        if (playerInput.toUpperCase().equals("X"))
+        {
             System.out.println("----------------------------------------------------");
             System.out.println(player+" HAS RESIGNED ");
             
             return null;  //end
         }
         
-        if (playerInput.toUpperCase().equals("H")){
+        if (playerInput.toUpperCase().equals("H"))
+        {
             System.out.println("----------------------------------------------------");
             System.out.println("CHESS HELP");
             System.out.println("Resign Game   > X");
@@ -67,7 +69,8 @@ public class Display
             return playerTurn(player, colour, board);  //try again
         }
         
-        if (Input.getMove(playerInput.trim().toUpperCase()) == null){
+        if (Input.getMove(playerInput.trim().toUpperCase()) == null)
+        {
             System.out.println("----------------------------------------------------");
             System.out.println("'"+playerInput+ "' Is not a valid chess Input, Eg 'A1 B2'");
             
@@ -76,7 +79,8 @@ public class Display
         
         Input moveSet = Input.getMove(playerInput.trim().toUpperCase());
         
-        if (board.getTile(moveSet.fromX, moveSet.fromY) == null){
+        if (board.getTile(moveSet.fromX, moveSet.fromY) == null)
+        {
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Does not contain a piece, Eg 'A1 B2'");
             
@@ -84,14 +88,17 @@ public class Display
             
         }
         
-        if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece().pieceTeam != colour){
+        if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece().pieceTeam != colour)
+        {
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Is not your Piece, please try again");
             
             return playerTurn(player, colour, board);  //try again
         }
         
-        if (!board.getTile(moveSet.fromX, moveSet.fromY).getPiece().canMove(moveSet, board)){
+        // if the list of possible moves does not contain our tile
+        if (!board.getTile(moveSet.fromX, moveSet.fromY).getPiece().canMove(board).contains(board.getTile(moveSet.toX, moveSet.toY)))
+        {
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput + " Is an Invalid Chess Move, please try again");
             

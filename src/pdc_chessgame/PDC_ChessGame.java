@@ -49,7 +49,7 @@ public class PDC_ChessGame {
             board.printBoard();
             
             board.moveTile(Display.playerTurn("P1", Team.BLACK, board));
-
+            
             board.printBoard();
             
             board.moveTile(Display.playerTurn("P2", Team.WHITE, board));

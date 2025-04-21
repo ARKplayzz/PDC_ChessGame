@@ -4,6 +4,8 @@
  */
 package pdc_chessgame;
 
+import java.util.List;
+
 /**
  *
  * @author ARKen
@@ -19,9 +21,10 @@ public class Rook extends Pieces {
     }
     
     @Override
-    public boolean canMove(Input moveSet, ChessBoard board) {        
+    public List<Tile> canMove(ChessBoard board) 
+    {        
 
-        if (moveSet.isMoveStraight() && moveSet.isPathClear(board)) { // Straight path is clear?
+        /*if (moveSet.isMoveStraight() && moveSet.isPathClear(board)) { // Straight path is clear?
             
             Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece();
             
@@ -30,6 +33,8 @@ public class Rook extends Pieces {
             }
         }
         
-        return false;
+        return false;*/
+        
+        
     }
 }

@@ -4,6 +4,8 @@
  */
 package pdc_chessgame;
 
+import java.util.List;
+
 /**
  *
  * @author ARKen
@@ -42,7 +44,7 @@ public abstract class Pieces { //its an abstract class btw
         this.pieceUnicode = pieceUnicode;
     }
 
-    //returns True if move move completes successfully
-    public abstract boolean canMove(Input moveSet, ChessBoard board);
+    //returns a list of all tiles that the piece can move to
+    public abstract List<Tile> canMove(ChessBoard board);
     
 }

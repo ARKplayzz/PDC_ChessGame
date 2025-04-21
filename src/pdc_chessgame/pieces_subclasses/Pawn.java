@@ -6,6 +6,9 @@ package pdc_chessgame;
 
 //import pdc_chessgame.*; //IS THIS THE BEST WAY TO DO THIS???? Idk sub classess suck
 
+import java.util.List;
+
+
 
 /**
  *
@@ -27,7 +30,8 @@ public class Pawn extends Pieces {
     //need to check if can accidently attack self?
     
     @Override
-    public boolean canMove(Input moveSet, ChessBoard board) { // TRY MINAMISE THESE VARIABLES 
+    public List<Tile> canMove(ChessBoard board) 
+    { // TRY MINAMISE THESE VARIABLES 
         
         Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece(); // could pass this in?
  
@@ -58,6 +62,8 @@ public class Pawn extends Pieces {
         // Need to add en pesuant
 
         return false;
+        
+        
     }
 
     

@@ -4,6 +4,8 @@
  */
 package pdc_chessgame;
 
+import java.util.List;
+
 /**
  *
  * @author ARKen
@@ -19,7 +21,7 @@ public class Bishop extends Pieces {
     }
     
     @Override
-    public boolean canMove(Input moveSet, ChessBoard board) {
+    public List<Tile> canMove(ChessBoard board) {
 
         if (moveSet.isMoveDiagonal() && moveSet.isPathClear(board)) { // Diagonal path is clear?
             

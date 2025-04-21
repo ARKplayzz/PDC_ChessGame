@@ -4,6 +4,8 @@
  */
 package pdc_chessgame;
 
+import java.util.List;
+
 /**
  *
  * @author ARKen
@@ -19,7 +21,8 @@ public class Queen extends Pieces {
     }
     
     @Override
-    public boolean canMove(Input moveSet, ChessBoard board) {
+    public List<Tile> canMove(ChessBoard board) 
+    {
 
         if ((moveSet.isMoveDiagonal() || moveSet.isMoveStraight()) && moveSet.isPathClear(board)) { // Straight or Diagonal path is clear?
             

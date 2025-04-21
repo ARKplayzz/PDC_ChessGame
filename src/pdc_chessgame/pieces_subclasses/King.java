@@ -4,6 +4,8 @@
  */
 package pdc_chessgame;
 
+import java.util.List;
+
 /**
  *
  * @author ARKen
@@ -19,7 +21,7 @@ public class King extends Pieces {
     }
     
     @Override
-    public boolean canMove(Input moveSet, ChessBoard board) {
+    public List<Tile> canMove(ChessBoard board) {
         
         int dx = Input.getXdifference(moveSet);
         int dy = Input.getYdifference(moveSet);
