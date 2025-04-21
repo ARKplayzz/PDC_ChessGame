@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author finlay
+ * @author Finlay 
  */
 public class Display 
 {

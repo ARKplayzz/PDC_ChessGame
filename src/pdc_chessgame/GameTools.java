@@ -6,7 +6,7 @@ package pdc_chessgame;
 
 /**
  *
- * @author ARKen
+ * @author Andrew 
  */
 public class GameTools 
 {

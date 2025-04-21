@@ -6,7 +6,7 @@ package pdc_chessgame;
 
 /**
  *
- * @author finlay
+ * @author Finlay
  */
 public class Input extends Thread
 {

@@ -6,7 +6,7 @@ package pdc_chessgame;
 
 /**
  *
- * @author ARKen
+ * @author Andrew 
  */
 public class ChessBoard 
 {
@@ -14,7 +14,8 @@ public class ChessBoard
         When changing to graphical for part2 make a tile class that
         holds piece and colour.
     */
-    private Pieces[][] board;
+    @SuppressWarnings("FieldMayBeFinal")
+    private Tile[][] board;
     // moved this here so that the mateChecker can easily modify it
     public boolean checkmate = false;
     
@@ -24,14 +25,15 @@ public class ChessBoard
     public ChessBoard(int width, int height)
     {
         // init board
-        this.board = new Pieces[width][height];
+        this.board = new Tile[width][height];
         this.width = width;
         this.height = height;
         
         // Init all individual tiles
-        for (int i = 0; i < this.height; i++)
-            for(int j = 0; j < this.width; j++)
-                this.board[i][j] = null;
+        // I changed it from i,j to x,y to hopefully clear some of the confusion we had last time
+        for (int x = 0; x < this.height; x++)
+            for(int y = 0; y < this.width; y++)
+                this.board[x][y] = null;
         
         initialiseBoard();  //Could put this is a better space (can also reset board)
     }
@@ -69,16 +71,14 @@ public class ChessBoard
         setTile(new Rook(Team.BLACK), 7, 7);
     }
     
-    public boolean setTile(Pieces p, int x, int y)
+    public void setTile(Pieces p, int x, int y)
     {
-        this.board[y][x] = p; //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
-        return true;
-        
+        this.board[x][y].setPiece(p); //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
     }
     
     public boolean killTile(int x, int y) { // Is there much point having returns here
-        if (board[y][x] != null) {
-            board[y][x] = null;
+        if (board[x][y] != null) {
+            board[x][y] = null;
             return true;
         }
         return false;
@@ -98,40 +98,40 @@ public class ChessBoard
         return true;
     }
     
-    public Pieces getTile(int x, int y)
+    public Tile getTile(int x, int y)
     { // will return null if the tile is empty
         return this.board[y][x];
     }
     
-    public Pieces[][] getBoard()
+    public Tile[][] getBoard()
     {
         return this.board;
     }
     
     public void printBoard()
     {
-        
-        for(int i = 0; i < this.height; i++)
+        // again changed from i,j to x,y to clear up confusion
+        for(int x = 0; x < this.height; x++)
         {
             for(int k = 1; k < 4; k++)
             { // three rows
                 if(k == 2)
-                    System.out.print(" "+(i+1)+"  ");
+                    System.out.print(" "+(x+1)+"  ");
                 else
                     System.out.print("    ");
                 
-                for(int j = 0; j < this.width; j++)
+                for(int y = 0; y < this.width; y++)
                 {
-                    if(k == 2 && this.board[i][j] != null)
+                    if(k == 2 && this.board[x][y] != null)
                     {
-                        if(GameTools.isOdd(i+1) == GameTools.isOdd(j+1))
-                            System.out.print(" ■ "+ this.board[i][j].getPieceUnicode() +" ■");
+                        if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1))
+                            System.out.print(" ■ "+ this.board[x][y].getPiece().getPieceUnicode() +" ■");
                         else
-                            System.out.print("   "+ this.board[i][j].getPieceUnicode() +"  ");
+                            System.out.print("   "+ this.board[x][y].getPiece().getPieceUnicode() +"  ");
                     }
                     else
                     {
-                        if(GameTools.isOdd(i+1) == GameTools.isOdd(j+1))
+                        if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1))
                             System.out.print(" ■ ■ ■");
                         else
                             System.out.print("      ");
