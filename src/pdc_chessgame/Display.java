@@ -96,7 +96,7 @@ public class Display
             return playerTurn(player, colour, board);  //try again
         }
         
-        // if the list of possible moves does not contain our tile
+        // if the list of possible moves does not contain our destination tile
         if (!board.getTile(moveSet.fromX, moveSet.fromY).getPiece().canMove(board).contains(board.getTile(moveSet.toX, moveSet.toY)))
         {
             System.out.println("----------------------------------------------------");
