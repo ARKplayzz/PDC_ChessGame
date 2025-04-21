@@ -20,30 +20,11 @@ public class Bishop extends Pieces {
     
     @Override
     public boolean canMove(Input moveSet, ChessBoard board) {
-        
-        int dx = Input.getXdifference(moveSet);
-        int dy = Input.getYdifference(moveSet);
-        
-        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
 
-        if (!(dx != dy || dx == 0)) { // diaginal.. kinda (will fix later)
+        if (moveSet.isMoveDiagonal() && moveSet.isPathClear(board)) { // Diagonal path is clear?
             
-            int directionX = Integer.compare(moveSet.toX, moveSet.fromX); // direction as - or +
-            int directionY = Integer.compare(moveSet.toY, moveSet.fromY);
-
-            int x = moveSet.fromX + directionX;
-            int y = moveSet.fromY + directionY;
-
-            while (x != moveSet.toX && y != moveSet.toY) {// steps towards space (make into seperate function??)
-                
-                if (board.getTile(x, y) != null) { // Something in the way
-                    return false; 
-                }
-                
-                x += directionX; 
-                y += directionY;
-            }
-            
+            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
+                    
             if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
                 return true;
             }

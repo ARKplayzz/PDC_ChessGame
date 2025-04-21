@@ -20,7 +20,16 @@ public class Queen extends Pieces {
     
     @Override
     public boolean canMove(Input moveSet, ChessBoard board) {
-    
+
+        if ((moveSet.isMoveDiagonal() || moveSet.isMoveStraight()) && moveSet.isPathClear(board)) { // Straight or Diagonal path is clear?
+            
+            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
+                    
+            if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
+                return true;
+            }
+        }
+        
         return false;
     }
 }

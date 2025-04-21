@@ -24,10 +24,10 @@ public class Knight extends Pieces {
         int dx = Input.getXdifference(moveSet);
         int dy = Input.getYdifference(moveSet);
 
-        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
-
         if ((dx == 2 && dy == 1) || (dx == 1 && dy == 2)) { // L shaped patern - needs testing (looks good)
         
+            Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY);
+                    
             if (targetPiece == null || targetPiece.getPieceTeam() != this.pieceTeam){
                 return true;
             }
