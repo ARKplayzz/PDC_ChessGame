@@ -8,39 +8,12 @@ package pdc_chessgame;
  *
  * @author Finlay
  */
-public class Input extends Thread
+public class Input 
 {
-    /*
-        have this class running a sperate thread monitoring input
-        I merged moveInput into this as having two input classes is
-        redundant plus we'll refactor this later anyway
-    
-        If you want to keep MoveInput as a seperate class then I do have
-        a back up of the files before they were merged
-    */
-    
-    @Override
-    public void run()
-    { // multithreading stuff
-        while(!this.quit)
-        {
-            
-        }
-    }
-    
-    public void terminate()
-    {
-        this.quit = true;
-    }
-    
-    private boolean quit = false; // set to true to exit the thread
     public int fromX, fromY, toX, toY; // efficent storing for move cases
-
-    /*
-        Will redo alot of this later
-    */
     
-    public Input(int fromRow, int fromCol, int toRow, int toCol) {
+    public Input(int fromRow, int fromCol, int toRow, int toCol) 
+    {
         this.fromX = fromRow;
         this.fromY = fromCol;
         this.toX = toRow;
@@ -109,15 +82,16 @@ public class Input extends Thread
         int x = this.fromX + directionX;
         int y = this.fromY + directionY;
         
-        while (x != this.toX || y != this.toY) {// steps towards space 
-                
-                if (board.getTile(x, y) != null) { // Something in the way
-                    return false; 
-                }
-                
-                x += directionX; 
-                y += directionY;
+        while (x != this.toX || y != this.toY) 
+        {// steps towards space   
+            if (board.getTile(x, y) != null) 
+            { // Something in the way
+                return false; 
             }
+                
+            x += directionX; 
+            y += directionY;
+        }
         return true;
     }
 }

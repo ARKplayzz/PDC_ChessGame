@@ -4,6 +4,9 @@
  */
 package pdc_chessgame;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Andrew 
@@ -16,6 +19,10 @@ public class ChessBoard
     */
     @SuppressWarnings("FieldMayBeFinal")
     private Tile[][] board;
+    
+    // adding this so we can display captured pieces once we make it graphical + makes it %1 easier to check for a missing queen
+    // tell me if this is a retarted idea
+    private List<Pieces> capturedPieces;
     // moved this here so that the mateChecker can easily modify it
     public boolean checkmate = false;
     
@@ -28,6 +35,7 @@ public class ChessBoard
         this.board = new Tile[width][height];
         this.width = width;
         this.height = height;
+        this.capturedPieces = new ArrayList<>();
         
         // Init all individual tiles
         // I changed it from i,j to x,y to hopefully clear some of the confusion we had last time
