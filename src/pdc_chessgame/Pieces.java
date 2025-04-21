@@ -10,8 +10,8 @@ import java.util.List;
  *
  * @author ARKen
  */
-public abstract class Pieces { //its an abstract class btw
-    
+public abstract class Pieces 
+{ //its an abstract class btw
     //Unicode doesnt work in netbeans so we will use letters ):
     
     private String pieceUnicode = "?"; 
