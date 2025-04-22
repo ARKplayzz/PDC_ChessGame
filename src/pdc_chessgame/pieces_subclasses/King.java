@@ -18,7 +18,16 @@ public class King extends Pieces {
         super(x, y, pieceTeam == Team.BLACK ? "k" : "K", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
-    int[][] directions = {
+    @Override
+    public boolean isSingleStep() 
+    {
+        return true;
+    }
+    
+    @Override
+    public int[][] getDirection()
+    {
+        return new int[][]{
         {0, 1},     // up
         {0, -1},    // down
         {1, 0},     // right
@@ -27,29 +36,6 @@ public class King extends Pieces {
         {1, -1},    // up right
         {-1, 1},    // down left
         {1, 1}      // down right
-    };
-    
-    @Override
-    public List<Tile> canMove(ChessBoard board) //Need to make sure king cant move INTO check!
-    {        
-        List<Tile> possibleMoves = new ArrayList<>();
-
-        for (int[] dir : directions) {
-            
-            int x = this.x + dir[0];
-            int y = this.y + dir[1];
-
-            if (x >= 0 && x < board.width && y >= 0 && y < board.height) { // only checks once per adjacent tile - only checks within board (need to test)
-                
-                Tile targetTile = board.getTile(x, y); //these can be shrunken if tile did not exist (:
-                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
-
-                if (targetPiece == null || targetPiece.getPieceTeam() != this.getPieceTeam()) // if Tile empty or Contains enemy
-                { 
-                    possibleMoves.add(targetTile); 
-                } 
-            }
-        }
-        return possibleMoves;
-    }
+        };
+    } 
 }

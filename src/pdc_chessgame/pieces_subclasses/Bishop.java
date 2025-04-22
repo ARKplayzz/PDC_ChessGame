@@ -15,6 +15,12 @@ public class Bishop extends Pieces {
         super(x, y, pieceTeam == Team.BLACK ? "b" : "B", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
    
+   @Override
+    public boolean isSingleStep() 
+    {
+        return false;
+    }
+   
     @Override
     public int[][] getDirection()
     {
@@ -24,7 +30,5 @@ public class Bishop extends Pieces {
         {-1, 1},    // down left
         {1, 1}      // down right
         };
-    }
-    
-    
+    } 
 }

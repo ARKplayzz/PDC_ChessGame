@@ -16,6 +16,12 @@ public class Queen extends Pieces {
     }
     
     @Override
+    public boolean isSingleStep() 
+    {
+        return false;
+    }
+    
+    @Override
     public int[][] getDirection()
     {
         return new int[][]{

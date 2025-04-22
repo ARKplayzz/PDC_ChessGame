@@ -50,23 +50,25 @@ public abstract class Pieces
         this.pieceUnicode = pieceUnicode;
     }
     
-    public abstract int[][] getDirection(); // its abstract bcs its empty, should it be empty?
+    public abstract boolean isSingleStep(); // true for things like king and knight (PLEASE COME UP WITH A BETTER VAR NAME)
+    
+    public abstract int[][] getDirection();
     
     //returns a list of all tiles that the piece can move to
     public List<Tile> canMove(ChessBoard board)
     {        
         List<Tile> possibleMoves = new ArrayList<>();
 
-        for (int[] dir : getDirection()) {
-            
+        for (int[] dir : getDirection()) 
+        {
             int xDirection = dir[0];
             int yDirection = dir[1];
             
             int x = this.x + xDirection;
             int y = this.y + yDirection;
 
-            while (x >= 0 && x < board.width && y >= 0 && y < board.height) {
-                
+            while (x >= 0 && x < board.width && y >= 0 && y < board.height) 
+            {
                 Tile targetTile = board.getTile(x, y); //these can be shrunken if tile did not exist (:
                 Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
 
@@ -81,13 +83,16 @@ public abstract class Pieces
                         possibleMoves.add(targetTile); 
                         break;
                     }
-                } 
+                }
+                if (isSingleStep())
+                {
+                    break;
+                }
                 
                 x += xDirection;
                 y += yDirection;
             }
         }
-
         return possibleMoves;
     }
 }
