@@ -14,4 +14,9 @@ public class GameTools
     {
         return (n % 2 == 0);
     }
+    
+    public static int distanceBetween(int x1, int x2, int y1, int y2)
+    {
+        return (int)Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 = x1));
+    }
 }
