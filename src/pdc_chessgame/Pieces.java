@@ -53,9 +53,7 @@ public abstract class Pieces
     {
         return x >= 0 && x < board.width && y >= 0 && y < board.height;
     }
-    
-    public abstract boolean isSingleStep(); // true for things like king and knight (PLEASE COME UP WITH A BETTER VAR NAME)
-    
+        
     public abstract int[][] getDirection();
     
     //returns a list of all tiles that the piece can move to
@@ -95,11 +93,6 @@ public abstract class Pieces
                         break;
                     }
                 }
-                if (isSingleStep())
-                {
-                    break;
-                }
-                
                 x += xDirection;
                 y += yDirection;
             }

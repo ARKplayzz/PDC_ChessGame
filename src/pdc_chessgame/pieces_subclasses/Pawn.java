@@ -21,22 +21,16 @@ public class Pawn extends Pieces {
     }
 
     @Override
-    public boolean isSingleStep() 
-    {
-        return true;
-    }
-
-    @Override
     public int[][] getDirection() 
     {
-        return (this.getPieceTeam() == Team.BLACK) ? new int[][] {{0, 1}} : new int[][] {{0, -1}}; //idk this seems unessisary to have y dir in [0][1]
+        return (this.getPieceTeam() == Team.WHITE) ? new int[][] {{0, 1}} : new int[][] {{0, -1}}; //idk this seems unessisary to have y dir in [0][1]
     }
 
     @Override
     public List<Tile> canMove(ChessBoard board) 
     {        
         List<Tile> possibleMoves = new ArrayList<>();
-        int startRow = (getPieceTeam() == Team.WHITE) ? board.height-1 : board.height+1;
+        int startRow = (getPieceTeam() == Team.BLACK) ? 6 : 1;
 
         int y = this.y + getDirection()[0][1];
         
@@ -47,7 +41,7 @@ public class Pawn extends Pieces {
         {
             possibleMoves.add(targetTile);
             
-            y = this.y + 2 * getDirection()[0][1]; // double jump
+            y = this.y + (2 * getDirection()[0][1]); // double jump
             
             targetTile = board.getTile(this.x, y);
             targetPiece = targetTile.getPiece(); 

@@ -4,6 +4,9 @@
  */
 package pdc_chessgame;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Andrew & Finlay
@@ -13,12 +16,6 @@ public class Knight extends Pieces {
     public Knight(int x, int y, Team pieceTeam) 
     {
         super(x, y, pieceTeam == Team.BLACK ? "n" : "N", pieceTeam); // Need to confirm we are doing subclassess correctly
-    }
-    
-    @Override
-    public boolean isSingleStep() 
-    {
-        return true;
     }
     
     @Override
@@ -34,5 +31,29 @@ public class Knight extends Pieces {
         {1, -2},    // 1 right, 2 down
         {2, -1}     // 2 right, 1 down
         };
+    }
+    
+    @Override
+    public List<Tile> canMove(ChessBoard board)
+    {        
+        List<Tile> possibleMoves = new ArrayList<>();
+
+        for (int[] dir : getDirection()) 
+        {            
+            int x = this.x + dir[0];
+            int y = this.y + dir[1];
+
+            if (isWithinBoard(x, y, board)) 
+            {
+                Tile targetTile = board.getTile(x, y);
+                Pieces targetPiece = targetTile.getPiece();
+
+                if (targetPiece == null || targetPiece.getPieceTeam() != this.getPieceTeam()) // if Tile empty or Contains enemy
+                { 
+                    possibleMoves.add(targetTile); 
+                } 
+            }
+        }
+        return possibleMoves;
     }
 }
