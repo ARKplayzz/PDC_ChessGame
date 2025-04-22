@@ -42,7 +42,6 @@ public abstract class Pieces
     
     public Team getPieceTeam() 
     {
-        
         return this.pieceTeam;
     }
 

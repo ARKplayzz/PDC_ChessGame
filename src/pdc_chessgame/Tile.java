@@ -12,12 +12,14 @@ public class Tile
 {
     public int x, y;
     private Pieces piece;
+    boolean white;
     
     public Tile(int x, int y)
     {
         this.x = x;
         this.y = y;
         this.piece = null;
+        
     }
     
     public void setPiece(Pieces p)

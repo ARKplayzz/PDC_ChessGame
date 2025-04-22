@@ -19,6 +19,7 @@ public class ChessBoard
     */
     @SuppressWarnings("FieldMayBeFinal")
     private Tile[][] board;
+   
     
     // adding this so we can display captured pieces once we make it graphical + makes it %1 easier to check for a missing queen
     // tell me if this is a retarted idea
@@ -105,6 +106,46 @@ public class ChessBoard
     public Tile[][] getBoard()
     {
         return this.board;
+    }
+    
+    
+    // these two functions are useful for mate detection rook, queen and bishop
+    // gets all tiles in all four directions until it hits a unit
+    public List<Tile> getTilesLine(int x, int y)
+    {
+        List<Tile> linearTiles = new ArrayList<>();
+        
+        //right
+        for(int i = x; i < this.width; i++)
+            if(this.getTile(i, y).getPiece() == null && linearTiles.add(this.getTile(i, y)))
+                linearTiles.add(this.getTile(i, y)); 
+            else break;
+        //left
+        for(int i = x; i >= 0; i--)
+            if(this.getTile(i, y).getPiece() == null)
+                linearTiles.add(this.getTile(i, y));
+            else break;
+        //up
+        for(int i = y; i >= 0; i--)
+            if(this.getTile(x, i) == null)
+                linearTiles.add(this.getTile(x, i));
+            else break;
+        //up
+        for(int i = y; i < this.height; i++)
+            if(this.getTile(x, i) == null)
+                linearTiles.add(this.getTile(x, i));
+            else break;
+        
+        return linearTiles;
+    }
+    
+    public List<Tile> getTilesDiagonal()
+    {
+        List<Tile> diagonalTiles = new ArrayList<>();
+        
+        //todo
+        
+        return diagonalTiles;
     }
     
     public void printBoard()

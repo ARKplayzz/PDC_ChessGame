@@ -88,7 +88,7 @@ public class Display
             
         }
         
-        if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece().pieceTeam != colour)
+        if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece().getPieceTeam() != colour)
         {
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Is not your Piece, please try again");
