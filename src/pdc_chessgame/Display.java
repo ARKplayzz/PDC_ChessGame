@@ -99,6 +99,10 @@ public class Display
         
         // if the list of possible moves does not contain our destination tile
         boolean listofoptions = board.getTile(moveSet.fromX, moveSet.fromY).getPiece().canMove(board).contains(board.getTile(moveSet.toX, moveSet.toY));
+
+
+        System.out.println("new tile x>"+moveSet.toX+" y>"+moveSet.toY);
+        System.out.println("LoO>"+listofoptions);
         
         if (!listofoptions)
         {

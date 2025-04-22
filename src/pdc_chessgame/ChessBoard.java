@@ -40,8 +40,9 @@ public class ChessBoard
         
         // Init all individual tiles
         // I changed it from i,j to x,y to hopefully clear some of the confusion we had last time
-        for (int x = 0; x < this.height; x++)
-            for(int y = 0; y < this.width; y++)
+        //this is the dude who was causing issue ):<
+        for (int y = 0; y < this.height; y++)
+            for (int x = 0; x < this.width; x++)
                 this.board[x][y] = new Tile(x, y);
         
         initialiseBoard();  //Could put this is a better space (can also reset board)
@@ -96,9 +97,9 @@ public class ChessBoard
     public boolean moveTile(Input moveSet, Turn turnCounter) 
     {
         // add move to history
-        turnCounter.addMoveToHistory(this.board[moveSet.fromY][moveSet.fromX].getPiece(), this.getTile(moveSet.fromX, moveSet.fromY), this.getTile(moveSet.toX, moveSet.toY));
+        turnCounter.addMoveToHistory(this.board[moveSet.fromX][moveSet.fromY].getPiece(), this.getTile(moveSet.fromX, moveSet.fromY), this.getTile(moveSet.toX, moveSet.toY));
         // actully do the move
-        return this.board[moveSet.fromY][moveSet.fromX].movePieceTo(board[moveSet.toY][moveSet.toX]);
+        return this.board[moveSet.fromX][moveSet.fromY].movePieceTo(board[moveSet.toX][moveSet.toY]);
     }
     
     public Tile getTile(int x, int y)
@@ -114,6 +115,8 @@ public class ChessBoard
     
     // these two functions are useful for mate detection rook, queen and bishop
     // gets all tiles in all four directions until it hits a unit
+    
+    //this might be best to be within the king piece class
     public List<Tile> getTilesLine(int x, int y)
     {
         List<Tile> linearTiles = new ArrayList<>();
@@ -154,22 +157,22 @@ public class ChessBoard
     public void printBoard()
     {
         // again changed from i,j to x,y to clear up confusion
-        for(int x = 0; x < this.height; x++)
+        for(int y = 0; y < this.height; y++)
         {
             for(int k = 1; k < 4; k++)
             { // three rows
                 if(k == 2)
-                    System.out.print(" "+(x+1)+"  ");
+                    System.out.print(" "+(y+1)+"  "); // new row labels based on y
                 else
                     System.out.print("    ");
-                
-                for(int y = 0; y < this.width; y++)
+
+                for(int x = 0; x < this.width; x++) // inner loop over what were rows (now columns)
                 {
                     if(k == 2 && this.board[x][y].getPiece() != null)
                     {
-                        if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1) && this.board[x][y].getPiece() != null)
+                        if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1))
                             System.out.print(" ■ "+ this.board[x][y].getPiece().getPieceUnicode() +" ■");
-                        else if(this.board[x][y].getPiece() != null)
+                        else
                             System.out.print("   "+ this.board[x][y].getPiece().getPieceUnicode() +"  ");
                     }
                     else
@@ -183,7 +186,6 @@ public class ChessBoard
                 System.out.print("\n");
             }
         }
-        
         
         System.out.print("\n    ");
         for(int i = 0; i < this.width; i++)

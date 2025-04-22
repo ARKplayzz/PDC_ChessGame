@@ -100,7 +100,7 @@ public abstract class Pieces
                     break;
                 }
                 
-                x += xDirection; //flipped
+                x += xDirection;
                 y += yDirection;
             }
         }
