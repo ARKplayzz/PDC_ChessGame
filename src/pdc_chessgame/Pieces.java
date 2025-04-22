@@ -50,6 +50,11 @@ public abstract class Pieces
         this.pieceUnicode = pieceUnicode;
     }
     
+    public boolean isWithinBoard(int x, int y, ChessBoard board) 
+    {
+        return x >= 0 && x < board.width && y >= 0 && y < board.height;
+    }
+    
     public abstract boolean isSingleStep(); // true for things like king and knight (PLEASE COME UP WITH A BETTER VAR NAME)
     
     public abstract int[][] getDirection();
@@ -67,7 +72,7 @@ public abstract class Pieces
             int x = this.x + xDirection;
             int y = this.y + yDirection;
 
-            while (x >= 0 && x < board.width && y >= 0 && y < board.height) 
+            while (isWithinBoard(x, y, board)) 
             {
                 Tile targetTile = board.getTile(x, y); //these can be shrunken if tile did not exist (:
                 Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
