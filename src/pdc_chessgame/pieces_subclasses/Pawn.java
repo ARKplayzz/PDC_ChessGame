@@ -32,7 +32,6 @@ public class Pawn extends Pieces {
         return (this.getPieceTeam() == Team.WHITE) ? new int[][] {{0, 1}} : new int[][] {{0, -1}}; //idk this seems unessisary to have y dir in [0][1]
     }
 
-    
     @Override
     public List<Tile> canMove(ChessBoard board) 
     {        

@@ -50,33 +50,33 @@ public class ChessBoard
     {
         //place white pawns
         for (int row = 0; row < 8; row++) {
-            setTile(new Pawn(Team.WHITE), 1, row);
+            setTile(new Pawn(1, row, Team.WHITE), 1, row);
         }
 
         //place black pawns
         for (int row = 0; row < 8; row++) {
-            setTile(new Pawn(Team.BLACK), 6, row);
+            setTile(new Pawn(6, row, Team.BLACK), 6, row);
         }
 
         //place white back row
-        setTile(new Rook(Team.WHITE), 0, 0);
-        setTile(new Knight(Team.WHITE), 0, 1);
-        setTile(new Bishop(Team.WHITE), 0, 2);
-        setTile(new Queen(Team.WHITE), 0, 3);
-        setTile(new King(Team.WHITE), 0, 4);
-        setTile(new Bishop(Team.WHITE), 0, 5);
-        setTile(new Knight(Team.WHITE), 0, 6);
-        setTile(new Rook(Team.WHITE), 0, 7);
+        setTile(new Rook(0, 0, Team.WHITE), 0, 0);
+        setTile(new Knight(0, 1, Team.WHITE), 0, 1);
+        setTile(new Bishop(0, 2, Team.WHITE), 0, 2);
+        setTile(new Queen(0, 3, Team.WHITE), 0, 3);
+        setTile(new King(0, 4, Team.WHITE), 0, 4);
+        setTile(new Bishop(0, 5, Team.WHITE), 0, 5);
+        setTile(new Knight(0, 6, Team.WHITE), 0, 6);
+        setTile(new Rook(0, 7, Team.WHITE), 0, 7);
 
         //place black back row
-        setTile(new Rook(Team.BLACK), 7, 0);
-        setTile(new Knight(Team.BLACK), 7, 1);
-        setTile(new Bishop(Team.BLACK), 7, 2);
-        setTile(new King(Team.BLACK), 7, 3);
-        setTile(new Queen(Team.BLACK), 7, 4);
-        setTile(new Bishop(Team.BLACK), 7, 5);
-        setTile(new Knight(Team.BLACK), 7, 6);
-        setTile(new Rook(Team.BLACK), 7, 7);
+        setTile(new Rook(7, 0, Team.BLACK), 7, 0);
+        setTile(new Knight(7, 1, Team.BLACK), 7, 1);
+        setTile(new Bishop(7, 2, Team.BLACK), 7, 2);
+        setTile(new King(7, 3, Team.BLACK), 7, 3);
+        setTile(new Queen(7, 4, Team.BLACK), 7, 4);
+        setTile(new Bishop(7, 5, Team.BLACK), 7, 5);
+        setTile(new Knight(7, 6, Team.BLACK), 7, 6);
+        setTile(new Rook(7, 7, Team.BLACK), 7, 7);
     }
     
     public void setTile(Pieces p, int x, int y)
