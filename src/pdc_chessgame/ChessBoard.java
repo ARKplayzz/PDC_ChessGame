@@ -61,22 +61,22 @@ public class ChessBoard
 
         //place white back row
         setTile(new Rook(0, 0, Team.WHITE), 0, 0);
-        setTile(new Knight(0, 1, Team.WHITE), 0, 1);
-        setTile(new Bishop(0, 2, Team.WHITE), 0, 2);
-        setTile(new Queen(0, 3, Team.WHITE), 0, 3);
-        setTile(new King(0, 4, Team.WHITE), 0, 4);
-        setTile(new Bishop(0, 5, Team.WHITE), 0, 5);
-        setTile(new Knight(0, 6, Team.WHITE), 0, 6);
-        setTile(new Rook(0, 7, Team.WHITE), 0, 7);
+        setTile(new Knight(1, 0, Team.WHITE), 1, 0);
+        setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
+        setTile(new Queen(3, 0, Team.WHITE), 3, 0);
+        setTile(new King(4, 0, Team.WHITE), 4, 0);
+        setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
+        setTile(new Knight(6, 0, Team.WHITE), 6, 0);
+        setTile(new Rook(7, 0, Team.WHITE), 7, 0);
 
         //place black back row
-        setTile(new Rook(7, 0, Team.BLACK), 7, 0);
-        setTile(new Knight(7, 1, Team.BLACK), 7, 1);
-        setTile(new Bishop(7, 2, Team.BLACK), 7, 2);
-        setTile(new King(7, 3, Team.BLACK), 7, 3);
-        setTile(new Queen(7, 4, Team.BLACK), 7, 4);
-        setTile(new Bishop(7, 5, Team.BLACK), 7, 5);
-        setTile(new Knight(7, 6, Team.BLACK), 7, 6);
+        setTile(new Rook(0, 7, Team.BLACK), 0, 7);
+        setTile(new Knight(1, 7, Team.BLACK), 1, 7);
+        setTile(new Bishop(2, 7, Team.BLACK), 2, 7);
+        setTile(new King(3, 7, Team.BLACK), 3, 7);
+        setTile(new Queen(4, 7, Team.BLACK), 4, 7);
+        setTile(new Bishop(5, 7, Team.BLACK), 5, 7);
+        setTile(new Knight(6, 7, Team.BLACK), 6, 7);
         setTile(new Rook(7, 7, Team.BLACK), 7, 7);
     }
     

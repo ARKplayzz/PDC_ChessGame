@@ -4,9 +4,6 @@
  */
 package pdc_chessgame;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author Andrew & Finlay

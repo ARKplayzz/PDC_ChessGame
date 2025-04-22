@@ -78,8 +78,8 @@ public abstract class Pieces
 
                 if (targetPiece == null) // if Tile empty or Contains enemy
                 { 
-                    System.out.println("piece>"+this.pieceUnicode);
-                    System.out.println("taget tile x>"+targetTile.x+" y>"+targetTile.y);
+                    System.out.println("piece> "+this.pieceUnicode);
+                    System.out.println("taget tile x> "+targetTile.x+" y> "+targetTile.y);
                     
                     //TESTING
                     //Tile newtile = board.getTile(5, 1);
