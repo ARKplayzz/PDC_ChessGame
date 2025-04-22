@@ -93,8 +93,11 @@ public class ChessBoard
         return false;
     }
     
-    public boolean moveTile(Input moveSet) 
+    public boolean moveTile(Input moveSet, Turn turnCounter) 
     {
+        // add move to history
+        turnCounter.addMoveToHistory(this.board[moveSet.fromY][moveSet.fromX].getPiece(), this.getTile(moveSet.fromX, moveSet.fromY), this.getTile(moveSet.toX, moveSet.toY));
+        // actully do the move
         return this.board[moveSet.fromY][moveSet.fromX].movePieceTo(board[moveSet.toY][moveSet.toX]);
     }
     

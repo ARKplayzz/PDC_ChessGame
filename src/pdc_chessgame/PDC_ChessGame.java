@@ -49,7 +49,7 @@ public class PDC_ChessGame {
         {
 
             board.printBoard();
-            board.moveTile(Display.playerTurn(turnCounter.getTeam().toString(), turnCounter.getTeam(), board)); 
+            board.moveTile(Display.playerTurn(turnCounter.getTeam().toString(), turnCounter.getTeam(), board), turnCounter); 
             
             i++;
             if (i == 50) {
@@ -63,6 +63,4 @@ public class PDC_ChessGame {
         
         scanner.close();
     }
-    
-    
 }
