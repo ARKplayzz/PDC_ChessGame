@@ -78,6 +78,7 @@ public class Display
         }
         
         Input moveSet = Input.getMove(playerInput.trim().toUpperCase());
+        System.out.println(" fromX>"+moveSet.fromX+" fromY>"+moveSet.fromY+" toX>"+moveSet.toX+" toy>"+moveSet.toY);
         
         if (board.getTile(moveSet.fromX, moveSet.fromY) == null)
         {
@@ -97,7 +98,9 @@ public class Display
         }
         
         // if the list of possible moves does not contain our destination tile
-        if (!board.getTile(moveSet.fromX, moveSet.fromY).getPiece().canMove(board).contains(board.getTile(moveSet.toX, moveSet.toY)))
+        boolean listofoptions = board.getTile(moveSet.fromX, moveSet.fromY).getPiece().canMove(board).contains(board.getTile(moveSet.toX, moveSet.toY));
+        
+        if (!listofoptions)
         {
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput + " Is an Invalid Chess Move, please try again");

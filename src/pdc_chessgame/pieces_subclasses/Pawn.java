@@ -29,7 +29,7 @@ public class Pawn extends Pieces {
     @Override
     public int[][] getDirection() 
     {
-        return (this.getPieceTeam() == Team.WHITE) ? new int[][] {{0, 1}} : new int[][] {{0, -1}}; //idk this seems unessisary to have y dir in [0][1]
+        return (this.getPieceTeam() == Team.BLACK) ? new int[][] {{0, 1}} : new int[][] {{0, -1}}; //idk this seems unessisary to have y dir in [0][1]
     }
 
     @Override

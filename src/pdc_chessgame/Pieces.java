@@ -68,7 +68,7 @@ public abstract class Pieces
             int xDirection = dir[0];
             int yDirection = dir[1];
             
-            int x = this.x + xDirection;
+            int x = this.x + xDirection; //fliped (THIS IS WTONG)
             int y = this.y + yDirection;
 
             while (isWithinBoard(x, y, board)) 
@@ -78,6 +78,13 @@ public abstract class Pieces
 
                 if (targetPiece == null) // if Tile empty or Contains enemy
                 { 
+                    System.out.println("piece>"+this.pieceUnicode);
+                    System.out.println("taget tile x>"+targetTile.x+" y>"+targetTile.y);
+                    
+                    //TESTING
+                    //Tile newtile = board.getTile(5, 1);
+                    //System.out.println("new tile x>"+newtile.x+" y>"+newtile.y);
+                    
                     possibleMoves.add(targetTile); 
                 } 
                 else 
@@ -93,7 +100,7 @@ public abstract class Pieces
                     break;
                 }
                 
-                x += xDirection;
+                x += xDirection; //flipped
                 y += yDirection;
             }
         }

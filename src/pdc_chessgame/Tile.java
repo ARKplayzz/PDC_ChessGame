@@ -41,6 +41,10 @@ public class Tile
     {
         if(this.piece == null)
             return false;
+        
+        this.piece.x = tile.x; //updating piece to contain new location
+        this.piece.y = tile.y;
+        
         tile.setPiece(this.piece);
         this.deletePiece();
         return true;

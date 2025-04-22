@@ -50,14 +50,14 @@ public class ChessBoard
     private void initialiseBoard() 
     {
         //place white pawns
-        for (int row = 0; row < 8; row++) {
-            setTile(new Pawn(1, row, Team.WHITE), 1, row);
-        }
+        //for (int row = 0; row < 8; row++) {
+        //    setTile(new Pawn(1, row, Team.WHITE), 1, row);
+        //}
 
         //place black pawns
-        for (int row = 0; row < 8; row++) {
-            setTile(new Pawn(6, row, Team.BLACK), 6, row);
-        }
+        //for (int row = 0; row < 8; row++) {
+        //    setTile(new Pawn(6, row, Team.BLACK), 6, row);
+        //}
 
         //place white back row
         setTile(new Rook(0, 0, Team.WHITE), 0, 0);
@@ -100,7 +100,7 @@ public class ChessBoard
     
     public Tile getTile(int x, int y)
     { // will return null if the tile is empty
-        return this.board[y][x];
+        return this.board[x][y];
     }
     
     public Tile[][] getBoard()
