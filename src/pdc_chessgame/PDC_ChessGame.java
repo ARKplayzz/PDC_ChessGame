@@ -39,20 +39,17 @@ public class PDC_ChessGame {
         System.out.println("");
         
         ChessBoard board = new ChessBoard(8, 8);
+        mateDetector mateChecker = new mateDetector(board);
+        Turn turnCounter = new Turn();
         
         int i = 0; //THIS IS TEMPORRARY untill checkmate exists
         
-        
+        mateChecker.start();
         while(!board.checkmate)
         {
 
             board.printBoard();
-            
-            board.moveTile(Display.playerTurn("P1", Team.BLACK, board));
-            
-            board.printBoard();
-            
-            board.moveTile(Display.playerTurn("P2", Team.WHITE, board));
+            board.moveTile(Display.playerTurn(turnCounter.getTeam().toString(), turnCounter.getTeam(), board)); 
             
             i++;
             if (i == 50) {
@@ -60,7 +57,9 @@ public class PDC_ChessGame {
             }
             
             Display.clearConsole(); //  can confirm this function doesn't work, redo it to account for more than 1 type of console
+            turnCounter.nextTurn();
         }
+        mateChecker.terminate();
         
         scanner.close();
     }

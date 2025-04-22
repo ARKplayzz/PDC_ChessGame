@@ -87,7 +87,10 @@ public class Ranking
     }
     
     public void printRankings()
-    {
-        
+    { // unordered, add order later
+        for(Map.Entry<String, Integer> entry : this.leaderboard.entrySet())
+        {
+            System.out.println((String)entry.getKey() + " " + entry.getValue());
+        }
     }
 }
