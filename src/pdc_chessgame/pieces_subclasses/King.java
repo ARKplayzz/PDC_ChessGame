@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author ARKen
+ * @author Andrew & Finlay
  */
 public class King extends Pieces {
 
@@ -19,15 +19,15 @@ public class King extends Pieces {
     }
     
     int[][] directions = {
-            {0, 1},     // up
-            {0, -1},    // down
-            {1, 0},     // right
-            {-1, 0},    // left
-            {-1, -1},   // up left
-            {1, -1},    // up right
-            {-1, 1},    // down left
-            {1, 1}      // down right
-        };
+        {0, 1},     // up
+        {0, -1},    // down
+        {1, 0},     // right
+        {-1, 0},    // left
+        {-1, -1},   // up left
+        {1, -1},    // up right
+        {-1, 1},    // down left
+        {1, 1}      // down right
+    };
     
     @Override
     public List<Tile> canMove(ChessBoard board) //Need to make sure king cant move INTO check!
@@ -36,35 +36,20 @@ public class King extends Pieces {
 
         for (int[] dir : directions) {
             
-            int xDirection = dir[0];
-            int yDirection = dir[1];
-            
-            int x = this.x + xDirection;
-            int y = this.y + yDirection;
+            int x = this.x + dir[0];
+            int y = this.y + dir[1];
 
-            while (x >= 0 && x < 1 && y >= 0 && y < 1) { //this should mean a distance of 1 tile (need to test)
+            if (x >= 0 && x < board.width && y >= 0 && y < board.height) { // only checks once per adjacent tile - only checks within board (need to test)
                 
                 Tile targetTile = board.getTile(x, y); //these can be shrunken if tile did not exist (:
                 Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
 
-                if (targetPiece == null) // if Tile empty or Contains enemy
+                if (targetPiece == null || targetPiece.getPieceTeam() != this.getPieceTeam()) // if Tile empty or Contains enemy
                 { 
                     possibleMoves.add(targetTile); 
                 } 
-                else 
-                {
-                    if (targetPiece.getPieceTeam() != this.getPieceTeam())
-                    {
-                        possibleMoves.add(targetTile); 
-                        break;
-                    }
-                } 
-                
-                x += xDirection;
-                y += yDirection;
             }
         }
-
         return possibleMoves;
     }
 }

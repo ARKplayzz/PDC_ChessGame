@@ -12,58 +12,40 @@ import java.util.List;
 
 /**
  *
- * @author ARKen
+ * @author Andrew & Finlay
  */
 public class Pawn extends Pieces {
 
-
-    public Pawn(Team pieceTeam) {
-        
-        super(pieceTeam == Team.BLACK ? "p" : "P");
-        this.pieceTeam = pieceTeam;
-
+    public Pawn(int x, int y, Team pieceTeam) 
+    {
+        super(x, y, pieceTeam == Team.BLACK ? "p" : "P", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
-    
-    //en pessaunt needs to know the prior move.. we may need move history. 
-    
-    //need to check if can accidently attack self?
-    
+
+    int[][] direction = (this.getPieceTeam() == Team.WHITE) ? {0, 1} : {0, -1};
+        
     @Override
-    public List<Tile> canMove(ChessBoard board) 
-    { // TRY MINAMISE THESE VARIABLES 
-        
-        Pieces targetPiece = board.getTile(moveSet.toX, moveSet.toY).getPiece(); // could pass this in?
- 
-        int direction = (this.pieceTeam == Team.BLACK) ? -1 : 1; // directionality for pawns
+    public List<Tile> canMove(ChessBoard board) //en pessaunt needs to know the prior move.. we may need move history. 
+    { 
+        // 1. One square forward
+        int forwardY = y + direction;
+        if (forwardY >= 0 && forwardY < board.height) {
+            Tile forwardTile = board.getTile(x, forwardY);
+            if (forwardTile != null && forwardTile.getPiece() == null) {
+                legalMoves.add(forwardTile);
 
-        // Normal forward move
-        if (moveSet.toX == moveSet.fromX && moveSet.toY == moveSet.fromY + direction && targetPiece == null) {
-            return true;
-        }
-        
-        // Starting 2 step move
-        int startRow = (this.pieceTeam == Team.BLACK) ? 6 : 1;
-        
-        if (moveSet.toX == moveSet.fromX && moveSet.fromY == startRow && moveSet.toY == moveSet.fromY + 2 * direction) {
-            Pieces nextTile = board.getTile(moveSet.fromX, moveSet.fromY + direction).getPiece();
-            if (nextTile == null && targetPiece == null) {
-                return true;
+                // 2. Two squares forward from starting position
+                boolean isAtStartingRow = (this.getPieceTeam() == Team.WHITE && y == 1) ||
+                                          (this.getPieceTeam() == Team.BLACK && y == 6);
+                if (isAtStartingRow) {
+                    int doubleForwardY = y + (2 * direction);
+                    Tile doubleForwardTile = board.getTile(x, doubleForwardY);
+                    if (doubleForwardTile != null && doubleForwardTile.getPiece() == null) {
+                        legalMoves.add(doubleForwardTile);
+                    }
+                }
             }
         }
-
-        // Diagonal capture
-        if (Math.abs(moveSet.toX - moveSet.fromX) == 1 && moveSet.toY == moveSet.fromY + direction) {
-            if (targetPiece != null && targetPiece.getPieceTeam() != this.pieceTeam) {
-                return true;
-            }
-        }
-
-        // Need to add en pesuant
-
-        return false;
-        
-        
     }
 
     

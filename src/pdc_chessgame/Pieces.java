@@ -4,29 +4,27 @@
  */
 package pdc_chessgame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
- * @author ARKen
+ * @author Andrew & Finlay
  */
 public abstract class Pieces 
-{ //its an abstract class btw
+{ 
     //Unicode doesnt work in netbeans so we will use letters ):
     
     private String pieceUnicode = "?"; 
     
-    public double value = 0;
+    public double value;
     
-    public int x = 0;
-    public int y = 0;
-
+    public int x;
+    public int y;
     
     private Team pieceTeam;
 
-    
-    //public int xPosition = 0;
-    //public int yPosition = 0;    
+    int[][] direction;  
 
     public Pieces(int x, int y, String pieceUnicode, Team pieceTeam) 
     {
@@ -51,8 +49,45 @@ public abstract class Pieces
     public void setTeamColour(String pieceUnicode) {//is this nessisary as a function?
         this.pieceUnicode = pieceUnicode;
     }
-
-    //returns a list of all tiles that the piece can move to
-    public abstract List<Tile> canMove(ChessBoard board);
     
+    public abstract int[][] getDirection(); // its abstract bcs its empty, should it be empty?
+    
+    //returns a list of all tiles that the piece can move to
+    public List<Tile> canMove(ChessBoard board)
+    {        
+        List<Tile> possibleMoves = new ArrayList<>();
+
+        for (int[] dir : getDirection()) {
+            
+            int xDirection = dir[0];
+            int yDirection = dir[1];
+            
+            int x = this.x + xDirection;
+            int y = this.y + yDirection;
+
+            while (x >= 0 && x < board.width && y >= 0 && y < board.height) {
+                
+                Tile targetTile = board.getTile(x, y); //these can be shrunken if tile did not exist (:
+                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
+
+                if (targetPiece == null) // if Tile empty or Contains enemy
+                { 
+                    possibleMoves.add(targetTile); 
+                } 
+                else 
+                {
+                    if (targetPiece.getPieceTeam() != this.getPieceTeam())
+                    {
+                        possibleMoves.add(targetTile); 
+                        break;
+                    }
+                } 
+                
+                x += xDirection;
+                y += yDirection;
+            }
+        }
+
+        return possibleMoves;
+    }
 }
