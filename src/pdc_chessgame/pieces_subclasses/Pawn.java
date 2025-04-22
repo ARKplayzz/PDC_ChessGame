@@ -79,5 +79,4 @@ public class Pawn extends Pieces {
     public boolean PawnPromotion() {
         return false; //checks if a pawn upgrade is possible
     }
-
 }
