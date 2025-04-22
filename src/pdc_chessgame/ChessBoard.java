@@ -118,8 +118,8 @@ public class ChessBoard
     // these two functions are useful for mate detection rook, queen and bishop
     // gets all tiles in all four directions until it hits a unit
     
-    //this might be best to be within the king piece class
-    public List<Tile> getTilesLine(int x, int y)
+    
+    public List<Tile> getTilesLine(int x, int y) //Not sure if this is nessisary anymore
     {
         List<Tile> linearTiles = new ArrayList<>();
         
@@ -147,7 +147,7 @@ public class ChessBoard
         return linearTiles;
     }
     
-    public List<Tile> getTilesDiagonal()
+    public List<Tile> getTilesDiagonal() //Not sure if this is nessisary anymore
     {
         List<Tile> diagonalTiles = new ArrayList<>();
         
@@ -195,5 +195,55 @@ public class ChessBoard
             System.out.print("   "+(char)(i+65)+"  ");
         }
         System.out.print("\n");
+    }
+    
+    public boolean isCheckmate(Team team) {
+        
+        //If you had some time to work on this that would be good cheers
+        
+        King king = null;
+
+        // Searches every tile for the king, not ideal, will need to come back to this
+        for (int x = 0; x < this.width; x++) 
+        {
+            for (int y = 0; y < this.height; y++) 
+            {
+                Pieces targetPiece = this.getTile(x, y).getPiece();
+                
+                if (targetPiece instanceof King && targetPiece.getPieceTeam() == team) 
+                {
+                    king = (King) targetPiece;
+                    break;
+                }
+            }
+        }
+        if (king == null) 
+        {
+            return false;
+        }
+        if (!king.isCheck(king.x, king.y, this)) // has it just been put in check?
+        {
+            return false;
+        }
+        if (!king.canMove(this).isEmpty()) // does it have any avalible moves?
+        {
+            return false;
+        }
+        
+        // checks EVERY TILE of the same team to see if it could block the mate, not ideal, will need to come back to this
+        for (int x = 0; x < this.width; x++) 
+        {
+            for (int y = 0; y < this.height; y++) 
+            {
+                Pieces piece = this.getTile(x, y).getPiece();
+                
+                if (piece != null && piece.getPieceTeam() == team && !(piece instanceof King)) 
+                {
+                    return true; //Need to compare if by moving infront will fix... maybe a recursive function... 
+                }
+            }
+        }
+
+        return true;
     }
 }
