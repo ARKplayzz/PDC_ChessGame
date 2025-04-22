@@ -14,6 +14,9 @@ package pdc_chessgame;
     I'm really tired right now so i'll work on this class tommorow,
     what it's meant to do is run in a seperate thread and constantly check for checkmate
     so we don't have to do that on the main thread.
+
+    A> I understand wanting to run it as a thread but we will need to check for mate at the end of each move
+    and It will need to confirm before the next player moves...
 */
 
 public class mateDetector extends Thread
