@@ -89,6 +89,18 @@ public class Turn
         return this.moveHistory.contains(m);
     }
     
+    public boolean hasMoved(Pieces p)
+    {
+        for(int i = 0; i < this.moveHistory.size(); i++)
+        {
+            if(this.moveHistory.get(i).piece.equals(p))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void printMoveHistory()
     {
         System.out.println("Move history:\nPIECE    FROM    TO    TURN");
