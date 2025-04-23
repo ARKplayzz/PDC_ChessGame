@@ -6,7 +6,7 @@ package pdc_chessgame;
 
 /**
  *
- * @author Finlay
+ * @author Finlay & Andrew
  */
 public class Input 
 {
@@ -34,6 +34,11 @@ public class Input
 
         int toX = (parts[1].charAt(0) - 65); // A to H = 0 to 7
         int toY = Character.getNumericValue(parts[1].charAt(1))-1; //  Translates char to int (-1 for start point at 0)
+
+        return new Input(fromX, fromY, toX, toY);
+    }
+    
+    public static Input getMove(int fromX, int fromY, int toX, int toY) {
 
         return new Input(fromX, fromY, toX, toY);
     }

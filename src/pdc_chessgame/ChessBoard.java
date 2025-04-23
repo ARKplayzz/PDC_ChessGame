@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author Andrew 
+ * @author Finlay & Andrew
  */
 public class ChessBoard 
 {
@@ -30,7 +30,7 @@ public class ChessBoard
     public int width;
     public int height;
     
-    Turn turnCounter = new Turn();
+    public Turn turnCounter = new Turn();
     
     public ChessBoard(int width, int height)
     {
@@ -64,6 +64,8 @@ public class ChessBoard
             setTile(new Pawn(row, 6, Team.BLACK), row, 6);
         }
 
+        setTile(new Pawn(0, 3, Team.BLACK), 0, 3);
+        
         //place white back row
         setTile(new Rook(0, 0, Team.WHITE), 0, 0);
         setTile(new Knight(1, 0, Team.WHITE), 1, 0);
@@ -90,9 +92,9 @@ public class ChessBoard
         this.board[x][y].setPiece(p); //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
     }
     
-    public boolean killTile(int x, int y) { // Is there much point having returns here
-        if (board[x][y] != null) {
-            board[x][y] = null;
+    public boolean killTile(int x, int y) { // THIS KILLS A PIECE NOW (IT MAY BE BEST TO RENAME msoveTile & killTile to MoveTilePiece & killTilePiece)
+        if (board[x][y].getPiece() != null) {
+            board[x][y].deletePiece();
             return true;
         }
         return false;
@@ -100,10 +102,49 @@ public class ChessBoard
     
     public boolean moveTile(Input moveSet) 
     {
+        Pieces targetPiece = this.board[moveSet.fromX][moveSet.fromY].getPiece();
+        
+        if (targetPiece instanceof Rook) // CHECK FOR CASTLE MOVE
+        {
+            if (turnCounter.pieceMoveCount(targetPiece) == 0 && // if rook hassent moved
+                (targetPiece.getPieceTeam() == Team.BLACK ? 2 : -2) == (moveSet.fromX - moveSet.toX)) //if the move is a castling move
+            {
+                int kingDirection = targetPiece.getPieceTeam() == Team.BLACK ? 1 : -1; //direction king is from moveTo
+                
+                if (getTile(moveSet.toX + kingDirection, moveSet.toY + kingDirection).getPiece() instanceof King)  //if the tile next too is a king
+                    { 
+                    King king = (King) getTile(moveSet.toX, moveSet.toY).getPiece(); 
+                    int kingMoveDir = targetPiece.getPieceTeam() == Team.BLACK ? -2 : 2; //direction king will moveTo
+
+                    if (turnCounter.pieceMoveCount(king) == 0 && // check if the king has moved
+                        !king.isCheck(this) && // check if the current king tile is in check
+                        !king.isCheck(king.x + kingMoveDir, king.y, this)) // check if the new king tile is in check
+                    {
+                        moveTile(Input.getMove(king.x, king.y, king.x + kingMoveDir, king.y)); //check if this overrides current move? shouldent...
+                    }
+                }
+            }
+        } 
+        if (targetPiece instanceof Pawn)
+        {
+            int checkDirection = targetPiece.getPieceTeam() == Team.BLACK ? 1 : -1;
+            
+            Tile targetTile = getTile(moveSet.toX, moveSet.toY + checkDirection);
+            Pieces targetPawn = targetTile.getPiece();
+
+            if (targetPawn != null && //target is a piece
+                targetPawn instanceof Pawn && // if target is a pawn
+                targetPiece.getPieceTeam() != targetPawn.getPieceTeam()) // if target is an enemy
+            {
+                killTile(moveSet.toX + checkDirection, moveSet.toY + checkDirection);
+            }
+        }
+        
         // add move to history
-        this.turnCounter.addMoveToHistory(this.board[moveSet.fromX][moveSet.fromY].getPiece(), this.getTile(moveSet.fromX, moveSet.fromY), this.getTile(moveSet.toX, moveSet.toY));
+        this.turnCounter.addMoveToHistory(targetPiece, this.getTile(moveSet.fromX, moveSet.fromY), this.getTile(moveSet.toX, moveSet.toY));
         // actully do the move
         return this.board[moveSet.fromX][moveSet.fromY].movePieceTo(board[moveSet.toX][moveSet.toY]);
+    
     }
     
     public Tile getTile(int x, int y)
@@ -114,11 +155,6 @@ public class ChessBoard
     public Tile[][] getBoard()
     {
         return this.board;
-    }
-    
-    public boolean hasPieceMoved(Pieces p)
-    {
-        return this.turnCounter.hasPieceMoved(p);
     }
     
     // these two functions are useful for mate detection rook, queen and bishop
@@ -227,7 +263,7 @@ public class ChessBoard
         {
             return false;
         }
-        if (!king.isCheck(king.x, king.y, this)) // has it just been put in check?
+        if (!king.isCheck(this)) // has it just been put in check?
         {
             return false;
         }

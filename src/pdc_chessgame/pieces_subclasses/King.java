@@ -6,9 +6,6 @@ package pdc_chessgame;
 
 import java.util.ArrayList;
 import java.util.List;
-import pdc_chessgame.ChessBoard;
-import pdc_chessgame.Pieces;
-import pdc_chessgame.Tile;
 
 /**
  *
@@ -21,8 +18,13 @@ public class King extends Pieces {
         super(x, y, pieceTeam == Team.BLACK ? "k" : "K", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
-    public boolean isCheck(int x, int y, ChessBoard board){
-        
+    public boolean isCheck(ChessBoard board)
+    {
+        return isCheck(this.x, this.y, board);
+    }
+    
+    public boolean isCheck(int x, int y, ChessBoard board)
+    {
         //checks line of sight for pieces
         int[][] scanDirections = { 
         {0, 1},     // up
