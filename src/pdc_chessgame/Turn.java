@@ -101,6 +101,19 @@ public class Turn
         return false;
     }
     
+    public int pieceMoveCount(Pieces p)
+    {
+        int n = 0;
+        for(int i = 0; i < this.moveHistory.size(); i++)
+        {
+            if(this.moveHistory.get(i).piece.equals(p))
+            {
+                n++;
+            }
+        }
+        return n;
+    }
+    
     public void printMoveHistory()
     {
         System.out.println("Move history:\nPIECE    FROM    TO    TURN");
