@@ -131,12 +131,12 @@ public class ChessBoard
             
             Tile targetTile = getTile(moveSet.toX, moveSet.toY + checkDirection);
             Pieces targetPawn = targetTile.getPiece();
-
+            
             if (targetPawn != null && //target is a piece
                 targetPawn instanceof Pawn && // if target is a pawn
                 targetPiece.getPieceTeam() != targetPawn.getPieceTeam()) // if target is an enemy
             {
-                killTile(moveSet.toX + checkDirection, moveSet.toY + checkDirection);
+                killTile(moveSet.toX , moveSet.toY + checkDirection); // dewit!
             }
         }
         

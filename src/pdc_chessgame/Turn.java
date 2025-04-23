@@ -79,8 +79,11 @@ public class Turn
     public int turnsSinceLastMoved(Pieces p)
     {
         move m = this.lastMove(p);
-        if(m != null)
+        if(m != null) 
+        {
+            System.out.println("move numer>"+m.moveNo+"minus current turn>"+this.turn);
             return m.moveNo - this.turn;
+        }
         return 0;
     }
     

@@ -56,51 +56,30 @@ public class Pawn extends Pieces {
         {
             int x = this.x + dx;
             y = this.y + getDirection()[0][1];
-            System.out.println("x>"+x+"y>"+ this.y);
 
             if (isWithinBoard(x, y, board)) 
             {
-                System.out.println("x>"+x+"y>"+ this.y);
                 targetTile = board.getTile(x, y);
                 targetPiece = targetTile.getPiece();
                 
-                if (targetPiece != null && targetPiece.getPieceTeam() != this.getPieceTeam()) {
+                if (targetPiece != null && targetPiece.getPieceTeam() != this.getPieceTeam()) 
+                {
                     possibleMoves.add(targetTile);
                 }
                 
                 // en passant bellow 
-                //int checkDirection = getPieceTeam() == Team.WHITE ? 1 : -1;
-                System.out.println("x>"+x+"y>"+ (this.y - getDirection()[0][1]));
-                    
-                Tile pawnTile = board.getTile(x, (this.y - getDirection()[0][1])); //check behind for enemy pawn
+                Tile pawnTile = board.getTile(x, this.y); //check behind for enemy pawn  - getDirection()[0][1])
                 Pieces targetPawn = pawnTile.getPiece();
-                if (targetPawn != null){
-                    System.out.println("EEEEpawn x>"+targetPawn.x+"pawn y>"+ targetPawn.y);
 
-                }
-                System.out.println("got here4");
-               
-                
-                //System.out.println("x>"+x+"y>"+ this.y);
-                //targetTile = board.getTile(x, this.y); // check next too
-                //targetPiece = targetTile.getPiece(); 
+                if (targetPawn instanceof Pawn && // if target is a pawn
+                     targetPawn.getPieceTeam() != getPieceTeam() && // if target is an enemy
+                     board.turnCounter.turnsSinceLastMoved(targetPawn) == -1 && // if target just moved CHECK IF -1 IS EXPECTED CASE
+                     board.turnCounter.distanceLastMoved(targetPawn) == 2) { // if has only moved once
 
-                if (targetPawn instanceof Pawn) { // if target is a pawn
-                    if (targetPawn.getPieceTeam() != getPieceTeam()) { // if target is an enemy
-                        if (board.turnCounter.turnsSinceLastMoved(targetPawn) == 0) { // if target just moved
-                            if (board.turnCounter.distanceLastMoved(targetPawn) == 2) { // if has only moved once
-                                System.out.println("got here3");
-                            }
-                            System.out.println("got here2");
-                        }
-                        System.out.println("got here1");
-                    }
-                    System.out.println("got here0");
                     possibleMoves.add(targetTile);
                 }
             }
         }
-        System.out.println("posMoves"+ possibleMoves.toString());
         return possibleMoves;
     }
     

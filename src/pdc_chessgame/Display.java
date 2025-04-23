@@ -88,7 +88,13 @@ public class Display
            return playerTurn(player, colour, board);  //try again
             
         }
-        
+        if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece() == null)
+        {
+            System.out.println("----------------------------------------------------");
+            System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Does not contain a Piece, please try again");
+            
+            return playerTurn(player, colour, board);  //try again
+        }
         if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece().getPieceTeam() != colour)
         {
             System.out.println("----------------------------------------------------");
