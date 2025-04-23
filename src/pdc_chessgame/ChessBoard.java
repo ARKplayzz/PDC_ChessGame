@@ -30,6 +30,8 @@ public class ChessBoard
     public int width;
     public int height;
     
+    Turn turnCounter = new Turn();
+    
     public ChessBoard(int width, int height)
     {
         // init board
@@ -96,10 +98,10 @@ public class ChessBoard
         return false;
     }
     
-    public boolean moveTile(Input moveSet, Turn turnCounter) 
+    public boolean moveTile(Input moveSet) 
     {
         // add move to history
-        turnCounter.addMoveToHistory(this.board[moveSet.fromX][moveSet.fromY].getPiece(), this.getTile(moveSet.fromX, moveSet.fromY), this.getTile(moveSet.toX, moveSet.toY));
+        this.turnCounter.addMoveToHistory(this.board[moveSet.fromX][moveSet.fromY].getPiece(), this.getTile(moveSet.fromX, moveSet.fromY), this.getTile(moveSet.toX, moveSet.toY));
         // actully do the move
         return this.board[moveSet.fromX][moveSet.fromY].movePieceTo(board[moveSet.toX][moveSet.toY]);
     }
@@ -114,6 +116,10 @@ public class ChessBoard
         return this.board;
     }
     
+    public boolean hasPieceMoved(Pieces p)
+    {
+        return this.turnCounter.hasPieceMoved(p);
+    }
     
     // these two functions are useful for mate detection rook, queen and bishop
     // gets all tiles in all four directions until it hits a unit

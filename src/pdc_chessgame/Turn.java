@@ -89,7 +89,7 @@ public class Turn
         return this.moveHistory.contains(m);
     }
     
-    public boolean hasMoved(Pieces p)
+    public boolean hasPieceMoved(Pieces p)
     {
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
