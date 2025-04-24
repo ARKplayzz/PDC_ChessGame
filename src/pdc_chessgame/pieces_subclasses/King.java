@@ -59,12 +59,11 @@ public class King extends Pieces {
 
             while (isWithinBoard(newX, newY, board)) 
             {
-                Tile targetTile = board.getTile(newX, newY); //these can be shrunken if tile did not exist (:
-                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
+                Pieces kingPiece = this;
 
-                if (targetPiece.getPieceTeam() != this.getPieceTeam())
+                if (kingPiece != null && kingPiece.getPieceTeam() != this.getPieceTeam())
                 {
-                    if (targetPiece.canMove(board).contains(board.getTile(newX, newY))) 
+                    if (kingPiece.canMove(board).contains(board.getTile(newX, newY))) 
                     {
                         return true;
                     }
@@ -86,7 +85,7 @@ public class King extends Pieces {
                 Tile targetTile = board.getTile(newX, newY); //these can be shrunken if tile did not exist (:
                 Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
 
-                if (targetPiece.getPieceTeam() != this.getPieceTeam())
+                if (targetPiece != null && targetPiece.getPieceTeam() != this.getPieceTeam())
                 {
                     if (targetPiece.canMove(board).contains(board.getTile(newX, newY))) 
                     {
@@ -132,11 +131,53 @@ public class King extends Pieces {
                 { 
                     if (!isCheck(x, y, board)) // King should not be able to move INTO check
                     {
+                        //castle move
                         possibleMoves.add(targetTile); 
                     }
                 } 
+                
             }
         }
+        //castle THIS NEEDS ALOT OF WORK
+        if (board.turnCounter.pieceMoveCount(this) == 0 && !isCheck(board)) //if kings first move and not currently in check
+        {
+                        
+            for (int dir : new int[]{1, -1})
+            {
+            int x = this.x + 1 * dir;
+            
+                while (isWithinBoard(x, this.y, board)) 
+                {
+
+                    Tile targetTile = board.getTile(x, this.y); //these can be shrunken if tile did not exist (:
+                    Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
+
+                    if (targetPiece != null) 
+                    {
+                        if(targetPiece instanceof Rook)
+                        {
+                            if (targetPiece.getPieceTeam() == this.getPieceTeam() && board.turnCounter.pieceMoveCount(targetPiece) == 0)
+                            {
+                                possibleMoves.add(targetTile = board.getTile(this.x + (dir * 2), this.y)); //king side Castle
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    } 
+                    else
+                    {
+                        if (isCheck(x, this.y, board))
+                        {
+                            break;   
+                        }
+                    }
+                    x += dir;
+                }
+            }
+        }
+        System.out.println(possibleMoves.toString());
         return possibleMoves;
     }
 }

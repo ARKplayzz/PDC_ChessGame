@@ -63,27 +63,25 @@ public class ChessBoard
         {
             setTile(new Pawn(row, 6, Team.BLACK), row, 6);
         }
-
-        setTile(new Pawn(0, 3, Team.BLACK), 0, 3);
         
         //place white back row
         setTile(new Rook(0, 0, Team.WHITE), 0, 0);
-        setTile(new Knight(1, 0, Team.WHITE), 1, 0);
-        setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
-        setTile(new Queen(3, 0, Team.WHITE), 3, 0);
+        //setTile(new Knight(1, 0, Team.WHITE), 1, 0);
+        //setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
+        //setTile(new Queen(3, 0, Team.WHITE), 3, 0);
         setTile(new King(4, 0, Team.WHITE), 4, 0);
-        setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
-        setTile(new Knight(6, 0, Team.WHITE), 6, 0);
+        //setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
+        //setTile(new Knight(6, 0, Team.WHITE), 6, 0);
         setTile(new Rook(7, 0, Team.WHITE), 7, 0);
 
         //place black back row
         setTile(new Rook(0, 7, Team.BLACK), 0, 7);
-        setTile(new Knight(1, 7, Team.BLACK), 1, 7);
-        setTile(new Bishop(2, 7, Team.BLACK), 2, 7);
+        //setTile(new Knight(1, 7, Team.BLACK), 1, 7);
+        //setTile(new Bishop(2, 7, Team.BLACK), 2, 7);
         setTile(new King(3, 7, Team.BLACK), 3, 7);
-        setTile(new Queen(4, 7, Team.BLACK), 4, 7);
-        setTile(new Bishop(5, 7, Team.BLACK), 5, 7);
-        setTile(new Knight(6, 7, Team.BLACK), 6, 7);
+        //setTile(new Queen(4, 7, Team.BLACK), 4, 7);
+        //setTile(new Bishop(5, 7, Team.BLACK), 5, 7);
+        //setTile(new Knight(6, 7, Team.BLACK), 6, 7);
         setTile(new Rook(7, 7, Team.BLACK), 7, 7);
     }
     
@@ -104,27 +102,28 @@ public class ChessBoard
     {
         Pieces targetPiece = this.board[moveSet.fromX][moveSet.fromY].getPiece();
         
-        if (targetPiece instanceof Rook) // CHECK FOR CASTLE MOVE
+        if (targetPiece instanceof King) // CHECK FOR CASTLE MOVE
         {
-            if (turnCounter.pieceMoveCount(targetPiece) == 0 && // if rook hassent moved
-                (targetPiece.getPieceTeam() == Team.BLACK ? 2 : -2) == (moveSet.fromX - moveSet.toX)) //if the move is a castling move
-            {
-                int kingDirection = targetPiece.getPieceTeam() == Team.BLACK ? 1 : -1; //direction king is from moveTo
-                
-                if (getTile(moveSet.toX + kingDirection, moveSet.toY + kingDirection).getPiece() instanceof King)  //if the tile next too is a king
-                    { 
-                    King king = (King) getTile(moveSet.toX, moveSet.toY).getPiece(); 
-                    int kingMoveDir = targetPiece.getPieceTeam() == Team.BLACK ? -2 : 2; //direction king will moveTo
+            int distanceX = moveSet.toX - moveSet.fromX;
 
-                    if (turnCounter.pieceMoveCount(king) == 0 && // check if the king has moved
-                        !king.isCheck(this) && // check if the current king tile is in check
-                        !king.isCheck(king.x + kingMoveDir, king.y, this)) // check if the new king tile is in check
-                    {
-                        moveTile(Input.getMove(king.x, king.y, king.x + kingMoveDir, king.y)); //check if this overrides current move? shouldent...
-                    }
+            if (Math.abs(distanceX) == 2) { //check if move is a castle move
+                int x = moveSet.fromY; 
+                int rookFromX, rookToX;
+
+                if (distanceX > 0) {
+                    // King side
+                    rookFromX = 7; 
+                    rookToX = moveSet.toX - 1; // rook is left of the king
+                } else {
+                    // queen side
+                    rookFromX = 0;  
+                    rookToX = moveSet.toX + 1; // rook is right of the king
                 }
+
+                this.board[rookFromX][x].movePieceTo(board[rookToX][x]);
             }
-        } 
+        }
+     
         if (targetPiece instanceof Pawn)
         {
             int checkDirection = targetPiece.getPieceTeam() == Team.BLACK ? 1 : -1;
