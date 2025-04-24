@@ -177,7 +177,6 @@ public class King extends Pieces {
                 }
             }
         }
-        System.out.println(possibleMoves.toString());
         return possibleMoves;
     }
 }

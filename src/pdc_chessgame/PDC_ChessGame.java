@@ -55,7 +55,6 @@ public class PDC_ChessGame {
                 board.checkmate = true;
             }
             
-            Display.clearConsole(); //  can confirm this function doesn't work, redo it to account for more than 1 type of console
             board.turnCounter.nextTurn();
         }
         mateChecker.terminate();

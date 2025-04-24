@@ -66,22 +66,22 @@ public class ChessBoard
         
         //place white back row
         setTile(new Rook(0, 0, Team.WHITE), 0, 0);
-        //setTile(new Knight(1, 0, Team.WHITE), 1, 0);
-        //setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
-        //setTile(new Queen(3, 0, Team.WHITE), 3, 0);
+        setTile(new Knight(1, 0, Team.WHITE), 1, 0);
+        setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
+        setTile(new Queen(3, 0, Team.WHITE), 3, 0);
         setTile(new King(4, 0, Team.WHITE), 4, 0);
-        //setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
-        //setTile(new Knight(6, 0, Team.WHITE), 6, 0);
+        setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
+        setTile(new Knight(6, 0, Team.WHITE), 6, 0);
         setTile(new Rook(7, 0, Team.WHITE), 7, 0);
 
         //place black back row
         setTile(new Rook(0, 7, Team.BLACK), 0, 7);
-        //setTile(new Knight(1, 7, Team.BLACK), 1, 7);
-        //setTile(new Bishop(2, 7, Team.BLACK), 2, 7);
+        setTile(new Knight(1, 7, Team.BLACK), 1, 7);
+        setTile(new Bishop(2, 7, Team.BLACK), 2, 7);
         setTile(new King(3, 7, Team.BLACK), 3, 7);
-        //setTile(new Queen(4, 7, Team.BLACK), 4, 7);
-        //setTile(new Bishop(5, 7, Team.BLACK), 5, 7);
-        //setTile(new Knight(6, 7, Team.BLACK), 6, 7);
+        setTile(new Queen(4, 7, Team.BLACK), 4, 7);
+        setTile(new Bishop(5, 7, Team.BLACK), 5, 7);
+        setTile(new Knight(6, 7, Team.BLACK), 6, 7);
         setTile(new Rook(7, 7, Team.BLACK), 7, 7);
     }
     
@@ -106,15 +106,19 @@ public class ChessBoard
         {
             int distanceX = moveSet.toX - moveSet.fromX;
 
-            if (Math.abs(distanceX) == 2) { //check if move is a castle move
+            if (Math.abs(distanceX) == 2)  //check if move is a castle move
+            {
                 int x = moveSet.fromY; 
                 int rookFromX, rookToX;
 
-                if (distanceX > 0) {
+                if (distanceX > 0) 
+                {
                     // King side
                     rookFromX = 7; 
                     rookToX = moveSet.toX - 1; // rook is left of the king
-                } else {
+                } 
+                else 
+                {
                     // queen side
                     rookFromX = 0;  
                     rookToX = moveSet.toX + 1; // rook is right of the king
