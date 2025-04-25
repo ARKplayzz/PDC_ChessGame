@@ -38,8 +38,62 @@ public class Display
     
     /*
         bro what the fuck is this doing in the display class
+    
+        instead of using lots of println's we should format this betetr
     */
-    public static Input playerTurn(String player, Team colour, ChessBoard board)
+    public static Pieces getPromotionPiece(String player, Pawn pawn)
+    {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println(pawn.getPieceTeam().toString()+" PAWN PROMOTION!                    (X) TO QUIT");
+        System.out.println();
+        System.out.println("INPUT WHAT YOU WOULD LIKE TO PROMOTE YOUR PAWN TOO:");
+        System.out.println(" <ROOK> = R,   <BISHOP> = B,   <KNIGHT> = N,   <QUEEN> = Q ");
+      
+        System.out.print(player+"> ");
+        
+        String playerInput = scanner.nextLine();
+ 
+        if (playerInput.toUpperCase().equals("X"))
+        {
+            System.out.println("----------------------------------------------------");
+            System.out.println(player+" HAS RESIGNED ");
+            
+            return null;
+        }
+        if (playerInput.toUpperCase().equals("R"))
+        {
+            System.out.println("----------------------------------------------------");
+            
+            return new Rook(pawn.x, pawn.y, pawn.getPieceTeam()); 
+        }
+        if (playerInput.toUpperCase().equals("B"))
+        {
+            System.out.println("----------------------------------------------------");
+            
+            return new Bishop(pawn.x, pawn.y, pawn.getPieceTeam()); 
+        }
+        if (playerInput.toUpperCase().equals("N"))
+        {
+            System.out.println("----------------------------------------------------");
+            
+            return new Knight(pawn.x, pawn.y, pawn.getPieceTeam()); 
+        }
+        if (playerInput.toUpperCase().equals("Q"))
+        {
+            System.out.println("----------------------------------------------------");
+            
+            return new Queen(pawn.x, pawn.y, pawn.getPieceTeam()); 
+        }
+        System.out.println("----------------------------------------------------");
+        System.out.println("Invalid option chosen, please try again");
+        System.out.println("----------------------------------------------------");
+
+        
+        return getPromotionPiece(player, pawn);  //try again
+    }
+    
+    public static Input getPlayerTurn(String player, Team colour, ChessBoard board)
     { //May be best to split this up a bit
         
         Scanner scanner = new Scanner(System.in);
@@ -66,7 +120,7 @@ public class Display
             System.out.println("Chess Help    > H");
             System.out.println("Move format   > From Tile -> 'A1 B2' <- To Tile");
             
-            return playerTurn(player, colour, board);  //try again
+            return getPlayerTurn(player, colour, board);  //try again
         }
         
         if (Input.getMove(playerInput.trim().toUpperCase()) == null)
@@ -74,7 +128,7 @@ public class Display
             System.out.println("----------------------------------------------------");
             System.out.println("'"+playerInput+ "' Is not a valid chess Input, Eg 'A1 B2'");
             
-            return playerTurn(player, colour, board);  //try again
+            return getPlayerTurn(player, colour, board);  //try again
         }
         
         Input moveSet = Input.getMove(playerInput.trim().toUpperCase());
@@ -85,7 +139,7 @@ public class Display
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Does not contain a piece, Eg 'A1 B2'");
             
-           return playerTurn(player, colour, board);  //try again
+           return getPlayerTurn(player, colour, board);  //try again
             
         }
         if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece() == null)
@@ -93,14 +147,14 @@ public class Display
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Does not contain a Piece, please try again");
             
-            return playerTurn(player, colour, board);  //try again
+            return getPlayerTurn(player, colour, board);  //try again
         }
         if (board.getTile(moveSet.fromX, moveSet.fromY).getPiece().getPieceTeam() != colour)
         {
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Is not your Piece, please try again");
             
-            return playerTurn(player, colour, board);  //try again
+            return getPlayerTurn(player, colour, board);  //try again
         }
         
         // if the list of possible moves does not contain our destination tile        
@@ -109,7 +163,7 @@ public class Display
             System.out.println("----------------------------------------------------");
             System.out.println(playerInput + " Is an Invalid Chess Move, please try again");
             
-            return playerTurn(player, colour, board);  //try again
+            return getPlayerTurn(player, colour, board);  //try again
         }
         
         System.out.println("----------------------------------------------------");        

@@ -55,18 +55,20 @@ public class ChessBoard
         //place white pawns
         for (int row = 0; row < 8; row++) 
         {
-            setTile(new Pawn(row, 1, Team.WHITE), row, 1);
+        //    setTile(new Pawn(row, 1, Team.WHITE), row, 1);
         }
 
         //place black pawns
         for (int row = 0; row < 8; row++) 
         {
-            setTile(new Pawn(row, 6, Team.BLACK), row, 6);
+        //    setTile(new Pawn(row, 6, Team.BLACK), row, 6);
         }
         
         //place white back row
-        setTile(new Rook(0, 0, Team.WHITE), 0, 0);
-        setTile(new Knight(1, 0, Team.WHITE), 1, 0);
+        setTile(new Pawn(0, 1, Team.BLACK), 0, 1);
+
+        //setTile(new Rook(0, 0, Team.WHITE), 0, 0);
+        //setTile(new Knight(1, 0, Team.WHITE), 1, 0);
         setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
         setTile(new Queen(3, 0, Team.WHITE), 3, 0);
         setTile(new King(4, 0, Team.WHITE), 4, 0);
@@ -81,8 +83,9 @@ public class ChessBoard
         setTile(new King(3, 7, Team.BLACK), 3, 7);
         setTile(new Queen(4, 7, Team.BLACK), 4, 7);
         setTile(new Bishop(5, 7, Team.BLACK), 5, 7);
-        setTile(new Knight(6, 7, Team.BLACK), 6, 7);
-        setTile(new Rook(7, 7, Team.BLACK), 7, 7);
+        //setTile(new Knight(6, 7, Team.BLACK), 6, 7);
+        //setTile(new Rook(7, 7, Team.BLACK), 7, 7);
+        setTile(new Pawn(7, 6, Team.WHITE), 7, 6);
     }
     
     public void setTile(Pieces p, int x, int y)
@@ -140,6 +143,11 @@ public class ChessBoard
                 targetPiece.getPieceTeam() != targetPawn.getPieceTeam()) // if target is an enemy
             {
                 killTile(moveSet.toX , moveSet.toY + checkDirection); // dewit!
+            }
+            
+            if (((Pawn) targetPiece).canPromotion(this))
+            {
+                setTile(Display.getPromotionPiece("Player", (Pawn) targetPiece), moveSet.toX, moveSet.toY);
             }
         }
         

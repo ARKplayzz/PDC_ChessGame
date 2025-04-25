@@ -36,18 +36,21 @@ public class Pawn extends Pieces {
         Tile targetTile = board.getTile(this.x, y);
         Pieces targetPiece = targetTile.getPiece(); 
         
-        if (isWithinBoard(this.x, y, board) && targetPiece == null) 
+        if (isWithinBoard(this.x, y, board) && targetPiece == null)  
         {
             possibleMoves.add(targetTile);
             
-            y = this.y + (2 * getDirection()[0][1]); // double jump
-            
-            targetTile = board.getTile(this.x, y);
-            targetPiece = targetTile.getPiece(); 
-
-            if (!board.turnCounter.hasPieceMoved(this) && targetPiece == null) 
+            if (!board.turnCounter.hasPieceMoved(this)) // double jump
             {
-                possibleMoves.add(targetTile);
+                y = this.y + (2 * getDirection()[0][1]); 
+
+                if (isWithinBoard(this.x, y, board) && targetPiece == null)  //within for dupdated double jump size
+                {
+                    targetTile = board.getTile(this.x, y);
+                    targetPiece = targetTile.getPiece(); 
+                
+                    possibleMoves.add(targetTile);
+                }
             }
         }
         
@@ -83,7 +86,9 @@ public class Pawn extends Pieces {
         return possibleMoves;
     }
     
-    public boolean PawnPromotion() {
-        return false; //checks if a pawn upgrade is possible
+    public boolean canPromotion(ChessBoard board) 
+    {
+        return this.y + ((this.getPieceTeam() == Team.BLACK) ? (-2 -board.height) : 2) == board.height;
     }
+   
 }

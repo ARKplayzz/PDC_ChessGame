@@ -48,7 +48,7 @@ public class PDC_ChessGame {
         {
 
             board.printBoard();
-            board.moveTile(Display.playerTurn(board.turnCounter.getTeam().toString(), board.turnCounter.getTeam(), board)); 
+            board.moveTile(Display.getPlayerTurn(board.turnCounter.getTeam().toString(), board.turnCounter.getTeam(), board)); 
             
             i++;
             if (i == 50) {
