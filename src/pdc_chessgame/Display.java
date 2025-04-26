@@ -48,7 +48,8 @@ public class Display
         System.out.println(pawn.getPieceTeam().toString()+" PAWN PROMOTION!                    (X) TO QUIT");
         System.out.println();
         System.out.println("INPUT WHAT YOU WOULD LIKE TO PROMOTE YOUR PAWN TOO:");
-        System.out.println(" <ROOK> = R,   <BISHOP> = B,   <KNIGHT> = N,   <QUEEN> = Q ");
+        System.out.println("   <BISHOP>  =  R,   <ROOK>   =  B, ");
+        System.out.println("   <KNIGHT>  =  N,   <QUEEN>  =  Q ");
       
         System.out.print(player+"> ");
         

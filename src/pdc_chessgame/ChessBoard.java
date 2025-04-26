@@ -147,7 +147,7 @@ public class ChessBoard
             
             if (((Pawn) targetPiece).canPromotion(this))
             {
-                setTile(Display.getPromotionPiece("Player", (Pawn) targetPiece), moveSet.toX, moveSet.toY);
+                setTile(Display.getPromotionPiece("Player", (Pawn) targetPiece), moveSet.fromX, moveSet.fromY);
             }
         }
         

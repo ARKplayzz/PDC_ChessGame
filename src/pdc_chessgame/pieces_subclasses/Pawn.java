@@ -88,7 +88,9 @@ public class Pawn extends Pieces {
     
     public boolean canPromotion(ChessBoard board) 
     {
-        return this.y + ((this.getPieceTeam() == Team.BLACK) ? (-2 -board.height) : 2) == board.height;
+        System.out.println("y>"+this.y);
+        System.out.println("= 8>"+((this.getPieceTeam() == Team.BLACK) ? (board.height - 1) : 2));
+        return this.y + ((this.getPieceTeam() == Team.BLACK) ? (board.height - 1) : 2) == board.height;
     }
    
 }
