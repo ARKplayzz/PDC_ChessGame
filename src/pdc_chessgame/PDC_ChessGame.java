@@ -8,57 +8,17 @@ package pdc_chessgame;
  *
  * @author Andrew & Finlay
  */
-import java.util.Scanner;
 
 public class PDC_ChessGame {
 
     /**
      * @param args the command line arguments
      */
-    @SuppressWarnings("ConvertToTryWithResources")
+    @SuppressWarnings("ConvertToTryWithResources") //whats this for?
     public static void main(String[] args) 
     {
-        
-        Scanner scanner = new Scanner(System.in); //scanner my beloved 
-        
-        
-        System.out.println("Welcome to chess!");
-        System.out.println("");
-        System.out.println("Player 1 please Login with your username, or enter: 'Guest' to play as a guest ");
-        
-        System.out.println("");
-        System.out.println("P1> ");       
-        System.out.println("WELCOME MESSAGE FROM 'User Login' class");
-        System.out.println("");
-        
-        System.out.println("Player 2 please Login with your username, or enter: 'Guest' to play as a guest ");
-        
-        System.out.println("");
-        System.out.println("P2> ");
-        System.out.println("WELCOME MESSAGE FROM 'User Login' class");
-        System.out.println("");
-        
-        ChessBoard board = new ChessBoard(8, 8);
-        mateDetector mateChecker = new mateDetector(board);
-        
-        int i = 0; //THIS IS TEMPORRARY untill checkmate exists
-        
-        mateChecker.start();
-        while(!board.checkmate)
-        {
-
-            board.printBoard();
-            board.moveTile(Display.getPlayerTurn(board.turnCounter.getTeam().toString(), board.turnCounter.getTeam(), board)); 
-            
-            i++;
-            if (i == 50) {
-                board.checkmate = true;
-            }
-            
-            board.turnCounter.nextTurn();
-        }
-        mateChecker.terminate();
-        
-        scanner.close();
+        ChessGame game = new ChessGame();
+        game.start();
     }
+
 }

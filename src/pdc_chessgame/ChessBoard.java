@@ -168,47 +168,6 @@ public class ChessBoard
         return this.board;
     }
     
-    // these two functions are useful for mate detection rook, queen and bishop
-    // gets all tiles in all four directions until it hits a unit
-    
-    
-    public List<Tile> getTilesLine(int x, int y) //Not sure if this is nessisary anymore
-    {
-        List<Tile> linearTiles = new ArrayList<>();
-        
-        //right
-        for(int i = x; i < this.width; i++)
-            if(this.getTile(i, y).getPiece() == null && linearTiles.add(this.getTile(i, y)))
-                linearTiles.add(this.getTile(i, y)); 
-            else break;
-        //left
-        for(int i = x; i >= 0; i--)
-            if(this.getTile(i, y).getPiece() == null)
-                linearTiles.add(this.getTile(i, y));
-            else break;
-        //up
-        for(int i = y; i >= 0; i--)
-            if(this.getTile(x, i) == null)
-                linearTiles.add(this.getTile(x, i));
-            else break;
-        //up
-        for(int i = y; i < this.height; i++)
-            if(this.getTile(x, i) == null)
-                linearTiles.add(this.getTile(x, i));
-            else break;
-        
-        return linearTiles;
-    }
-    
-    public List<Tile> getTilesDiagonal() //Not sure if this is nessisary anymore
-    {
-        List<Tile> diagonalTiles = new ArrayList<>();
-        
-        //todo
-        
-        return diagonalTiles;
-    }
-    
     public void printBoard()
     {
         // again changed from i,j to x,y to clear up confusion
@@ -250,10 +209,34 @@ public class ChessBoard
         System.out.print("\n");
     }
     
+    public List<Tile> getPiecePath(Tile tileFrom, Tile tileTo) {
+        
+        List<Tile> path = new ArrayList<>();
+
+        int xDirection = Integer.compare(tileTo.x - tileFrom.x, 0); // getting direction from 1 to 2
+        int yDirection = Integer.compare(tileTo.y - tileFrom.y, 0);
+
+        
+        if (Math.abs(tileTo.x - tileFrom.x) > 1 && Math.abs(tileTo.y - tileFrom.y) > 1) { // pawn & knight dont have a path
+            return path;
+        }
+
+        int currentX = tileFrom.x + xDirection;
+        int currentY = tileFrom.y + yDirection;
+
+        while (currentX != tileTo.x || currentY != tileTo.y) 
+        {
+            path.add(getTile(currentX, currentY));
+            
+            currentX += xDirection;
+            currentY += yDirection;
+        }
+
+        return path;
+    }
+    
     public boolean isCheckmate(Team team) {
-        
-        //If you had some time to work on this that would be good cheers
-        
+                
         King king = null;
 
         // Searches every tile for the king, not ideal, will need to come back to this
@@ -269,34 +252,61 @@ public class ChessBoard
                     break;
                 }
             }
+            if (king != null) //stop looking
+            {
+                break;
+            }
         }
-        if (king == null) 
+        
+        if (king == null) // no king?
+        {
+            return false; 
+        }
+        if (!king.isCheck(this)) // if king isnt in check
         {
             return false;
         }
-        if (!king.isCheck(this)) // has it just been put in check?
-        {
-            return false;
-        }
-        if (!king.canMove(this).isEmpty()) // does it have any avalible moves?
+        if (!king.canMove(this).isEmpty()) // king has posible moves
         {
             return false;
         }
         
-        // checks EVERY TILE of the same team to see if it could block the mate, not ideal, will need to come back to this
+        List<Pieces> attackingPieces = king.getAttackingPieces(this);
+
+        if (attackingPieces.size() > 1) // if more than one piece is checking the king then its jover
+        {
+            return true; 
+        }
+        
+        Pieces enemy = attackingPieces.get(0); // the numpty causing the check
+        
+        List<Tile> attackPath = getPiecePath(getTile(enemy.x, enemy.y), getTile(king.x, king.y));
+        
         for (int x = 0; x < this.width; x++) 
         {
             for (int y = 0; y < this.height; y++) 
             {
-                Pieces piece = this.getTile(x, y).getPiece();
-                
-                if (piece != null && piece.getPieceTeam() == team && !(piece instanceof King)) 
+                Pieces targetPiece = this.getTile(x, y).getPiece();
+
+                if (targetPiece != null && targetPiece.getPieceTeam() == team && !(targetPiece instanceof King)) 
                 {
-                    return true; //Need to compare if by moving infront will fix... maybe a recursive function... 
+                    List<Tile> pieceMoveset = targetPiece.canMove(this);
+
+                    if (pieceMoveset.contains(this.getTile(enemy.x, enemy.y))) // check if moveset contains a location kill enemy
+                    { 
+                        return false;
+                    }
+
+                    for (Tile blockTile : attackPath) // check if moveset contains a location that blocks the path
+                    {
+                        if (pieceMoveset.contains(blockTile)) 
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
         }
-
-        return true;
+        return true; // YAHTZEE!!! 
     }
 }

@@ -97,6 +97,30 @@ public class King extends Pieces {
         return false;
     }
     
+    public List<Pieces> getAttackingPieces(ChessBoard board) 
+    {
+        List<Pieces> attackers = new ArrayList<>();
+
+        for (int x = 0; x < board.width; x++) 
+        {
+            for (int y = 0; y < board.height; y++) 
+            {
+                Pieces targetPiece = board.getTile(x, y).getPiece();
+
+                if (targetPiece != null && targetPiece.getPieceTeam() != getPieceTeam()) // if enemy
+                {
+                    List<Tile> enemyMoveset = targetPiece.canMove(board);
+
+                    if (enemyMoveset.contains(board.getTile(this.x, this.y))) 
+                    {
+                        attackers.add(targetPiece);
+                    }
+                }
+            }
+        }
+        return attackers;
+    }
+    
     @Override
     public int[][] getDirection()
     {
