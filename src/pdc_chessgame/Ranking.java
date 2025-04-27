@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author ARKen
+ * @author Andrew & Finlay
  */
 public class Ranking 
 {
@@ -31,7 +31,18 @@ public class Ranking
     }
     
     // Loads elo scores from the specified file into this.leaderboard
-    public void getElo(String file)
+    
+    public static int getElo(String user)
+    {
+        return -1;
+    }
+    
+    public static boolean hasPlayed(String user) //has played before?
+    {
+        return false;
+    }
+    
+    public void getLeaderboard(String file)
     {
         FileReader f = null;
         try {

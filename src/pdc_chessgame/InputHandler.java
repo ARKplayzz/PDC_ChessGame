@@ -1,0 +1,40 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package pdc_chessgame;
+
+import java.util.Scanner;
+
+/**
+ *
+ * @author Andrew & Finlay
+ */
+public class InputHandler //reference for this is stack overflow
+{
+    private Scanner scanner;
+
+    public InputHandler() 
+    {
+        this.scanner = new Scanner(System.in);
+    }
+    
+    public String getStringInput(String prompt) 
+    {
+        if (!prompt.isEmpty()) 
+        {
+            System.out.print(prompt);
+        }
+        return scanner.nextLine();
+    }
+
+    public boolean confirmAction(String message) 
+    {
+        System.out.println(message + " ('Y' or 'N')");
+        System.out.print("> ");
+        
+        String response = scanner.nextLine();
+        
+        return response.toUpperCase().equals("Y");
+    }
+}

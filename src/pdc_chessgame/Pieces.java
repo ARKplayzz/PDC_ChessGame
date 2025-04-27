@@ -14,17 +14,12 @@ import java.util.List;
 public abstract class Pieces 
 { 
     //Unicode doesnt work in netbeans so we will use letters ):
-    
     private String pieceUnicode = "?"; 
-    
-    public double value;
-    
+        
     public int x;
     public int y;
     
-    private Team pieceTeam;
-
-    int[][] direction;  
+    private Team pieceTeam;  
 
     public Pieces(int x, int y, String pieceUnicode, Team pieceTeam) 
     {
@@ -36,7 +31,6 @@ public abstract class Pieces
 
     public String getPieceUnicode() 
     {
-        
         return this.pieceUnicode;
     }
     
@@ -66,7 +60,7 @@ public abstract class Pieces
             int xDirection = dir[0];
             int yDirection = dir[1];
             
-            int x = this.x + xDirection; //fliped (THIS IS WTONG)
+            int x = this.x + xDirection;
             int y = this.y + yDirection;
 
             while (isWithinBoard(x, y, board)) 

@@ -13,7 +13,7 @@ public class Input
     public int fromX, fromY, toX, toY; // efficent storing for move cases
     
     public Input(int fromRow, int fromCol, int toRow, int toCol) 
-    {
+    { 
         this.fromX = fromRow;
         this.fromY = fromCol;
         this.toX = toRow;
@@ -22,7 +22,7 @@ public class Input
     
     
     public static Input getMove(String userMovement) { // This should be working now
-        
+                
         String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces
         
         if (parts.length != 2 || !isValidTile(parts[0]) || !isValidTile(parts[1])) {
@@ -61,22 +61,6 @@ public class Input
         
         int dy = Math.abs(moveSet.toY - moveSet.fromY);
         return dy;
-    }
-    
-    public boolean isMoveStraight(){
-        
-        int dx = getXdifference(this); //whys this not work?
-        int dy = getYdifference(this);
-
-        return ((dx == 0 || dy == 0) && (dx + dy > 0));
-    }
-    
-    public boolean isMoveDiagonal(){
-        
-        int dx = getXdifference(this);
-        int dy = getYdifference(this);
-        
-        return (dx == dy && dx != 0);
     }
     
     public boolean isPathClear(ChessBoard board){
