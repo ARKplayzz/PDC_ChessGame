@@ -19,7 +19,7 @@ public class Turn
     // add movehistory here
     public class move
     {
-        public move(Pieces p, Tile from, Tile to, int turn)
+        public move(Pieces p, Tile from, Tile to)
         {
             this. piece = p;
             this.from = from;
@@ -50,7 +50,7 @@ public class Turn
     
     public void addMoveToHistory(Pieces p, Tile from, Tile to)
     {
-        move m = new move(p, from, to, this.turn);
+        move m = new move(p, from, to);
         this.moveHistory.add(m);
     }
     
@@ -81,7 +81,7 @@ public class Turn
     
     private move lastMove(Pieces p)
     {
-        move m = new move(null, null, null, -1);
+        move m = new move(null, null, null);
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
             if(this.moveHistory.get(i).piece.equals(p) /*&& m.moveNo < this.moveHistory.get(i).moveNo*/)
