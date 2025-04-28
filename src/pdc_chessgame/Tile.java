@@ -12,7 +12,8 @@ public class Tile
 {
     private int x, y;
     private Pieces piece;
-    boolean white;
+    // we are assuming that if a piece isn't white then it's black
+    boolean white = false;
     
     public Tile(int x, int y)
     {
@@ -20,6 +21,8 @@ public class Tile
         this.y = y;
         this.piece = null;
         
+        if(!GameTools.isOdd(x+1) == GameTools.isOdd(y+1))
+            this.white = true;
     }
     
     public void setPiece(Pieces p)

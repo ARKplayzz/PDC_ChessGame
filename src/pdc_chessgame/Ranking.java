@@ -31,24 +31,46 @@ public class Ranking
     }
     
     // Loads elo scores from the specified file into this.leaderboard
-    
-    public static int getElo(String user)
+    public int getElo(String user)
     {
-        return -1;
+        if(!this.leaderboard.containsKey(user))
+            return -1;
+        return this.leaderboard.get(user);
     }
     
-    public static boolean hasPlayed(String user) //has played before?
+    public boolean newUser(String user)
     {
+        if(this.leaderboard.containsKey(user))
+            return false;
+        
+        // 100 base elo
+        this.leaderboard.put(user, 100);
+        return true;
+    }
+    
+    public boolean hasPlayed(String user) //has played before?
+    {
+        if(this.leaderboard.containsKey(user))
+            return false;
         return false;
     }
     
-    public void getLeaderboard(String file)
+    public void printLeaderboard()
+    { // unordered, add order later
+        for(Map.Entry<String, Integer> entry : this.leaderboard.entrySet())
+        {
+            System.out.println((String)entry.getKey() + " " + entry.getValue());
+        }
+    }
+    
+    public boolean getLeaderboard(String file)
     {
         FileReader f = null;
         try {
             f = new FileReader(file);
         } catch (FileNotFoundException ex) {
             System.out.println("Could not find input file");
+            return false;
         }
         
         BufferedReader fp = new BufferedReader(f);
@@ -67,17 +89,19 @@ public class Ranking
            }
         } catch (IOException ex) {
            System.out.println("IO exception");
-           return;
+           return false;
         }
         
         try {
            fp.close();
         } catch (IOException ex) {
            Logger.getLogger(Ranking.class.getName()).log(Level.SEVERE, null, ex);
+           return false;
         }
+        return true;
     }
     
-    public boolean saveElo(String file)
+    public boolean saveScores(String file)
     { 
         PrintWriter pw;
         
@@ -95,13 +119,5 @@ public class Ranking
         
         pw.close();
         return true;
-    }
-    
-    public void printRankings()
-    { // unordered, add order later
-        for(Map.Entry<String, Integer> entry : this.leaderboard.entrySet())
-        {
-            System.out.println((String)entry.getKey() + " " + entry.getValue());
-        }
     }
 }

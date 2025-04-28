@@ -14,14 +14,19 @@ public class Move
     public Tile from;
     public Tile to;    
     
-    public move(Pieces p, Tile from, Tile to, int turn)
-        {
-            this.piece = p;
-            this.from = from;
-            this.to = to;
-            this.moveNo = turn;
-        }
+    public Move(Pieces p, Tile from, Tile to)
+    {
+        this.piece = p;
+        this.from = from;
+        this.to = to;
+        //this.moveNo = turn;
+    }
     
+    @Override
+    public String toString()
+    {// modify the spacing a little later
+        return (String)(this.piece.getPieceUnicode()+" "+this.from.getX()+","+this.from.getY()+" "+this.to.getX()+","+this.to.getY()/*+" "+this.moveNo*/);
+    }
     
     public static Input getMove(String userMovement) { // This should be working now
                 

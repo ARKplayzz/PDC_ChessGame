@@ -30,9 +30,9 @@ public class GameMenu
     
     public MenuOption displayMenu() 
     {
-        while (true) {
-            System.out.println("CHESS MENU                               (X) TO QUIT");
-            System.out.println();
+        while (true) 
+        {
+            System.out.println("CHESS MENU                               (X) TO QUIT\n");
             System.out.println("WHAT YOU WOULD LIKE TO DO?");
             System.out.println("  <Start a game>          =  'START',");
             System.out.println("  <Check your ranking>    =  'RANK'");
@@ -66,7 +66,8 @@ public class GameMenu
         }
     }
     
-    private void displayRankings() {
+    private void displayRankings(Ranking rankings) 
+    {
         System.out.println("----------------------------------------------------");
         System.out.println("PLAYER RANKINGS");
         System.out.println("Please enter your username to check your rank:");
@@ -74,20 +75,23 @@ public class GameMenu
         System.out.print("> ");
         String username = scanner.nextLine();
         
-        if (Ranking.hasPlayed(username)) {
-            System.out.println(username + " has an Elo rating of " + Ranking.getElo(username));
-        } else {
+        if(rankings.hasPlayed(username)) 
+        {
+            System.out.println(username + " has an Elo rating of " + rankings.getElo(username));
+        } else 
+        {
             System.out.println("Player not found. New players start with 100 Elo.");
         }
         
         System.out.println("----------------------------------------------------");
     }
     
-    private void displayLeaderboard() {
+    private void displayLeaderboard(Ranking rankings) 
+    {
         System.out.println("----------------------------------------------------");
         System.out.println("CHESS LEADERBOARD");
         
-        Ranking.getLeaderboard(); //need to add ):
+        rankings.printLeaderboard(); //need to add ):
         
         System.out.println("----------------------------------------------------");
     }

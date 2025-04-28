@@ -203,7 +203,7 @@ public class ChessBoard
     }
     
     public void displayBoard()
-    {
+    { //update this to use tile.white so we don't have to run isOdd 4 times every time we print
         // again changed from i,j to x,y to clear up confusion
         for(int y = 0; y < this.height; y++)
         {

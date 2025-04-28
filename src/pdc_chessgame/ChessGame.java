@@ -8,10 +8,14 @@ package pdc_chessgame;
  *
  * @author Andrew & Finlay
  */
-public class ChessGame {
+public class ChessGame 
+{
     
     private ChessBoard board;
     private Player[] players;
+    
+    private static final String LEADERBOARD_FILE = "rankings.txt";
+    private Ranking leaderboard;
     
     private boolean isRunning;
     
@@ -23,12 +27,14 @@ public class ChessGame {
         this.board = new ChessBoard(8, 8);
         this.menu = new GameMenu();
         this.inputHandler = new InputHandler();
+        this.leaderboard = new Ranking();
         
         this.players = new Player[2]; // player count for flexabuility in assignement 2
 
         this.players[0] = new Player("Guest 1", Team.WHITE);
         this.players[1] = new Player("Guest 2", Team.BLACK);
         this.isRunning = false;
+        this.leaderboard.getLeaderboard(LEADERBOARD_FILE);
     }
     
     public void start() 
@@ -61,7 +67,8 @@ public class ChessGame {
             
             Input moveSet = getPlayerTurn(currentPlayer);
 
-            if (moveSet == null) { // Check if has quit
+            if (moveSet == null) 
+            { // Check if has quit
                 break;
                 //need to handle ressignation
             }
@@ -77,12 +84,15 @@ public class ChessGame {
             board.turnCounter.nextTurn(); //check with finlay if correct usage?
         }
         
-        if (board.checkmate) {
+        if (board.checkmate) 
+        {
             Team winningTeam = getEnemyTeam(board.turnCounter.getTeam());
             Player winner = getPlayerInTeam(winningTeam);
-            System.out.println("Checkmate! " + winner.getName() + " wins!");
-
+            System.out.println("Checkmate! " + winner.getName() + " wins!");      
         }
+        
+        //saving scores to the file just before the program exits
+        this.leaderboard.saveScores(LEADERBOARD_FILE);
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...
@@ -109,17 +119,16 @@ public class ChessGame {
             return;
         }
         System.out.println("----------------------------------------------------");
-        System.out.println("YOU HAVE SELECTED ["+ userInput + "]");
-        System.out.println();
+        System.out.println("YOU HAVE SELECTED ["+ userInput + "]\n");
         
-        if (Ranking.hasPlayed(userInput) == false)
+        if (this.leaderboard.hasPlayed(userInput) == false)
         {
             System.out.println("This account has not played before. By continuing,");
             System.out.println("you will be granted with a base rank of 100 Elo");
         }
         else
         {
-            System.out.println("This account currently has " + Ranking.getElo(userInput) + " Elo");
+            System.out.println("This account currently has " + this.leaderboard.getElo(userInput) + " Elo");
         }
         System.out.println("");
         
@@ -128,6 +137,9 @@ public class ChessGame {
             player.setName(userInput);
             System.out.println("----------------------------------------------------");
             System.out.println("PROCEEDING AS: " + player.getName());
+            
+            if(this.leaderboard.hasPlayed(userInput) == false)
+                this.leaderboard.newUser(userInput);
             return;
         }
         playerLogin(player);
@@ -247,8 +259,7 @@ public class ChessGame {
     {
         System.out.println("----------------------------------------------------");
         System.out.println("Welcome to Chess!");
-        System.out.println("Program Produced by Andrew Kennedy & Finlay Baynham");
-        System.out.println();
+        System.out.println("Program Produced by Andrew Kennedy & Finlay Baynham\n");
         System.out.println("This Program is a part of Assignment 1 for PDC 2025");
         System.out.println("----------------------------------------------------");
     }

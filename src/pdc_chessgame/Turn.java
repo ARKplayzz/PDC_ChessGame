@@ -16,32 +16,9 @@ public class Turn
     private int turn = 0;
     private Team team = Team.WHITE;
     
-    // add movehistory here
-    public class move
-    {
-        public move(Pieces p, Tile from, Tile to)
-        {
-            this. piece = p;
-            this.from = from;
-            this.to = to;
-            //this.moveNo = turn;
-        }
-        
-        public Pieces piece;
-        public Tile from;
-        public Tile to;
-        //int moveNo;
-        
-        @Override
-        public String toString()
-        {// modify the spacing a little later
-            return (String)(this.piece.getPieceUnicode()+" "+this.from.getX()+","+this.from.getY()+" "+this.to.getX()+","+this.to.getY()/*+" "+this.moveNo*/);
-        }
-    }
-    
     // not completely convinced about leaving this private, make it public if you need to, (Modify lastMove if you do)
     @SuppressWarnings("FieldMayBeFinal")
-    private List<move> moveHistory;
+    private List<Move> moveHistory;
     
     public Turn()
     {
@@ -50,7 +27,7 @@ public class Turn
     
     public void addMoveToHistory(Pieces p, Tile from, Tile to)
     {
-        move m = new move(p, from, to);
+        Move m = new Move(p, from, to);
         this.moveHistory.add(m);
     }
     
@@ -59,7 +36,7 @@ public class Turn
         return this.moveHistory.size();
     }
     
-    public move getPriorMove(int priorMoveNumber) // not last move, one before for undo indexing
+    public Move getPriorMove(int priorMoveNumber) // not last move, one before for undo indexing
     {
         return this.moveHistory.get(this.moveHistory.size() - priorMoveNumber);
     }
@@ -79,9 +56,9 @@ public class Turn
         return id;
     }
     
-    private move lastMove(Pieces p)
+    private Move lastMove(Pieces p)
     {
-        move m = new move(null, null, null);
+        Move m = new Move(null, null, null);
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
             if(this.moveHistory.get(i).piece.equals(p) /*&& m.moveNo < this.moveHistory.get(i).moveNo*/)
@@ -97,14 +74,14 @@ public class Turn
     // returns the amount of distance the specified piece moved on its last turn
     public int distanceLastMoved(Pieces p) // MIGHT NOT BE COMPLETLY FUNCTIONAL
     {
-        move m = this.lastMove(p);
+        Move m = this.lastMove(p);
         return GameTools.distanceBetween(m.from.getX(), m.to.getX(), m.from.getY(), m.to.getY());
     }
     
     // returns the amount of turns since the specified piece moved, returns 1 if the move was last turn
     public int turnsSinceLastMoved(Pieces p)
     {
-        move m = this.lastMove(p);
+        Move m = this.lastMove(p);
         if(m != null) 
         {
             return this.lastMoveNum(p) - this.turn;
@@ -112,7 +89,7 @@ public class Turn
         return 0;
     }
     
-    public boolean historyContains(move m)
+    public boolean historyContains(Move m)
     {
         return this.moveHistory.contains(m);
     }
