@@ -83,6 +83,11 @@ public class ChessBoard
         setTile(new Rook(7, 7, Team.BLACK), 7, 7);
     }
     
+    public Tile getTile(int x, int y)
+    { // will return null if the tile is empty
+        return this.board[x][y];
+    }
+        
     public void setTile(Pieces p, int x, int y)
     {
         getTile(x, y).setPiece(p);
@@ -121,7 +126,7 @@ public class ChessBoard
     
     }
     
-    public boolean tryCastle(Pieces piece, Input moveSet)
+    private boolean tryCastle(Pieces piece, Input moveSet)
     {
         if (piece instanceof King)
         {
@@ -152,7 +157,7 @@ public class ChessBoard
         return false;
     }
     
-    public boolean tryEnPessant(Pieces piece, Input moveSet)
+    private boolean tryEnPessant(Pieces piece, Input moveSet)
     {
         if (piece instanceof Pawn)
         {
@@ -172,7 +177,7 @@ public class ChessBoard
         return false;
     }
     
-    public boolean tryPromotePawn(Pieces piece, Input moveSet)
+    private boolean tryPromotePawn(Pieces piece, Input moveSet)
     {
         if (piece instanceof Pawn && ((Pawn) piece).canPromotion(this))
         {
@@ -180,11 +185,6 @@ public class ChessBoard
             return true;
         }
         return false;
-    }
-    
-    public Tile getTile(int x, int y)
-    { // will return null if the tile is empty
-        return this.board[x][y];
     }
     
     public Tile[][] getBoard()
@@ -202,7 +202,7 @@ public class ChessBoard
         return this.width;
     }
     
-    public void printBoard()
+    public void displayBoard()
     {
         // again changed from i,j to x,y to clear up confusion
         for(int y = 0; y < this.height; y++)
@@ -243,7 +243,7 @@ public class ChessBoard
         System.out.print("\n");
     }
     
-    public List<Tile> getPiecePath(Tile tileFrom, Tile tileTo) {
+    private List<Tile> getPiecePath(Tile tileFrom, Tile tileTo) {
         
         List<Tile> path = new ArrayList<>();
 
@@ -269,30 +269,47 @@ public class ChessBoard
         return path;
     }
     
-    public boolean isCheckmate(Team team) {
-                
-        King king = null;
-
-        // Searches every tile for the king, not ideal, will need to come back to this
+    public boolean undoMove() //boolean incase history is non existant (outside current usecase but will save time in assignment 2)
+    {
+        if (turnCounter.getMoveCount() < 1) 
+        {
+            return false; // empty
+        }
+        
+        getPriorMove(1)
+        
+        return true;
+    }
+    
+    // alternative: storing kingLocation within board...?
+    private King getKing(Team team) 
+    {
         for (int x = 0; x < this.width; x++) 
         {
             for (int y = 0; y < this.height; y++) 
             {
-                Pieces targetPiece = getTile(x, y).getPiece();
+                Pieces piece = this.getTile(x, y).getPiece();
                 
-                if (targetPiece instanceof King && targetPiece.getPieceTeam() == team) 
+                if (piece instanceof King && piece.getPieceTeam() == team) 
                 {
-                    king = (King) targetPiece;
-                    break;
+                    return (King) piece;
                 }
             }
-            if (king != null) //stop looking
-            {
-                break;
-            }
         }
-        
-        if (king == null) // no king?
+        return null;
+    }
+    
+    public boolean isInCheck(Team team) 
+    {
+        King king = getKing(team);
+        return king.isCheck(this);
+    }
+    
+    public boolean isCheckmate(Team team) 
+    {        
+        King king = getKing(team);
+
+        if (king == null) // no king? may as well keep for extended usecase in asignment 2
         {
             return false; 
         }

@@ -53,6 +53,16 @@ public class Turn
         this.moveHistory.add(m);
     }
     
+    public int getMoveCount()
+    {
+        return this.moveHistory.size();
+    }
+    
+    public move getPriorMove(int priorMoveNumber) // not last move, one before for undo indexing
+    {
+        return this.moveHistory.get(this.moveHistory.size() - priorMoveNumber);
+    }
+    
     private move lastMove(Pieces p)
     {
         move m = new move(null, null, null, -1);
@@ -81,7 +91,6 @@ public class Turn
         move m = this.lastMove(p);
         if(m != null) 
         {
-            System.out.println("move numer>"+m.moveNo+"minus current turn>"+this.turn);
             return m.moveNo - this.turn;
         }
         return 0;

@@ -54,19 +54,26 @@ public class ChessGame {
         
         while (isRunning && !board.checkmate) 
         {
-            board.printBoard();
+            board.displayBoard();
             
             Team currentTeam = board.turnCounter.getTeam();
             Player currentPlayer = getPlayerInTeam(currentTeam);
             
             Input moveSet = getPlayerTurn(currentPlayer);
-            
-            
+
             if (moveSet == null) { // Check if has quit
                 break;
                 //need to handle ressignation
             }
-            
+            if (board.isInCheck(currentTeam))
+            {
+                board.moveTile(moveSet);
+                if (board.isInCheck(currentTeam))
+                {
+                    board.undoMove();
+                }
+            }
+            board.moveTile(moveSet);
             board.turnCounter.nextTurn(); //check with finlay if correct usage?
         }
         
@@ -84,6 +91,7 @@ public class ChessGame {
         {
             playerLogin(player);
         }
+        System.out.println("----------------------------------------------------");
     }
     
     private void playerLogin(Player player)
@@ -95,12 +103,14 @@ public class ChessGame {
         String userInput = inputHandler.getStringInput("> ");
         
         if (userInput.toUpperCase().equals("GUEST"))
-        {
+        {   
+            System.out.println("----------------------------------------------------");
             System.out.println("PROCEEDING AS: " + player.getName());
             return;
         }
         System.out.println("----------------------------------------------------");
-        System.out.println("You have selected ["+ userInput + "]");
+        System.out.println("YOU HAVE SELECTED ["+ userInput + "]");
+        System.out.println();
         
         if (Ranking.hasPlayed(userInput) == false)
         {
@@ -116,6 +126,7 @@ public class ChessGame {
         if (inputHandler.confirmAction("Confirm this selection is correct "))
         {
             player.setName(userInput);
+            System.out.println("----------------------------------------------------");
             System.out.println("PROCEEDING AS: " + player.getName());
             return;
         }
@@ -178,12 +189,13 @@ public class ChessGame {
         if (!piece.canMove(board).contains(board.getTile(move.toX, move.toY))) 
         {
             System.out.println("----------------------------------------------------");
-            System.out.println(input + " Is an invalid move for this piece, please try again");
+            System.out.println(input + " is an invalid move for this piece, try again");
             return false;
         }
         return true;
     }
     
+    //pawn promotion needs to be re factored
     public static Pieces getPromotionPiece(Player player, Pawn pawn)//need to handle resignation  
     {
         InputHandler inputHandler = new InputHandler();
@@ -231,7 +243,6 @@ public class ChessGame {
         }
     }
 
-    
     private void displayWelcome() 
     {
         System.out.println("----------------------------------------------------");
@@ -263,11 +274,7 @@ public class ChessGame {
     {
         return players[team == Team.WHITE ? 0 : 1];
     }
-    
-    private void undoLastMove() {
-        //placeholder for Assignment 2..
-    }
-    
+        
     private Team getEnemyTeam(Team team) { // will need to update for scalabuility
         return team == Team.WHITE ? Team.BLACK : Team.WHITE;
     }
