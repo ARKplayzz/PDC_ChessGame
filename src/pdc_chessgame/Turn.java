@@ -24,22 +24,23 @@ public class Turn
             this. piece = p;
             this.from = from;
             this.to = to;
-            this.moveNo = turn;
+            //this.moveNo = turn;
         }
         
         public Pieces piece;
         public Tile from;
         public Tile to;
-        int moveNo;
+        //int moveNo;
         
         @Override
         public String toString()
         {// modify the spacing a little later
-            return (String)(this.piece.getPieceUnicode()+" "+this.from.getX()+","+this.from.getY()+" "+this.to.getX()+","+this.to.getY()+" "+this.moveNo);
+            return (String)(this.piece.getPieceUnicode()+" "+this.from.getX()+","+this.from.getY()+" "+this.to.getX()+","+this.to.getY()/*+" "+this.moveNo*/);
         }
     }
     
     // not completely convinced about leaving this private, make it public if you need to, (Modify lastMove if you do)
+    @SuppressWarnings("FieldMayBeFinal")
     private List<move> moveHistory;
     
     public Turn()
@@ -63,12 +64,27 @@ public class Turn
         return this.moveHistory.get(this.moveHistory.size() - priorMoveNumber);
     }
     
+    private int lastMoveNum(Pieces p)
+    {
+        if(p == null)
+            return -1;
+        int id = -1;
+        for(int i = 0; i < this.moveHistory.size(); i++)
+        {
+            if(this.moveHistory.get(i).piece.equals(p) /*&& m.moveNo < this.moveHistory.get(i).moveNo*/)
+            {
+                id = i;
+            }
+        }
+        return id;
+    }
+    
     private move lastMove(Pieces p)
     {
         move m = new move(null, null, null, -1);
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
-            if(this.moveHistory.get(i).piece.equals(p) && m.moveNo < this.moveHistory.get(i).moveNo)
+            if(this.moveHistory.get(i).piece.equals(p) /*&& m.moveNo < this.moveHistory.get(i).moveNo*/)
             {
                 m = this.moveHistory.get(i);
             }
@@ -91,7 +107,7 @@ public class Turn
         move m = this.lastMove(p);
         if(m != null) 
         {
-            return m.moveNo - this.turn;
+            return this.lastMoveNum(p) - this.turn;
         }
         return 0;
     }
@@ -128,7 +144,7 @@ public class Turn
     
     public void printMoveHistory()
     {
-        System.out.println("Move history:\nPIECE    FROM    TO    TURN");
+        System.out.println("Move history:\nPIECE    FROM    TO"); //turn removed
         // do move.toString() in order of moveNo
     }
     
