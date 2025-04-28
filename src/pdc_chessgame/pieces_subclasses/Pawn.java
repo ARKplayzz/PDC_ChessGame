@@ -23,7 +23,7 @@ public class Pawn extends Pieces {
     @Override
     public int[][] getDirection() //maybe remove this for pawn
     {
-        return (this.getPieceTeam() == Team.WHITE) ? new int[][] {{0, 1}} : new int[][] {{0, -1}}; //idk this seems unessisary to have y dir in [0][1]
+        return (getPieceTeam() == Team.WHITE) ? new int[][] {{0, 1}} : new int[][] {{0, -1}}; //idk this seems unessisary to have y dir in [0][1]
     }
 
     @Override
@@ -31,22 +31,22 @@ public class Pawn extends Pieces {
     {        
         List<Tile> possibleMoves = new ArrayList<>();
 
-        int y = this.y + getDirection()[0][1];
+        int y = getY() + getDirection()[0][1];
         
-        Tile targetTile = board.getTile(this.x, y);
+        Tile targetTile = board.getTile(getX(), y);
         Pieces targetPiece = targetTile.getPiece(); 
         
-        if (isWithinBoard(this.x, y, board) && targetPiece == null)  
+        if (isWithinBoard(getX(), y, board) && targetPiece == null)  
         {
             possibleMoves.add(targetTile);
             
             if (!board.turnCounter.hasPieceMoved(this)) // double jump
             {
-                y = this.y + (2 * getDirection()[0][1]); 
+                y = getY() + (2 * getDirection()[0][1]); 
 
-                if (isWithinBoard(this.x, y, board) && targetPiece == null)  //within for dupdated double jump size
+                if (isWithinBoard(getX(), y, board) && targetPiece == null)  //within for dupdated double jump size
                 {
-                    targetTile = board.getTile(this.x, y);
+                    targetTile = board.getTile(getX(), y);
                     targetPiece = targetTile.getPiece(); 
                 
                     possibleMoves.add(targetTile);
@@ -57,21 +57,21 @@ public class Pawn extends Pieces {
         // attacking 
         for (int dx = -1; dx <= 1; dx += 2) 
         {
-            int x = this.x + dx;
-            y = this.y + getDirection()[0][1];
+            int x = getX() + dx;
+            y = getY() + getDirection()[0][1];
 
             if (isWithinBoard(x, y, board)) 
             {
                 targetTile = board.getTile(x, y);
                 targetPiece = targetTile.getPiece();
                 
-                if (targetPiece != null && targetPiece.getPieceTeam() != this.getPieceTeam()) 
+                if (targetPiece != null && targetPiece.getPieceTeam() != getPieceTeam()) 
                 {
                     possibleMoves.add(targetTile);
                 }
                 
                 // en passant bellow 
-                Tile pawnTile = board.getTile(x, this.y); //check behind for enemy pawn  - getDirection()[0][1])
+                Tile pawnTile = board.getTile(x, getY()); //check behind for enemy pawn  - getDirection()[0][1])
                 Pieces targetPawn = pawnTile.getPiece();
 
                 if (targetPawn instanceof Pawn && // if target is a pawn
@@ -88,9 +88,7 @@ public class Pawn extends Pieces {
     
     public boolean canPromotion(ChessBoard board) 
     {
-        System.out.println("y>"+this.y);
-        System.out.println("= 8>"+((this.getPieceTeam() == Team.BLACK) ? (board.height - 1) : 2));
-        return this.y + ((this.getPieceTeam() == Team.BLACK) ? (board.height - 1) : 2) == board.height;
+        return getY() + ((getPieceTeam() == Team.BLACK) ? (board.getHeight() - 1) : 2) == board.getHeight();
     }
    
 }

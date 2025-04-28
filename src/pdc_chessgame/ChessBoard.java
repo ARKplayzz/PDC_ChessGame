@@ -18,17 +18,14 @@ public class ChessBoard
         holds piece and colour.
     */
     @SuppressWarnings("FieldMayBeFinal")
-    private Tile[][] board;
-   
     
-    // adding this so we can display captured pieces once we make it graphical + makes it %1 easier to check for a missing queen
-    // tell me if this is a retarted idea
+    private Tile[][] board;
     private List<Pieces> capturedPieces;
-    // moved this here so that the mateChecker can easily modify it
+    
     public boolean checkmate = false;
     
-    public int width;
-    public int height;
+    private int width;
+    private int height;
     
     public Turn turnCounter = new Turn();
     
@@ -40,14 +37,15 @@ public class ChessBoard
         this.height = height;
         this.capturedPieces = new ArrayList<>();
         
-        // Init all individual tiles
-        // I changed it from i,j to x,y to hopefully clear some of the confusion we had last time
-        //this is the dude who was causing issue ):<
-        for (int y = 0; y < this.height; y++)
+        // init tiles of board
+        for (int y = 0; y < this.height; y++) 
+        {
             for (int x = 0; x < this.width; x++)
+            {
                 this.board[x][y] = new Tile(x, y);
-        
-        initialiseBoard();  //Could put this is a better space (can also reset board)
+            }
+        }
+        initialiseBoard();
     }
     
     private void initialiseBoard() 
@@ -55,20 +53,18 @@ public class ChessBoard
         //place white pawns
         for (int row = 0; row < 8; row++) 
         {
-        //    setTile(new Pawn(row, 1, Team.WHITE), row, 1);
+            setTile(new Pawn(row, 1, Team.WHITE), row, 1);
         }
 
         //place black pawns
         for (int row = 0; row < 8; row++) 
         {
-        //    setTile(new Pawn(row, 6, Team.BLACK), row, 6);
+            setTile(new Pawn(row, 6, Team.BLACK), row, 6);
         }
         
         //place white back row
-        setTile(new Pawn(0, 1, Team.BLACK), 0, 1);
-
-        //setTile(new Rook(0, 0, Team.WHITE), 0, 0);
-        //setTile(new Knight(1, 0, Team.WHITE), 1, 0);
+        setTile(new Rook(0, 0, Team.WHITE), 0, 0);
+        setTile(new Knight(1, 0, Team.WHITE), 1, 0);
         setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
         setTile(new Queen(3, 0, Team.WHITE), 3, 0);
         setTile(new King(4, 0, Team.WHITE), 4, 0);
@@ -83,19 +79,22 @@ public class ChessBoard
         setTile(new King(3, 7, Team.BLACK), 3, 7);
         setTile(new Queen(4, 7, Team.BLACK), 4, 7);
         setTile(new Bishop(5, 7, Team.BLACK), 5, 7);
-        //setTile(new Knight(6, 7, Team.BLACK), 6, 7);
-        //setTile(new Rook(7, 7, Team.BLACK), 7, 7);
-        setTile(new Pawn(7, 6, Team.WHITE), 7, 6);
+        setTile(new Knight(6, 7, Team.BLACK), 6, 7);
+        setTile(new Rook(7, 7, Team.BLACK), 7, 7);
     }
     
     public void setTile(Pieces p, int x, int y)
     {
-        this.board[x][y].setPiece(p); //THIS USED TO CHECK IF NULL - It now overrides (kills pieces)
+        getTile(x, y).setPiece(p);
     }
     
-    public boolean killTile(int x, int y) { // THIS KILLS A PIECE NOW (IT MAY BE BEST TO RENAME msoveTile & killTile to MoveTilePiece & killTilePiece)
-        if (board[x][y].getPiece() != null) {
-            board[x][y].deletePiece();
+    public boolean captureTile(int x, int y) 
+    {
+        if (getTile(x, y).getPiece() != null) 
+        {
+            Pieces capturedPiece = getTile(x, y).getPiece();
+            this.capturedPieces.add(capturedPiece);
+            getTile(x, y).deletePiece();
             return true;
         }
         return false;
@@ -103,9 +102,28 @@ public class ChessBoard
     
     public boolean moveTile(Input moveSet) 
     {
-        Pieces targetPiece = this.board[moveSet.fromX][moveSet.fromY].getPiece();
+        Pieces targetPiece = getTile(moveSet.fromX, moveSet.fromY).getPiece();
         
-        if (targetPiece instanceof King) // CHECK FOR CASTLE MOVE
+        // only one special can occur per move (ordered in likelyhood)
+        if (tryCastle(targetPiece, moveSet)) {
+        } else if (tryEnPessant(targetPiece, moveSet)) {
+        } else if (tryPromotePawn(targetPiece, moveSet)) {
+        }
+        
+        // add move to history
+        this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.fromX, moveSet.fromY), getTile(moveSet.toX, moveSet.toY));
+        // check if a piece needs to be captured before its Tile is overridden
+        if (getTile(moveSet.toX, moveSet.toY).getPiece() != null){
+            captureTile(moveSet.toX, moveSet.toY);
+        }
+        // move the piece
+        return getTile(moveSet.fromX, moveSet.fromY).movePieceTo(getTile(moveSet.toX, moveSet.toY));
+    
+    }
+    
+    public boolean tryCastle(Pieces piece, Input moveSet)
+    {
+        if (piece instanceof King)
         {
             int distanceX = moveSet.toX - moveSet.fromX;
 
@@ -125,37 +143,43 @@ public class ChessBoard
                     // queen side
                     rookFromX = 0;  
                     rookToX = moveSet.toX + 1; // rook is right of the king
+                    
                 }
-
                 this.board[rookFromX][x].movePieceTo(board[rookToX][x]);
+                return true;
             }
         }
-     
-        if (targetPiece instanceof Pawn)
+        return false;
+    }
+    
+    public boolean tryEnPessant(Pieces piece, Input moveSet)
+    {
+        if (piece instanceof Pawn)
         {
-            int checkDirection = targetPiece.getPieceTeam() == Team.BLACK ? 1 : -1;
+            int direction = piece.getPieceTeam() == Team.BLACK ? 1 : -1;
             
-            Tile targetTile = getTile(moveSet.toX, moveSet.toY + checkDirection);
+            Tile targetTile = getTile(moveSet.toX, moveSet.toY + direction);
             Pieces targetPawn = targetTile.getPiece();
             
             if (targetPawn != null && //target is a piece
                 targetPawn instanceof Pawn && // if target is a pawn
-                targetPiece.getPieceTeam() != targetPawn.getPieceTeam()) // if target is an enemy
+                piece.getPieceTeam() != targetPawn.getPieceTeam()) // if target is an enemy
             {
-                killTile(moveSet.toX , moveSet.toY + checkDirection); // dewit!
-            }
-            
-            if (((Pawn) targetPiece).canPromotion(this))
-            {
-                setTile(Display.getPromotionPiece("Player", (Pawn) targetPiece), moveSet.fromX, moveSet.fromY);
+                captureTile(moveSet.toX , moveSet.toY + direction); // dewit!
+                return true;
             }
         }
-        
-        // add move to history
-        this.turnCounter.addMoveToHistory(targetPiece, this.getTile(moveSet.fromX, moveSet.fromY), this.getTile(moveSet.toX, moveSet.toY));
-        // actully do the move
-        return this.board[moveSet.fromX][moveSet.fromY].movePieceTo(board[moveSet.toX][moveSet.toY]);
+        return false;
+    }
     
+    public boolean tryPromotePawn(Pieces piece, Input moveSet)
+    {
+        if (piece instanceof Pawn && ((Pawn) piece).canPromotion(this))
+        {
+            setTile(Display.getPromotionPiece("Player", (Pawn) piece), moveSet.fromX, moveSet.fromY);
+            return true;
+        }
+        return false;
     }
     
     public Tile getTile(int x, int y)
@@ -166,6 +190,16 @@ public class ChessBoard
     public Tile[][] getBoard()
     {
         return this.board;
+    }
+    
+    public int getHeight()
+    {
+        return this.height;
+    }
+    
+    public int getWidth()
+    {
+        return this.width;
     }
     
     public void printBoard()
@@ -213,18 +247,18 @@ public class ChessBoard
         
         List<Tile> path = new ArrayList<>();
 
-        int xDirection = Integer.compare(tileTo.x - tileFrom.x, 0); // getting direction from 1 to 2
-        int yDirection = Integer.compare(tileTo.y - tileFrom.y, 0);
+        int xDirection = Integer.compare(tileTo.getX() - tileFrom.getX(), 0); // getting direction from 1 to 2
+        int yDirection = Integer.compare(tileTo.getY() - tileFrom.getY(), 0);
 
         
-        if (Math.abs(tileTo.x - tileFrom.x) > 1 && Math.abs(tileTo.y - tileFrom.y) > 1) { // pawn & knight dont have a path
+        if (Math.abs(tileTo.getX() - tileFrom.getX()) > 1 && Math.abs(tileTo.getY() - tileFrom.getY()) > 1) { // pawn & knight dont have a path
             return path;
         }
 
-        int currentX = tileFrom.x + xDirection;
-        int currentY = tileFrom.y + yDirection;
+        int currentX = tileFrom.getX() + xDirection;
+        int currentY = tileFrom.getY() + yDirection;
 
-        while (currentX != tileTo.x || currentY != tileTo.y) 
+        while (currentX != tileTo.getX() || currentY != tileTo.getY()) 
         {
             path.add(getTile(currentX, currentY));
             
@@ -244,7 +278,7 @@ public class ChessBoard
         {
             for (int y = 0; y < this.height; y++) 
             {
-                Pieces targetPiece = this.getTile(x, y).getPiece();
+                Pieces targetPiece = getTile(x, y).getPiece();
                 
                 if (targetPiece instanceof King && targetPiece.getPieceTeam() == team) 
                 {
@@ -280,19 +314,19 @@ public class ChessBoard
         
         Pieces enemy = attackingPieces.get(0); // the numpty causing the check
         
-        List<Tile> attackPath = getPiecePath(getTile(enemy.x, enemy.y), getTile(king.x, king.y));
+        List<Tile> attackPath = getPiecePath(getTile(enemy.getX(), enemy.getY()), getTile(king.getX(), king.getY()));
         
         for (int x = 0; x < this.width; x++) 
         {
             for (int y = 0; y < this.height; y++) 
             {
-                Pieces targetPiece = this.getTile(x, y).getPiece();
+                Pieces targetPiece = getTile(x, y).getPiece();
 
                 if (targetPiece != null && targetPiece.getPieceTeam() == team && !(targetPiece instanceof King)) 
                 {
                     List<Tile> pieceMoveset = targetPiece.canMove(this);
 
-                    if (pieceMoveset.contains(this.getTile(enemy.x, enemy.y))) // check if moveset contains a location kill enemy
+                    if (pieceMoveset.contains(getTile(enemy.getX(), enemy.getY()))) // check if moveset contains a location kill enemy
                     { 
                         return false;
                     }

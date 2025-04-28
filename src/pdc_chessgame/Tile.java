@@ -6,11 +6,11 @@ package pdc_chessgame;
 
 /**
  *
- * @author finla
+ * @author Andrew & Finlay
  */
 public class Tile 
 {
-    public int x, y;
+    private int x, y;
     private Pieces piece;
     boolean white;
     
@@ -32,6 +32,16 @@ public class Tile
         return this.piece;
     }
     
+    public int getX()
+    {
+        return this.x;
+    }
+    
+    public int getY()
+    {
+        return this.y;
+    }
+    
     public void deletePiece()
     {
         this.piece = null;
@@ -42,8 +52,8 @@ public class Tile
         if(this.piece == null)
             return false;
         
-        this.piece.x = tile.x; //updating piece to contain new location
-        this.piece.y = tile.y;
+        this.piece.setX(tile.x); //updating piece to contain new location
+        this.piece.setY(tile.y);
         
         tile.setPiece(this.piece);
         this.deletePiece();

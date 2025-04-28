@@ -20,7 +20,7 @@ public class King extends Pieces {
     
     public boolean isCheck(ChessBoard board)
     {
-        return isCheck(this.x, this.y, board);
+        return isCheck(getX(), getY(), board);
     }
     
     public boolean isCheck(int x, int y, ChessBoard board)
@@ -61,7 +61,7 @@ public class King extends Pieces {
             {
                 Pieces kingPiece = this;
 
-                if (kingPiece != null && kingPiece.getPieceTeam() != this.getPieceTeam())
+                if (kingPiece != null && kingPiece.getPieceTeam() != getPieceTeam())
                 {
                     if (kingPiece.canMove(board).contains(board.getTile(newX, newY))) 
                     {
@@ -85,7 +85,7 @@ public class King extends Pieces {
                 Tile targetTile = board.getTile(newX, newY); //these can be shrunken if tile did not exist (:
                 Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
 
-                if (targetPiece != null && targetPiece.getPieceTeam() != this.getPieceTeam())
+                if (targetPiece != null && targetPiece.getPieceTeam() != getPieceTeam())
                 {
                     if (targetPiece.canMove(board).contains(board.getTile(newX, newY))) 
                     {
@@ -101,9 +101,9 @@ public class King extends Pieces {
     {
         List<Pieces> attackers = new ArrayList<>();
 
-        for (int x = 0; x < board.width; x++) 
+        for (int x = 0; x < board.getWidth(); x++) 
         {
-            for (int y = 0; y < board.height; y++) 
+            for (int y = 0; y < board.getHeight(); y++) 
             {
                 Pieces targetPiece = board.getTile(x, y).getPiece();
 
@@ -111,7 +111,7 @@ public class King extends Pieces {
                 {
                     List<Tile> enemyMoveset = targetPiece.canMove(board);
 
-                    if (enemyMoveset.contains(board.getTile(this.x, this.y))) 
+                    if (enemyMoveset.contains(board.getTile(getX(), getY()))) 
                     {
                         attackers.add(targetPiece);
                     }
@@ -143,15 +143,15 @@ public class King extends Pieces {
 
         for (int[] dir : getDirection()) 
         {            
-            int x = this.x + dir[0];
-            int y = this.y + dir[1];
+            int x = getX() + dir[0];
+            int y = getY() + dir[1];
 
             if (isWithinBoard(x, y, board)) 
             {
                 Tile targetTile = board.getTile(x, y);
                 Pieces targetPiece = targetTile.getPiece();
 
-                if (targetPiece == null || targetPiece.getPieceTeam() != this.getPieceTeam()) // if Tile empty or Contains enemy
+                if (targetPiece == null || targetPiece.getPieceTeam() != getPieceTeam()) // if Tile empty or Contains enemy
                 { 
                     if (!isCheck(x, y, board)) // King should not be able to move INTO check
                     {
@@ -168,21 +168,21 @@ public class King extends Pieces {
                         
             for (int dir : new int[]{1, -1})
             {
-            int x = this.x + 1 * dir;
+            int x = getX() + 1 * dir;
             
-                while (isWithinBoard(x, this.y, board)) 
+                while (isWithinBoard(x, getY(), board)) 
                 {
 
-                    Tile targetTile = board.getTile(x, this.y); //these can be shrunken if tile did not exist (:
+                    Tile targetTile = board.getTile(x, getY()); //these can be shrunken if tile did not exist (:
                     Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
 
                     if (targetPiece != null) 
                     {
                         if(targetPiece instanceof Rook)
                         {
-                            if (targetPiece.getPieceTeam() == this.getPieceTeam() && board.turnCounter.pieceMoveCount(targetPiece) == 0)
+                            if (targetPiece.getPieceTeam() == getPieceTeam() && board.turnCounter.pieceMoveCount(targetPiece) == 0)
                             {
-                                possibleMoves.add(targetTile = board.getTile(this.x + (dir * 2), this.y)); //king side Castle
+                                possibleMoves.add(targetTile = board.getTile(getX() + (dir * 2), getY())); //king side Castle
                             }
                         }
                         else
@@ -192,7 +192,7 @@ public class King extends Pieces {
                     } 
                     else
                     {
-                        if (isCheck(x, this.y, board))
+                        if (isCheck(x, getY(), board))
                         {
                             break;   
                         }

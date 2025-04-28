@@ -40,15 +40,15 @@ public class Knight extends Pieces {
 
         for (int[] dir : getDirection()) 
         {            
-            int x = this.x + dir[0];
-            int y = this.y + dir[1];
+            int x = getX() + dir[0];
+            int y = getY() + dir[1];
 
             if (isWithinBoard(x, y, board)) 
             {
                 Tile targetTile = board.getTile(x, y);
                 Pieces targetPiece = targetTile.getPiece();
 
-                if (targetPiece == null || targetPiece.getPieceTeam() != this.getPieceTeam()) // if Tile empty or Contains enemy
+                if (targetPiece == null || targetPiece.getPieceTeam() != getPieceTeam()) // if Tile empty or Contains enemy
                 { 
                     possibleMoves.add(targetTile); 
                 } 

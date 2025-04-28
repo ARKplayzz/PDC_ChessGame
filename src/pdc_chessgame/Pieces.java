@@ -16,8 +16,7 @@ public abstract class Pieces
     //Unicode doesnt work in netbeans so we will use letters ):
     private String pieceUnicode = "?"; 
         
-    public int x;
-    public int y;
+    private int x, y;
     
     private Team pieceTeam;  
 
@@ -38,6 +37,26 @@ public abstract class Pieces
     {
         return this.pieceTeam;
     }
+    
+    public int getX()
+    {
+        return this.x;
+    }
+    
+    public int getY()
+    {
+        return this.y;
+    }
+    
+    public void setX(int x)
+    {
+       this.x = x;
+    }
+    
+    public void setY(int y)
+    {
+        this.y = y;
+    }
 
     public void setTeamColour(String pieceUnicode) {//is this nessisary as a function?
         this.pieceUnicode = pieceUnicode;
@@ -45,7 +64,7 @@ public abstract class Pieces
     
     public boolean isWithinBoard(int x, int y, ChessBoard board) 
     {
-        return x >= 0 && x < board.width && y >= 0 && y < board.height;
+        return x >= 0 && x < board.getWidth() && y >= 0 && y < board.getHeight();
     }
         
     public abstract int[][] getDirection();
@@ -74,7 +93,7 @@ public abstract class Pieces
                 } 
                 else 
                 {
-                    if (targetPiece.getPieceTeam() != this.getPieceTeam())
+                    if (targetPiece.getPieceTeam() != getPieceTeam())
                     {
                         possibleMoves.add(targetTile); 
                         break;

@@ -3,12 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package pdc_chessgame;
-import java.util.Scanner;
-import pdc_chessgame.ChessBoard;
-import pdc_chessgame.Input;
-import pdc_chessgame.Team;
-import pdc_chessgame.GameMenu;
-import pdc_chessgame.InputHandler;
 
 /**
  *
@@ -51,7 +45,6 @@ public class ChessGame {
         else if (userSelection == MenuOption.EXIT) 
         {
             displayExit();
-            return;
         }
     }
     
@@ -135,8 +128,7 @@ public class ChessGame {
         System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
         System.out.print(player.getName() + "> ");
         
-         String playerInput = inputHandler.getStringInput("");
-
+        String playerInput = inputHandler.getStringInput("");
  
         if (playerInput.toUpperCase().equals("X"))
         {
@@ -149,7 +141,9 @@ public class ChessGame {
             return getPlayerTurn(player);  //try again
         }
         
-        if (Input.getMove(playerInput.trim().toUpperCase()) == null)
+        Input moveSet = Input.getMove(playerInput.trim().toUpperCase());
+        
+        if (moveSet == null)
         {
             System.out.println("----------------------------------------------------");
             System.out.println("'"+playerInput+ "' Is not a valid chess Input, Eg 'A1 B2'");
@@ -157,46 +151,40 @@ public class ChessGame {
             return getPlayerTurn(player);  //try again
         }
         
-        Input moveSet = Input.getMove(playerInput.trim().toUpperCase());
-        
-        if (this.board.getTile(moveSet.fromX, moveSet.fromY) == null)
+        if (!isValidMove(moveSet, player.getTeam(), playerInput)) 
         {
-            System.out.println("----------------------------------------------------");
-            System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Does not contain a piece, Eg 'A1 B2'");
-            
-           return getPlayerTurn(player);  //try again
-            
-        }
-        if (this.board.getTile(moveSet.fromX, moveSet.fromY).getPiece() == null)
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Does not contain a Piece, please try again");
-            
-            return getPlayerTurn(player);  //try again
-        }
-        if (this.board.getTile(moveSet.fromX, moveSet.fromY).getPiece().getPieceTeam() != player.getTeam())
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println(playerInput.charAt(0) +""+ playerInput.charAt(1) + " Is not your Piece, please try again");
-            
-            return getPlayerTurn(player);  //try again
-        }
-        
-        // if the list of possible moves does not contain our destination tile        
-        if (!this.board.getTile(moveSet.fromX, moveSet.fromY).getPiece().canMove(board).contains(board.getTile(moveSet.toX, moveSet.toY)))
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println(playerInput + " Is an Invalid Chess Move, please try again");
-            
-            return getPlayerTurn(player);  //try again
+            return getPlayerTurn(player);
         }
         
         System.out.println("----------------------------------------------------");        
-        
         return moveSet;
     }
     
-    public static Pieces getPromotionPiece(Player player, Pawn pawn)//this can be simplified
+    private boolean isValidMove(Input move, Team team, String input) 
+    {
+        if (board.getTile(move.fromX, move.fromY) == null || board.getTile(move.fromX, move.fromY).getPiece() == null) 
+        {
+            System.out.println("----------------------------------------------------");
+            System.out.println(input.charAt(0) +""+ input.charAt(1) + " Does not contain a piece, Eg 'A1 B2'");
+            return false;
+        }
+        Pieces piece = board.getTile(move.fromX, move.fromY).getPiece();
+        if (piece.getPieceTeam() != team) 
+        {
+            System.out.println("----------------------------------------------------");
+            System.out.println(input.charAt(0) +""+ input.charAt(1) + " Is not your Piece, please try again");
+            return false;
+        }
+        if (!piece.canMove(board).contains(board.getTile(move.toX, move.toY))) 
+        {
+            System.out.println("----------------------------------------------------");
+            System.out.println(input + " Is an invalid move for this piece, please try again");
+            return false;
+        }
+        return true;
+    }
+    
+    public static Pieces getPromotionPiece(Player player, Pawn pawn)//need to handle resignation  
     {
         InputHandler inputHandler = new InputHandler();
 
@@ -207,45 +195,42 @@ public class ChessGame {
         System.out.println("   <KNIGHT>  =  N,   <QUEEN>  =  Q ");
       
         String playerInput = inputHandler.getStringInput(player.getName() + ">");
+        Pieces promotedPiece = null;
  
-        if (playerInput.toUpperCase().equals("X"))
+        switch (playerInput) 
         {
-            System.out.println("----------------------------------------------------");
-            System.out.println(player+" HAS RESIGNED ");
-            
-            return null;
+            case "X":
+                System.out.println("----------------------------------------------------");
+                return null;
+            case "R":
+                promotedPiece = new Rook(pawn.getX(), pawn.getY(), pawn.getPieceTeam());
+                break;
+            case "B":
+                promotedPiece = new Bishop(pawn.getX(), pawn.getY(), pawn.getPieceTeam());
+                break;
+            case "N":
+                promotedPiece = new Knight(pawn.getX(), pawn.getY(), pawn.getPieceTeam());
+                break;
+            case "Q":
+                promotedPiece = new Queen(pawn.getX(), pawn.getY(), pawn.getPieceTeam());
+                break;
         }
-        if (playerInput.toUpperCase().equals("R"))
-        {
-            System.out.println("----------------------------------------------------");
-            
-            return new Rook(pawn.x, pawn.y, pawn.getPieceTeam()); 
-        }
-        if (playerInput.toUpperCase().equals("B"))
-        {
-            System.out.println("----------------------------------------------------");
-            
-            return new Bishop(pawn.x, pawn.y, pawn.getPieceTeam()); 
-        }
-        if (playerInput.toUpperCase().equals("N"))
-        {
-            System.out.println("----------------------------------------------------");
-            
-            return new Knight(pawn.x, pawn.y, pawn.getPieceTeam()); 
-        }
-        if (playerInput.toUpperCase().equals("Q"))
-        {
-            System.out.println("----------------------------------------------------");
-            
-            return new Queen(pawn.x, pawn.y, pawn.getPieceTeam()); 
-        }
-        System.out.println("----------------------------------------------------");
-        System.out.println("Invalid option chosen, please try again");
-        System.out.println("----------------------------------------------------");
 
-        
-        return getPromotionPiece(player, pawn);  //try again
+        if (promotedPiece != null) 
+        {
+            System.out.println("----------------------------------------------------");
+            return promotedPiece;
+        } 
+        else 
+        {
+            System.out.println("----------------------------------------------------");
+            System.out.println("Invalid option chosen, please try again");
+            System.out.println("----------------------------------------------------");
+            
+            return getPromotionPiece(player, pawn); // Try again
+        }
     }
+
     
     private void displayWelcome() 
     {

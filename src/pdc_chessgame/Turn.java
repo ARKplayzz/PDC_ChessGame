@@ -35,7 +35,7 @@ public class Turn
         @Override
         public String toString()
         {// modify the spacing a little later
-            return (String)(this.piece.getPieceUnicode()+" "+this.from.x+","+this.from.y+" "+this.to.x+","+this.to.y+" "+this.moveNo);
+            return (String)(this.piece.getPieceUnicode()+" "+this.from.getX()+","+this.from.getY()+" "+this.to.getX()+","+this.to.getY()+" "+this.moveNo);
         }
     }
     
@@ -72,7 +72,7 @@ public class Turn
     public int distanceLastMoved(Pieces p) // MIGHT NOT BE COMPLETLY FUNCTIONAL
     {
         move m = this.lastMove(p);
-        return GameTools.distanceBetween(m.from.x, m.to.x, m.from.y, m.to.y);
+        return GameTools.distanceBetween(m.from.getX(), m.to.getX(), m.from.getY(), m.to.getY());
     }
     
     // returns the amount of turns since the specified piece moved, returns 1 if the move was last turn
