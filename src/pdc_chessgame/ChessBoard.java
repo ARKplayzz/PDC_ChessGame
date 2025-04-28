@@ -116,7 +116,7 @@ public class ChessBoard
         }
         
         // add move to history
-        this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.fromX, moveSet.fromY), getTile(moveSet.toX, moveSet.toY));
+        this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.toX, moveSet.toY).getPiece(), getTile(moveSet.fromX, moveSet.fromY), getTile(moveSet.toX, moveSet.toY));
         // check if a piece needs to be captured before its Tile is overridden
         if (getTile(moveSet.toX, moveSet.toY).getPiece() != null){
             captureTile(moveSet.toX, moveSet.toY);
@@ -181,7 +181,7 @@ public class ChessBoard
     {
         if (piece instanceof Pawn && ((Pawn) piece).canPromotion(this))
         {
-            setTile(Display.getPromotionPiece("Player", (Pawn) piece), moveSet.fromX, moveSet.fromY);
+            setTile(ChessGame.getPromotionPiece("Player", (Pawn) piece), moveSet.fromX, moveSet.fromY);
             return true;
         }
         return false;
@@ -276,10 +276,38 @@ public class ChessBoard
             return false; // empty
         }
         
-        getPriorMove(1)
+        MoveState priorMoveState = turnCounter.deleteRecentMove(); 
         
+        Pieces movedPiece = priorMoveState.getPiece();
+
+        Tile fromTile = priorMoveState.getFromTile();
+        Tile toTile = priorMoveState.getToTile();
+
+        Pieces capturedPiece = priorMoveState.getCapturedPiece();
+
+        Pieces currentPiece = toTile.getPiece(); 
+        if (currentPiece != null && currentPiece.getClass() != movedPiece.getClass()) //check if piece has changed during movement (pawn promotion)
+        {
+        toTile.setPiece(movedPiece);
+        }
+
+        toTile.movePieceTo(fromTile); //return piece
+
+        if (capturedPiece != null) //return captured piece + remove from list
+        {
+            toTile.setPiece(capturedPiece);
+            this.capturedPieces.remove(capturedPiece);
+        }
+        if (movedPiece instanceof King && Math.abs(toTile.getX() - fromTile.getX()) == 2) // castle check
+        {
+            int rookToX = toTile.getX() > fromTile.getX() ? fromTile.getX() + 1 : fromTile.getX() - 1;
+            int rookFromX = toTile.getX() > fromTile.getX() ? 7 : 0;
+
+            getTile(rookToX, fromTile.getY()).movePieceTo(getTile(rookFromX, fromTile.getY())); //return rook
+        }
         return true;
     }
+
     
     // alternative: storing kingLocation within board...?
     private King getKing(Team team) 

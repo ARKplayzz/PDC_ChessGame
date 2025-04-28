@@ -40,6 +40,7 @@ public class ChessGame {
         if (userSelection == MenuOption.START_GAME) 
         {
             initialisePlayers();
+            isRunning = true;
             gameLoop();
         } 
         else if (userSelection == MenuOption.EXIT) 
@@ -50,8 +51,6 @@ public class ChessGame {
     
     private void gameLoop() 
     {
-        isRunning = true;
-        
         while (isRunning && !board.checkmate) 
         {
             board.displayBoard();
@@ -71,10 +70,18 @@ public class ChessGame {
                 if (board.isInCheck(currentTeam))
                 {
                     board.undoMove();
+                    displayInCheckWarning();
+                }
+                else
+                {
+                    board.turnCounter.nextTurn();
                 }
             }
-            board.moveTile(moveSet);
-            board.turnCounter.nextTurn(); //check with finlay if correct usage?
+            else
+            {
+                board.moveTile(moveSet);
+                board.turnCounter.nextTurn();
+            }   
         }
         
         if (board.checkmate) {
@@ -242,7 +249,13 @@ public class ChessGame {
             return getPromotionPiece(player, pawn); // Try again
         }
     }
-
+    private void displayInCheckWarning() 
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println("Invalid move! Your still in check, please try again");
+        System.out.println("----------------------------------------------------");
+        
+    }
     private void displayWelcome() 
     {
         System.out.println("----------------------------------------------------");
