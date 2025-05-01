@@ -41,7 +41,7 @@ public class ChessGame
     {
         displayWelcome(); 
         
-        MenuOption userSelection = menu.displayMenu();
+        MenuOption userSelection = menu.displayMenu(this.leaderboard);
 
         if (userSelection == MenuOption.START_GAME) 
         {

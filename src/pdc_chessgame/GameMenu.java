@@ -28,7 +28,7 @@ public class GameMenu
         this.scanner = new Scanner(System.in);
     }
     
-    public MenuOption displayMenu() 
+    public MenuOption displayMenu(Ranking rankings) 
     {
         while (true) 
         {
@@ -47,11 +47,11 @@ public class GameMenu
             } 
             else if (userInput.equals("RANK")) 
             {
-                displayRankings();
+                this.displayRankings(rankings);
             } 
             else if (userInput.equals("LEADERBOARD")) 
             {
-                displayLeaderboard();
+                this.displayLeaderboard(rankings);
             } 
             else if (userInput.equals("X")) 
             {
@@ -91,7 +91,7 @@ public class GameMenu
         System.out.println("----------------------------------------------------");
         System.out.println("CHESS LEADERBOARD");
         
-        rankings.printLeaderboard(); //need to add ):
+        rankings.printLeaderboard(); 
         
         System.out.println("----------------------------------------------------");
     }
