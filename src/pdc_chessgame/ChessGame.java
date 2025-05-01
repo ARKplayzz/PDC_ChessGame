@@ -95,7 +95,10 @@ public class ChessGame
         {
             Team winningTeam = getEnemyTeam(board.turnCounter.getTeam());
             Player winner = getPlayerInTeam(winningTeam);
-            System.out.println("Checkmate! " + winner.getName() + " wins!");      
+            System.out.println("Checkmate! " + winner.getName() + " wins!");     
+            Player loser = getPlayerInTeam(getEnemyTeam(winningTeam));
+            
+            this.changeElo(winner.getName(), loser.getName());
         }
         
         //saving scores to the file just before the program exits
@@ -150,6 +153,14 @@ public class ChessGame
             return;
         }
         playerLogin(player);
+    }
+    
+    // used in chackmate and for a forfiet
+    private void changeElo(String winner, String loser)
+    {
+        int[] t = this.leaderboard.changeElo(winner, loser);
+        System.out.println("\n"+winner+" elo change: "+t[0]+" -> "+this.leaderboard.getElo(winner));
+        System.out.println("\n"+loser+" elo change: "+t[1]+" -> "+this.leaderboard.getElo(loser));
     }
     
     private Input getPlayerTurn(Player player)
