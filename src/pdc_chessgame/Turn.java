@@ -15,19 +15,17 @@ public class Turn
 {
     private int turn = 0;
     private Team team = Team.WHITE;
-    
-    // not completely convinced about leaving this private, make it public if you need to, (Modify lastMove if you do)
-    @SuppressWarnings("FieldMayBeFinal")
-    private List<Move> moveHistory;
+
+    private List<MoveState> moveHistory;
     
     public Turn()
     {
         this.moveHistory = new ArrayList<>();
     }
     
-    public void addMoveToHistory(Pieces p, Tile from, Tile to)
+    public void addMoveToHistory(Pieces piece, Pieces capturedPiece, Tile from, Tile to)
     {
-        Move m = new Move(p, from, to);
+        MoveState m = new MoveState(piece, capturedPiece, from, to, this.turn);
         this.moveHistory.add(m);
     }
     
@@ -36,60 +34,60 @@ public class Turn
         return this.moveHistory.size();
     }
     
-    public Move getPriorMove(int priorMoveNumber) // not last move, one before for undo indexing
+    public MoveState getPriorMove(int priorMoveNumber) // not last move, one before for undo indexing
     {
         return this.moveHistory.get(this.moveHistory.size() - priorMoveNumber);
     }
     
-    private int lastMoveNum(Pieces p)
+    private MoveState lastMove(Pieces p)
     {
-        if(p == null)
-            return -1;
-        int id = -1;
+        MoveState m = new MoveState(null, null, null, null, -1);
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
-            if(this.moveHistory.get(i).piece.equals(p) /*&& m.moveNo < this.moveHistory.get(i).moveNo*/)
-            {
-                id = i;
-            }
-        }
-        return id;
-    }
-    
-    private Move lastMove(Pieces p)
-    {
-        Move m = new Move(null, null, null);
-        for(int i = 0; i < this.moveHistory.size(); i++)
-        {
-            if(this.moveHistory.get(i).piece.equals(p) /*&& m.moveNo < this.moveHistory.get(i).moveNo*/)
+            if(this.moveHistory.get(i).getPiece().equals(p) && m.getMoveNumber() < this.moveHistory.get(i).getMoveNumber())
             {
                 m = this.moveHistory.get(i);
             }
         }
-        if(m.piece == null)
+        if(m.getPiece() == null)
             return null;
         return m;
+    }
+    
+    public MoveState deleteRecentMove() 
+    {
+        if (this.moveHistory.isEmpty()) 
+        {
+            return null;
+        }
+        
+        int lastIndex = this.moveHistory.size() - 1;
+        MoveState lastMove = this.moveHistory.get(lastIndex);
+
+        this.moveHistory.remove(lastIndex);
+
+        return lastMove;
     }
     
     // returns the amount of distance the specified piece moved on its last turn
     public int distanceLastMoved(Pieces p) // MIGHT NOT BE COMPLETLY FUNCTIONAL
     {
-        Move m = this.lastMove(p);
-        return GameTools.distanceBetween(m.from.getX(), m.to.getX(), m.from.getY(), m.to.getY());
+        MoveState m = this.lastMove(p);
+        return GameTools.distanceBetween(m.getFromTile().getX(), m.getToTile().getX(), m.getFromTile().getY(), m.getToTile().getY());
     }
     
     // returns the amount of turns since the specified piece moved, returns 1 if the move was last turn
     public int turnsSinceLastMoved(Pieces p)
     {
-        Move m = this.lastMove(p);
+        MoveState m = this.lastMove(p);
         if(m != null) 
         {
-            return this.lastMoveNum(p) - this.turn;
+            return m.getMoveNumber() - this.turn;
         }
         return 0;
     }
     
-    public boolean historyContains(Move m)
+    public boolean historyContains(MoveState m)
     {
         return this.moveHistory.contains(m);
     }
@@ -98,7 +96,7 @@ public class Turn
     {
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
-            if(this.moveHistory.get(i).piece.equals(p))
+            if(this.moveHistory.get(i).getPiece().equals(p))
             {
                 return true;
             }
@@ -111,7 +109,7 @@ public class Turn
         int n = 0;
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
-            if(this.moveHistory.get(i).piece.equals(p))
+            if(this.moveHistory.get(i).getPiece().equals(p))
             {
                 n++;
             }
@@ -121,7 +119,7 @@ public class Turn
     
     public void printMoveHistory()
     {
-        System.out.println("Move history:\nPIECE    FROM    TO"); //turn removed
+        System.out.println("Move history:\nPIECE    FROM    TO    TURN");
         // do move.toString() in order of moveNo
     }
     

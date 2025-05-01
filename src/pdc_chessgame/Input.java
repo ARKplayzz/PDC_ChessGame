@@ -50,37 +50,4 @@ public class Input
         }
         return pos.charAt(0) >= 'A' && pos.charAt(0) <= 'H' && pos.charAt(1) >= '1' && pos.charAt(1) <= '8';
     }
-    
-    public static int getXdifference(Input moveSet){ //thoughts on this as a function (Maybe unessisary????)
-        
-        int dx = Math.abs(moveSet.toX - moveSet.fromX);
-        return dx;
-    }
-    
-    public static int getYdifference(Input moveSet){ //thoughts on this as a function (Maybe unessisary????)
-        
-        int dy = Math.abs(moveSet.toY - moveSet.fromY);
-        return dy;
-    }
-    
-    public boolean isPathClear(ChessBoard board){
-        
-        int directionX = Integer.compare(this.toX, this.fromX); // direction as - or +
-        int directionY = Integer.compare(this.toY, this.fromY);
-
-        int x = this.fromX + directionX;
-        int y = this.fromY + directionY;
-        
-        while (x != this.toX || y != this.toY) 
-        {// steps towards space   
-            if (board.getTile(x, y) != null) 
-            { // Something in the way
-                return false; 
-            }
-                
-            x += directionX; 
-            y += directionY;
-        }
-        return true;
-    }
 }
