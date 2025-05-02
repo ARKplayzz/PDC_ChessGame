@@ -16,14 +16,11 @@ public class ChessGame
     
     private static final String LEADERBOARD_FILE = "rankings.txt";
     private Ranking leaderboard;
-<<<<<<< HEAD
         
-=======
     private Clock clock;
     
     private boolean isRunning;
     
->>>>>>> a11f0e7a6fbaaa7fa2dc76e67c961692739122ae
     private GameMenu menu;
     private InputHandler inputHandler;
 
@@ -50,12 +47,9 @@ public class ChessGame
         if (userSelection == MenuOption.START_GAME) 
         {
             initialisePlayers();
-<<<<<<< HEAD
-=======
             isRunning = true;
             
             this.customiseClock();
->>>>>>> a11f0e7a6fbaaa7fa2dc76e67c961692739122ae
             gameLoop();
             
             //saving scores to the file just before the program exits
@@ -69,18 +63,11 @@ public class ChessGame
     
     private Player gameLoop() 
     {
-<<<<<<< HEAD
         board.displayBoard();
+        this.clock.start();
         
         while (true) 
         {           
-=======
-        this.clock.start();
-        while (isRunning && !board.checkmate) 
-        {
-            board.displayBoard();
-            
->>>>>>> a11f0e7a6fbaaa7fa2dc76e67c961692739122ae
             Team currentTeam = board.turnCounter.getTeam();
             Team enemyTeam = getEnemyTeam(currentTeam); // this alows for scalabuility in asignment 2
             
@@ -115,25 +102,9 @@ public class ChessGame
                 board.displayBoard();
             } 
         }
-<<<<<<< HEAD
         Player winner = getPlayerInTeam(getEnemyTeam(board.turnCounter.getTeam()));
-        return winner;
-=======
-        
-        if (board.checkmate) 
-        {
-            Team winningTeam = getEnemyTeam(board.turnCounter.getTeam());
-            Player winner = getPlayerInTeam(winningTeam);
-            System.out.println("Checkmate! " + winner.getName() + " wins!");     
-            Player loser = getPlayerInTeam(getEnemyTeam(winningTeam));
-            
-            this.changeElo(winner.getName(), loser.getName());
-        }
-        
         this.clock.terminate();
-        //saving scores to the file just before the program exits
-        this.leaderboard.saveScores(LEADERBOARD_FILE);
->>>>>>> a11f0e7a6fbaaa7fa2dc76e67c961692739122ae
+        return winner;
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...

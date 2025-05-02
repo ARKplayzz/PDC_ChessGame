@@ -45,7 +45,7 @@ public class Clock extends Thread
         return this.playerTimes[n].limit;
     }
     
-    public void changeClock()
+    public void swapClock()
     {
         // add 10 seconds to the current players time
         this.playerTimes[this.activePlayer].limit += 10000;
