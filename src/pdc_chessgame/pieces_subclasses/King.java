@@ -82,10 +82,14 @@ public class King extends Pieces {
                 { 
                     if (targetPiece.getPieceTeam() != getPieceTeam())
                     {
-                        if (targetPiece.canMove(board).contains(board.getTile(x, y))) 
+                        // Bulkeir code but more effiencent the running can move for every piece if a movset is already expected
+                        if (targetPiece instanceof Queen ||
+                            (targetPiece instanceof Rook && (xDirection == 0 || yDirection == 0)) ||
+                            (targetPiece instanceof Bishop && xDirection != 0 && yDirection != 0) ||
+                            (targetPiece instanceof King && Math.abs(newX - x) <= 1 && Math.abs(newY - y) <= 1) ||
+                            (targetPiece instanceof Pawn && targetPiece.canMove(board).contains(board.getTile(x, y))))
                         {
                             attackers.add(targetPiece);
-                            break;
                         }
                     }
                     break;
@@ -95,25 +99,19 @@ public class King extends Pieces {
                 newY += yDirection;
             }
         }
-        for (int[] dir : scanTiles) 
+        for (int[] dir : scanTiles) //knight moves
         {
-            int xDirection = dir[0];
-            int yDirection = dir[1];
-            
-            int newX = x + xDirection; 
-            int newY = y + yDirection;
+            int newX = x + dir[0];
+            int newY = y + dir[1];
 
             if (isWithinBoard(newX, newY, board)) 
             {
                 Tile targetTile = board.getTile(newX, newY); //these can be shrunken if tile did not exist (:
                 Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
 
-                if (targetPiece != null && targetPiece.getPieceTeam() != getPieceTeam())
+                if (targetPiece != null && targetPiece.getPieceTeam() != getPieceTeam() && targetPiece instanceof Knight)
                 {
-                    if (targetPiece.canMove(board).contains(board.getTile(newX, newY))) 
-                    {
-                        attackers.add(targetPiece);
-                    }
+                    attackers.add(targetPiece);
                 }
             }
         }
