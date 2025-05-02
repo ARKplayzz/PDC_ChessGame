@@ -16,7 +16,14 @@ public class ChessGame
     
     private static final String LEADERBOARD_FILE = "rankings.txt";
     private Ranking leaderboard;
+<<<<<<< HEAD
         
+=======
+    private Clock clock;
+    
+    private boolean isRunning;
+    
+>>>>>>> a11f0e7a6fbaaa7fa2dc76e67c961692739122ae
     private GameMenu menu;
     private InputHandler inputHandler;
 
@@ -38,11 +45,17 @@ public class ChessGame
     {
         displayWelcome(); 
         
-        MenuOption userSelection = menu.displayMenu();
+        MenuOption userSelection = menu.displayMenu(this.leaderboard);
 
         if (userSelection == MenuOption.START_GAME) 
         {
             initialisePlayers();
+<<<<<<< HEAD
+=======
+            isRunning = true;
+            
+            this.customiseClock();
+>>>>>>> a11f0e7a6fbaaa7fa2dc76e67c961692739122ae
             gameLoop();
             
             //saving scores to the file just before the program exits
@@ -56,10 +69,18 @@ public class ChessGame
     
     private Player gameLoop() 
     {
+<<<<<<< HEAD
         board.displayBoard();
         
         while (true) 
         {           
+=======
+        this.clock.start();
+        while (isRunning && !board.checkmate) 
+        {
+            board.displayBoard();
+            
+>>>>>>> a11f0e7a6fbaaa7fa2dc76e67c961692739122ae
             Team currentTeam = board.turnCounter.getTeam();
             Team enemyTeam = getEnemyTeam(currentTeam); // this alows for scalabuility in asignment 2
             
@@ -94,8 +115,25 @@ public class ChessGame
                 board.displayBoard();
             } 
         }
+<<<<<<< HEAD
         Player winner = getPlayerInTeam(getEnemyTeam(board.turnCounter.getTeam()));
         return winner;
+=======
+        
+        if (board.checkmate) 
+        {
+            Team winningTeam = getEnemyTeam(board.turnCounter.getTeam());
+            Player winner = getPlayerInTeam(winningTeam);
+            System.out.println("Checkmate! " + winner.getName() + " wins!");     
+            Player loser = getPlayerInTeam(getEnemyTeam(winningTeam));
+            
+            this.changeElo(winner.getName(), loser.getName());
+        }
+        
+        this.clock.terminate();
+        //saving scores to the file just before the program exits
+        this.leaderboard.saveScores(LEADERBOARD_FILE);
+>>>>>>> a11f0e7a6fbaaa7fa2dc76e67c961692739122ae
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...
@@ -148,6 +186,28 @@ public class ChessGame
         playerLogin(player);
     }
     
+    public void customiseClock()
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println("CLOCK SETTING                           (X) TO QUIT\n");
+        System.out.print("Please enter the time limit for every\nplayer (in minutes, will be rounded)\n");
+        
+        String userInput = inputHandler.getStringInput("> ").trim(); 
+        int tl = Integer.parseInt(userInput);
+        
+        System.out.println("Set players time limit as "+tl+" minutes.");
+        System.out.println("----------------------------------------------------");
+        this.clock = new Clock(tl, 2);
+    }
+    
+    // used in chackmate and for a forfiet
+    private void changeElo(String winner, String loser)
+    {
+        int[] t = this.leaderboard.changeElo(winner, loser);
+        System.out.println("\n"+winner+" elo change: "+t[0]+" -> "+this.leaderboard.getElo(winner));
+        System.out.println("\n"+loser+" elo change: "+t[1]+" -> "+this.leaderboard.getElo(loser));
+    }
+    
     private Input getPlayerTurn(Player player)
     {
         System.out.println("----------------------------------------------------");
@@ -156,9 +216,14 @@ public class ChessGame
         
         String playerInput = inputHandler.getStringInput("");
  
-        if (playerInput.toUpperCase().equals("X"))
+        if (playerInput.toUpperCase().trim().equals("X"))
         {
             return null;  //end
+        }
+        
+        if(playerInput.toUpperCase().trim().equals("T"))
+        {
+            System.out.println(this.TimerToString());
         }
         
         if (playerInput.toUpperCase().equals("H"))
@@ -257,6 +322,26 @@ public class ChessGame
             return getPromotionPiece(player, pawn); // Try again
         }
     }
+    
+    private String TimerToString() // FIX THIS
+    {
+        Team currentTeam = board.turnCounter.getTeam();
+        Player currentPlayer = getPlayerInTeam(currentTeam);
+            
+        long seconds = 0;
+        for(int i = 0; i < this.players.length; i++)
+        {
+            if(this.players[i].equals(currentPlayer))
+            {
+                seconds = this.clock.getTime(i) / 1000;
+            }
+        }
+        int mins = (int)(seconds/60);
+        seconds = seconds%60;
+        
+        return ("Remaining time: "+mins+":"+seconds);
+    }
+    
     private void displayInCheckWarning() 
     {
         System.out.println("Invalid move! Your king is facing check, try again");
@@ -294,8 +379,9 @@ public class ChessGame
     {
         System.out.println("----------------------------------------------------");
         System.out.println("CHESS HELP");
-        System.out.println("Resign Game   > X");
-        System.out.println("Chess Help    > H");
+        System.out.println("Resign Game          > X");
+        System.out.println("Chess Help           > H");
+        System.out.println("Show remaining time  > T");
         System.out.println("Move format   > From Tile -> 'A1 B2' <- To Tile");
     }
     

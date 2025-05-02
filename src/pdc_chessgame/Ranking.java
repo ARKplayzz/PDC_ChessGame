@@ -38,6 +38,24 @@ public class Ranking
         return this.leaderboard.get(user);
     }
     
+    // call at the end of the game to compute elo
+    public int[] changeElo(String winner, String loser)
+    {
+        int winnerElo = this.leaderboard.get(winner);
+        int loserElo = this.leaderboard.get(loser);
+        
+        this.leaderboard.put(winner, (this.leaderboard.get(winner) + 25 *(1 - this.predictElo(winner, loser))) );
+        this.leaderboard.put(loser, (this.leaderboard.get(loser) + 25 *(0 - this.predictElo(loser, winner))) );
+        
+        int[] t = {winnerElo, loserElo};
+        return t;
+    }
+    
+    private int predictElo(String player, String opponent)
+    {
+        return (int)(1.0 / (1 + Math.pow(10, (this.leaderboard.get(player) - this.leaderboard.get(opponent)) / 400.0)));
+    }
+    
     public boolean newUser(String user)
     {
         if(this.leaderboard.containsKey(user))
@@ -63,8 +81,16 @@ public class Ranking
         }
     }
     
+    public boolean isEmpty()
+    {
+        if(this.leaderboard.size() < 1)
+            return true;
+        return false;
+    }
+    
     public boolean getLeaderboard(String file)
     {
+        @SuppressWarnings("UnusedAssignment")
         FileReader f = null;
         try {
             f = new FileReader(file);

@@ -15,7 +15,7 @@ public class Knight extends Pieces {
 
     public Knight(int x, int y, Team pieceTeam) 
     {
-        super(x, y, pieceTeam == Team.BLACK ? "n" : "N", pieceTeam); // Need to confirm we are doing subclassess correctly
+        super(x, y, pieceTeam == Team.BLACK ? "♞" : "♘", pieceTeam == Team.BLACK ? "n" : "N", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
     @Override

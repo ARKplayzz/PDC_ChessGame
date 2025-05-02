@@ -28,7 +28,7 @@ public class GameMenu
         this.scanner = new Scanner(System.in);
     }
     
-    public MenuOption displayMenu() 
+    public MenuOption displayMenu(Ranking rankings) 
     {
         while (true) 
         {
@@ -47,11 +47,11 @@ public class GameMenu
             } 
             else if (userInput.equals("RANK")) 
             {
-                displayRankings();
+                this.displayRankings(rankings);
             } 
             else if (userInput.equals("LEADERBOARD")) 
             {
-                displayLeaderboard();
+                this.displayLeaderboard(rankings);
             } 
             else if (userInput.equals("X")) 
             {
@@ -80,7 +80,7 @@ public class GameMenu
             System.out.println(username + " has an Elo rating of " + rankings.getElo(username));
         } else 
         {
-            System.out.println("Player not found. New players start with 100 Elo.");
+            System.out.println("Player not found. New players will start with 100 Elo.");
         }
         
         System.out.println("----------------------------------------------------");
@@ -91,7 +91,9 @@ public class GameMenu
         System.out.println("----------------------------------------------------");
         System.out.println("CHESS LEADERBOARD");
         
-        rankings.printLeaderboard(); //need to add ):
+        if(rankings.isEmpty())
+            System.out.println("The leaderboard appears to be empty, \nyou should play some games to fill it in.");
+        rankings.printLeaderboard(); 
         
         System.out.println("----------------------------------------------------");
     }

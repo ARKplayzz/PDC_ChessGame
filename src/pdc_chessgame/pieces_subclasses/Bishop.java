@@ -12,7 +12,7 @@ public class Bishop extends Pieces {
 
    public Bishop(int x, int y, Team pieceTeam) 
     {
-        super(x, y, pieceTeam == Team.BLACK ? "b" : "B", pieceTeam); // Need to confirm we are doing subclassess correctly
+        super(x, y, pieceTeam == Team.BLACK ? "♝" : "♗", pieceTeam == Team.BLACK ? "b" : "B", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
    
     @Override

@@ -12,7 +12,7 @@ public class Queen extends Pieces {
 
     public Queen(int x, int y, Team pieceTeam) 
     {
-        super(x, y, pieceTeam == Team.BLACK ? "q" : "Q", pieceTeam); // Need to confirm we are doing subclassess correctly
+        super(x, y, pieceTeam == Team.BLACK ? "♛" : "♕", pieceTeam == Team.BLACK ? "q" : "Q", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
     @Override

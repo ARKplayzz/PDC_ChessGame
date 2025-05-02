@@ -17,7 +17,7 @@ public class Pawn extends Pieces {
 
     public Pawn(int x, int y, Team pieceTeam) 
     {
-        super(x, y, pieceTeam == Team.BLACK ? "p" : "P", pieceTeam); // Need to confirm we are doing subclassess correctly
+        super(x, y, pieceTeam == Team.BLACK ? "♟" : "♙", pieceTeam == Team.BLACK ? "p" : "P", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
 
     @Override
