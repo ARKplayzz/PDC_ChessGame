@@ -159,7 +159,6 @@ public class ChessGame
     
     public void customiseClock()
     {
-        System.out.println("----------------------------------------------------");
         System.out.println("CLOCK SETTING                           (X) TO QUIT\n");
         System.out.print("Please enter the time limit for every\nplayer (in minutes, will be rounded)\n");
         
