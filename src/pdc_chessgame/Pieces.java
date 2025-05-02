@@ -15,17 +15,24 @@ public abstract class Pieces
 { 
     //Unicode doesnt work in netbeans so we will use letters ):
     private String pieceUnicode = "?"; 
+    private String pieceAltSymbol = "?";
         
     private int x, y;
     
     private Team pieceTeam;  
 
-    public Pieces(int x, int y, String pieceUnicode, Team pieceTeam) 
+    public Pieces(int x, int y, String pieceAltSymbol, String pieceUnicode, Team pieceTeam) 
     {
         this.x = x;
         this.y = y;
         this.pieceUnicode = pieceUnicode;
+        this.pieceAltSymbol = pieceAltSymbol;
         this.pieceTeam = pieceTeam;
+    }
+    
+    public String getPieceAltSymbol()
+    {
+        return this.pieceAltSymbol;
     }
 
     public String getPieceUnicode() 

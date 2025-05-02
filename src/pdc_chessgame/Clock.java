@@ -14,6 +14,7 @@ public class Clock extends Thread
     private long startTime;
     private boolean quit = false;
     
+    private int activePlayer;
     private long[] playerTimes;
     
     // playerTime is the amount of time each player gets
@@ -22,23 +23,29 @@ public class Clock extends Thread
         this.playerTimes = new long[numPlayers];
         
         for(int i = 0; i < numPlayers; i++)
-            this.playerTimes[i] = this.minsToNanos(playerTime);
+            this.playerTimes[i] = this.minsToMillis(playerTime);
     }
     
-    private long minsToNanos(int minutes)
+    private long minsToMillis(int minutes)
     {
-        
+        return (long)minutes * 60000;
     }
     
     public void changeClock()
     {
+        // add 10 seconds to the current players time
+        this.playerTimes[this.activePlayer] += 10000;
         
+        if(this.activePlayer < this.playerTimes.length-1)
+            this.activePlayer++;
+        else
+            this.activePlayer = 0;
     }
     
     @Override
     public void run()
     {
-        this.startTime = System.nanoTime();
+        this.startTime = System.currentTimeMillis();
         while(!this.quit)
         {
             

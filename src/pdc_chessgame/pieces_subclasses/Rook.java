@@ -12,7 +12,7 @@ public class Rook extends Pieces {
 
     public Rook(int x, int y, Team pieceTeam) 
     {
-        super(x, y, pieceTeam == Team.BLACK ? "r" : "R", pieceTeam); // Need to confirm we are doing subclassess correctly
+        super(x, y, pieceTeam == Team.BLACK ? "♜" : "♖", pieceTeam == Team.BLACK ? "r" : "R", pieceTeam); // Need to confirm we are doing subclassess correctly
     }
     
     @Override
