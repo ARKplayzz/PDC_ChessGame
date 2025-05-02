@@ -190,9 +190,14 @@ public class ChessGame
         
         String playerInput = inputHandler.getStringInput("");
  
-        if (playerInput.toUpperCase().equals("X"))
+        if (playerInput.toUpperCase().trim().equals("X"))
         {
             return null;  //end
+        }
+        
+        if(playerInput.toUpperCase().trim().equals("T"))
+        {
+            System.out.println(this.TimerToString());
         }
         
         if (playerInput.toUpperCase().equals("H"))
@@ -291,6 +296,26 @@ public class ChessGame
             return getPromotionPiece(player, pawn); // Try again
         }
     }
+    
+    private String TimerToString() // FIX THIS
+    {
+        Team currentTeam = board.turnCounter.getTeam();
+        Player currentPlayer = getPlayerInTeam(currentTeam);
+            
+        long seconds = 0;
+        for(int i = 0; i < this.players.length; i++)
+        {
+            if(this.players[i].equals(currentPlayer))
+            {
+                seconds = this.clock.getTime(i) / 1000;
+            }
+        }
+        int mins = (int)(seconds/60);
+        seconds = seconds%60;
+        
+        return ("Remaining time: "+mins+":"+seconds);
+    }
+    
     private void displayInCheckWarning() 
     {
         System.out.println("----------------------------------------------------");
@@ -311,8 +336,9 @@ public class ChessGame
     {
         System.out.println("----------------------------------------------------");
         System.out.println("CHESS HELP");
-        System.out.println("Resign Game   > X");
-        System.out.println("Chess Help    > H");
+        System.out.println("Resign Game          > X");
+        System.out.println("Chess Help           > H");
+        System.out.println("Show remaining time  > T");
         System.out.println("Move format   > From Tile -> 'A1 B2' <- To Tile");
     }
     

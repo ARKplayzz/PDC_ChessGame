@@ -40,6 +40,11 @@ public class Clock extends Thread
         return (long)minutes * 60000;
     }
     
+    public long getTime(int n)
+    {
+        return this.playerTimes[n].limit;
+    }
+    
     public void changeClock()
     {
         // add 10 seconds to the current players time

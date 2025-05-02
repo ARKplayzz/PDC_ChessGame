@@ -90,6 +90,7 @@ public class Ranking
     
     public boolean getLeaderboard(String file)
     {
+        @SuppressWarnings("UnusedAssignment")
         FileReader f = null;
         try {
             f = new FileReader(file);
