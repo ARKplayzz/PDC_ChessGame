@@ -81,6 +81,13 @@ public class Ranking
         }
     }
     
+    public boolean isEmpty()
+    {
+        if(this.leaderboard.size() < 1)
+            return true;
+        return false;
+    }
+    
     public boolean getLeaderboard(String file)
     {
         FileReader f = null;

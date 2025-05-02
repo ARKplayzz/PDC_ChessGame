@@ -80,7 +80,7 @@ public class GameMenu
             System.out.println(username + " has an Elo rating of " + rankings.getElo(username));
         } else 
         {
-            System.out.println("Player not found. New players start with 100 Elo.");
+            System.out.println("Player not found. New players will start with 100 Elo.");
         }
         
         System.out.println("----------------------------------------------------");
@@ -91,6 +91,8 @@ public class GameMenu
         System.out.println("----------------------------------------------------");
         System.out.println("CHESS LEADERBOARD");
         
+        if(rankings.isEmpty())
+            System.out.println("The leaderboard appears to be empty, \nyou should play some games to fill it in.");
         rankings.printLeaderboard(); 
         
         System.out.println("----------------------------------------------------");
