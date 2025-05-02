@@ -79,8 +79,8 @@ public abstract class Pieces
             int xDirection = dir[0];
             int yDirection = dir[1];
             
-            int x = this.x + xDirection;
-            int y = this.y + yDirection;
+            int x = getX() + xDirection;
+            int y = getY() + yDirection;
 
             while (isWithinBoard(x, y, board)) 
             {

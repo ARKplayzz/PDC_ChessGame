@@ -16,9 +16,7 @@ public class ChessGame
     
     private static final String LEADERBOARD_FILE = "rankings.txt";
     private Ranking leaderboard;
-    
-    private boolean isRunning;
-    
+        
     private GameMenu menu;
     private InputHandler inputHandler;
 
@@ -33,7 +31,6 @@ public class ChessGame
 
         this.players[0] = new Player("Guest 1", Team.WHITE);
         this.players[1] = new Player("Guest 2", Team.BLACK);
-        this.isRunning = false;
         this.leaderboard.getLeaderboard(LEADERBOARD_FILE);
     }
     
@@ -46,8 +43,10 @@ public class ChessGame
         if (userSelection == MenuOption.START_GAME) 
         {
             initialisePlayers();
-            isRunning = true;
             gameLoop();
+            
+            //saving scores to the file just before the program exits
+            this.leaderboard.saveScores(LEADERBOARD_FILE); //maybe put back into game loop
         } 
         else if (userSelection == MenuOption.EXIT) 
         {
@@ -55,51 +54,48 @@ public class ChessGame
         }
     }
     
-    private void gameLoop() 
+    private Player gameLoop() 
     {
-        while (isRunning && !board.checkmate) 
-        {
-            board.displayBoard();
-            
+        board.displayBoard();
+        
+        while (true) 
+        {           
             Team currentTeam = board.turnCounter.getTeam();
+            Team enemyTeam = getEnemyTeam(currentTeam); // this alows for scalabuility in asignment 2
+            
             Player currentPlayer = getPlayerInTeam(currentTeam);
+            
+            if (board.isCheckmate(currentTeam)) 
+            {
+                displayGameOver(enemyTeam); 
+                break;
+            }
             
             Input moveSet = getPlayerTurn(currentPlayer);
 
             if (moveSet == null) 
             { // Check if has quit
+                displayResignation(currentTeam);
                 break;
-                //need to handle ressignation
             }
-            if (board.isInCheck(currentTeam))
+            board.moveTile(moveSet);
+
+            if (board.isInCheck(currentTeam)) 
             {
-                board.moveTile(moveSet);
-                if (board.isInCheck(currentTeam))
-                {
-                    board.undoMove();
-                    displayInCheckWarning();
-                }
-                else
-                {
-                    board.turnCounter.nextTurn();
-                }
+                board.undoMove();
+                displayInCheckWarning(); 
             }
-            else
+            else 
             {
-                board.moveTile(moveSet);
+                if (board.isInCheck(enemyTeam)) {
+                    displayInCheckNotification(enemyTeam);
+                }
                 board.turnCounter.nextTurn();
-            }   
+                board.displayBoard();
+            } 
         }
-        
-        if (board.checkmate) 
-        {
-            Team winningTeam = getEnemyTeam(board.turnCounter.getTeam());
-            Player winner = getPlayerInTeam(winningTeam);
-            System.out.println("Checkmate! " + winner.getName() + " wins!");      
-        }
-        
-        //saving scores to the file just before the program exits
-        this.leaderboard.saveScores(LEADERBOARD_FILE);
+        Player winner = getPlayerInTeam(getEnemyTeam(board.turnCounter.getTeam()));
+        return winner;
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...
@@ -263,11 +259,28 @@ public class ChessGame
     }
     private void displayInCheckWarning() 
     {
-        System.out.println("----------------------------------------------------");
-        System.out.println("Invalid move! Your still in check, please try again");
-        System.out.println("----------------------------------------------------");
-        
+        System.out.println("Invalid move! Your king is facing check, try again");
     }
+    
+    private void displayInCheckNotification(Team team) 
+    {
+        System.out.println("CHECK! " + team.teamName() + " IS NOW IN CHECK");
+        System.out.println("----------------------------------------------------");  
+    }
+    
+    private void displayGameOver(Team winningTeam)
+    {
+        System.out.println("CHECKMATE! " + winningTeam.teamName() + " WINS!");
+        System.out.println("----------------------------------------------------"); 
+    }
+    
+    private void displayResignation(Team resigningTeam)
+    {
+        System.out.println("----------------------------------------------------"); 
+        System.out.println(resigningTeam.teamName() + " HAS RESIGNED! "+ getEnemyTeam(resigningTeam).teamName() +" WINS!");
+        System.out.println("----------------------------------------------------");  
+    }
+    
     private void displayWelcome() 
     {
         System.out.println("----------------------------------------------------");

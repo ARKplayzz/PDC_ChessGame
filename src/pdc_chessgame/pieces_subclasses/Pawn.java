@@ -75,9 +75,9 @@ public class Pawn extends Pieces {
                 Pieces targetPawn = pawnTile.getPiece();
 
                 if (targetPawn instanceof Pawn && // if target is a pawn
-                     targetPawn.getPieceTeam() != getPieceTeam() && // if target is an enemy
-                     board.turnCounter.turnsSinceLastMoved(targetPawn) == 0 && // if target just moved CHECK IF -1 IS EXPECTED CASE
-                     board.turnCounter.distanceLastMoved(targetPawn) == 2) { // if has only moved once
+                    targetPawn.getPieceTeam() != getPieceTeam() && // if target is an enemy
+                    board.turnCounter.turnsSinceLastMoved(targetPawn) == 0 && // if target just moved CHECK IF -1 IS EXPECTED CASE
+                    board.turnCounter.distanceLastMoved(targetPawn) == 2) { // if has only moved once
 
                     possibleMoves.add(targetTile);
                 }

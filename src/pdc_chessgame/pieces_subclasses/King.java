@@ -23,8 +23,24 @@ public class King extends Pieces {
         return isCheck(getX(), getY(), board);
     }
     
-    public boolean isCheck(int x, int y, ChessBoard board)
+    private boolean isCheck(int x, int y, ChessBoard board)
     {
+        if (getAttackingPieces(x, y, board).size() > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    public List<Pieces> getAttackingPieces(ChessBoard board)
+    {
+        return getAttackingPieces(getX(), getY(), board);
+    }
+    
+    private List<Pieces> getAttackingPieces(int x, int y, ChessBoard board) 
+    {
+        List<Pieces> attackers = new ArrayList<>();
+
         //checks line of sight for pieces
         int[][] scanDirections = { 
         {0, 1},     // up
@@ -54,20 +70,27 @@ public class King extends Pieces {
             int xDirection = dir[0];
             int yDirection = dir[1];
             
-            int newX = x + xDirection; 
+            int newX = x + xDirection;
             int newY = y + yDirection;
 
             while (isWithinBoard(newX, newY, board)) 
             {
-                Pieces kingPiece = this;
+                Tile targetTile = board.getTile(newX, newY); //these can be shrunken if tile did not exist (:
+                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
 
-                if (kingPiece != null && kingPiece.getPieceTeam() != getPieceTeam())
-                {
-                    if (kingPiece.canMove(board).contains(board.getTile(newX, newY))) 
+                if (targetPiece != null) // if Tile empty or Contains enemy
+                { 
+                    if (targetPiece.getPieceTeam() != getPieceTeam())
                     {
-                        return true;
+                        if (targetPiece.canMove(board).contains(board.getTile(x, y))) 
+                        {
+                            attackers.add(targetPiece);
+                            break;
+                        }
                     }
-                }
+                    break;
+                } 
+
                 newX += xDirection;
                 newY += yDirection;
             }
@@ -88,30 +111,6 @@ public class King extends Pieces {
                 if (targetPiece != null && targetPiece.getPieceTeam() != getPieceTeam())
                 {
                     if (targetPiece.canMove(board).contains(board.getTile(newX, newY))) 
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    
-    public List<Pieces> getAttackingPieces(ChessBoard board) 
-    {
-        List<Pieces> attackers = new ArrayList<>();
-
-        for (int x = 0; x < board.getWidth(); x++) 
-        {
-            for (int y = 0; y < board.getHeight(); y++) 
-            {
-                Pieces targetPiece = board.getTile(x, y).getPiece();
-
-                if (targetPiece != null && targetPiece.getPieceTeam() != getPieceTeam()) // if enemy
-                {
-                    List<Tile> enemyMoveset = targetPiece.canMove(board);
-
-                    if (enemyMoveset.contains(board.getTile(getX(), getY()))) 
                     {
                         attackers.add(targetPiece);
                     }
@@ -154,15 +153,15 @@ public class King extends Pieces {
                 if (targetPiece == null || targetPiece.getPieceTeam() != getPieceTeam()) // if Tile empty or Contains enemy
                 { 
                     if (!isCheck(x, y, board)) // King should not be able to move INTO check
-                    {
-                        //castle move
+                    {  
+                        System.out.println("the fucking move is x> " +x +" y> "+ y);
                         possibleMoves.add(targetTile); 
                     }
                 } 
-                
             }
         }
-        //castle THIS NEEDS ALOT OF WORK
+        
+        //castle move
         if (board.turnCounter.pieceMoveCount(this) == 0 && !isCheck(board)) //if kings first move and not currently in check
         {
                         
@@ -178,7 +177,7 @@ public class King extends Pieces {
 
                     if (targetPiece != null) 
                     {
-                        if(targetPiece instanceof Rook)
+                        if (targetPiece instanceof Rook)
                         {
                             if (targetPiece.getPieceTeam() == getPieceTeam() && board.turnCounter.pieceMoveCount(targetPiece) == 0)
                             {
