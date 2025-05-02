@@ -16,6 +16,7 @@ public class ChessGame
     
     private static final String LEADERBOARD_FILE = "rankings.txt";
     private Ranking leaderboard;
+    private Clock clock;
     
     private boolean isRunning;
     
@@ -47,6 +48,8 @@ public class ChessGame
         {
             initialisePlayers();
             isRunning = true;
+            
+            this.customiseClock();
             gameLoop();
         } 
         else if (userSelection == MenuOption.EXIT) 
@@ -57,6 +60,7 @@ public class ChessGame
     
     private void gameLoop() 
     {
+        this.clock.start();
         while (isRunning && !board.checkmate) 
         {
             board.displayBoard();
@@ -101,6 +105,7 @@ public class ChessGame
             this.changeElo(winner.getName(), loser.getName());
         }
         
+        this.clock.terminate();
         //saving scores to the file just before the program exits
         this.leaderboard.saveScores(LEADERBOARD_FILE);
     }
@@ -153,6 +158,20 @@ public class ChessGame
             return;
         }
         playerLogin(player);
+    }
+    
+    public void customiseClock()
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println("CLOCK SETTING                           (X) TO QUIT\n");
+        System.out.print("Please enter the time limit for every\nplayer (in minutes, will be rounded)\n");
+        
+        String userInput = inputHandler.getStringInput("> ").trim(); 
+        int tl = Integer.parseInt(userInput);
+        
+        System.out.println("Set players time limit as "+tl+" minutes.");
+        System.out.println("----------------------------------------------------");
+        this.clock = new Clock(tl, 2);
     }
     
     // used in chackmate and for a forfiet
