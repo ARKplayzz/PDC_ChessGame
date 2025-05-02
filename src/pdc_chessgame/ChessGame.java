@@ -46,15 +46,11 @@ public class ChessGame
         {
             initialisePlayers();
             
-            this.customiseClock();
+            customiseClock();
+            
             gameLoop();
-            
-            //saving scores to the file just before the program exits
-            this.leaderboard.saveScores(LEADERBOARD_FILE); //maybe put back into game loop
-            
-            //DISPLAY UPDATED ELO
-            
-            //RUNK START AGAIN?? LOOP MENU
+                    
+            start();
         } 
         else if (userSelection == MenuOption.EXIT) 
         {
@@ -62,7 +58,7 @@ public class ChessGame
         }
     }
     
-    private Player gameLoop() 
+    private void gameLoop() 
     {
         board.displayBoard();
         this.clock.start();
@@ -102,9 +98,13 @@ public class ChessGame
                 board.displayBoard();
             } 
         }
-        Player winner = getPlayerInTeam(getEnemyTeam(board.turnCounter.getTeam()));
-        this.clock.terminate();
-        return winner;
+        
+            this.clock.terminate();
+            
+            displayEloPromotion(getPlayerInTeam(getEnemyTeam(board.turnCounter.getTeam())), getPlayerInTeam(board.turnCounter.getTeam()));
+            
+            //saving scores to the file just before the program exits
+            this.leaderboard.saveScores(LEADERBOARD_FILE);
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...
@@ -333,6 +333,30 @@ public class ChessGame
     {
         System.out.println("----------------------------------------------------"); 
         System.out.println(resigningTeam.teamName() + " HAS RESIGNED! "+ getEnemyTeam(resigningTeam).teamName() +" WINS!");
+        System.out.println("----------------------------------------------------");  
+    }
+    
+    private void displayEloPromotion(Player winner, Player looser)
+    {
+        if (winner.getName().contains("Guest "))
+        {
+            System.out.println("CONGRATS TO " + winner.getName());  
+        }
+        else
+        {
+            System.out.println("CONGRATS TO " + winner.getName() + ", WITH A NEW ELO OF: ");  
+        }
+        if (looser.getName().contains("Guest "))
+        {
+            System.out.println("BETTER LUCK NEXT TIME " + looser.getName()); 
+        }
+        else
+        {
+            System.out.println("UNFORTUNATLY " + looser.getName() + ", HAS BEEN DROPPED TO: ELO"); 
+        }
+        
+        System.out.println();
+        System.out.println("Login and play more games to rank up!");
         System.out.println("----------------------------------------------------");  
     }
     
