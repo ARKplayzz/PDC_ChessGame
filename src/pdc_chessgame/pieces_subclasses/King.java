@@ -152,7 +152,6 @@ public class King extends Pieces {
                 { 
                     if (!isCheck(x, y, board)) // King should not be able to move INTO check
                     {  
-                        System.out.println("the fucking move is x> " +x +" y> "+ y);
                         possibleMoves.add(targetTile); 
                     }
                 } 

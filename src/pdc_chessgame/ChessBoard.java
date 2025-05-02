@@ -348,16 +348,13 @@ public class ChessBoard
         {
             return false;
         }
-        System.out.println("king possible moves> "+ king.canMove(this));
         if (!king.canMove(this).isEmpty()) // king has posible moves
         {
-            System.out.println("getting fucked here");
             return false;
         }
         
         List<Pieces> attackingPieces = king.getAttackingPieces(this);
 
-        System.out.println("attackingPieces > " + attackingPieces.size());
         if (attackingPieces.size() > 1) // if more than one piece is checking the king then its jover
         {
             return true; 

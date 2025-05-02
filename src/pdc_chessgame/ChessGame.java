@@ -18,9 +18,7 @@ public class ChessGame
     private Ranking leaderboard;
         
     private Clock clock;
-    
-    private boolean isRunning;
-    
+        
     private GameMenu menu;
     private InputHandler inputHandler;
 
@@ -47,13 +45,16 @@ public class ChessGame
         if (userSelection == MenuOption.START_GAME) 
         {
             initialisePlayers();
-            isRunning = true;
             
             this.customiseClock();
             gameLoop();
             
             //saving scores to the file just before the program exits
             this.leaderboard.saveScores(LEADERBOARD_FILE); //maybe put back into game loop
+            
+            //DISPLAY UPDATED ELO
+            
+            //RUNK START AGAIN?? LOOP MENU
         } 
         else if (userSelection == MenuOption.EXIT) 
         {
@@ -69,36 +70,35 @@ public class ChessGame
         while (true) 
         {           
             Team currentTeam = board.turnCounter.getTeam();
-            Team enemyTeam = getEnemyTeam(currentTeam); // this alows for scalabuility in asignment 2
-            
-            Player currentPlayer = getPlayerInTeam(currentTeam);
-            
-            if (board.isCheckmate(currentTeam)) 
-            {
-                displayGameOver(enemyTeam); 
-                break;
-            }
-            
-            Input moveSet = getPlayerTurn(currentPlayer);
+            Team enemyTeam = getEnemyTeam(currentTeam);
 
-            if (moveSet == null) 
-            { // Check if has quit
+            Player currentPlayer = getPlayerInTeam(currentTeam);
+
+            Input moveSet = getPlayerTurn(currentPlayer); //gets player move
+
+            if (moveSet == null)  //if player exits game (RESIGNATION)
+            {
                 displayResignation(currentTeam);
                 break;
             }
-            board.moveTile(moveSet);
 
-            if (board.isInCheck(currentTeam)) 
+            board.moveTile(moveSet); // Player move
+
+            if (board.isInCheck(currentTeam)) // is Player move in check
             {
                 board.undoMove();
                 displayInCheckWarning(); 
             }
             else 
             {
-                if (board.isInCheck(enemyTeam)) {
+                if (board.isCheckmate(enemyTeam)) { // ends game (CHECKMATE)
+                    displayGameOver(currentTeam);
+                    break;
+                }
+                else if (board.isInCheck(enemyTeam)) { // warns player of invalid move due to check
                     displayInCheckNotification(enemyTeam);
                 }
-                board.turnCounter.nextTurn();
+                board.turnCounter.nextTurn(); //next turn
                 board.displayBoard();
             } 
         }
