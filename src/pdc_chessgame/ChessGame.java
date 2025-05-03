@@ -4,6 +4,8 @@
  */
 package pdc_chessgame;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Andrew & Finlay
@@ -11,16 +13,16 @@ package pdc_chessgame;
 public class ChessGame 
 {
     
-    private ChessBoard board;
-    private Player[] players;
+    private final ChessBoard board;
+    private final HashMap<Team, Player> players;
     
     private static final String LEADERBOARD_FILE = "rankings.txt";
-    private Ranking leaderboard;
+    private final Ranking leaderboard;
         
     private Clock clock;
         
-    private GameMenu menu;
-    private InputHandler inputHandler;
+    private final GameMenu menu;
+    private final InputHandler inputHandler;
 
     public ChessGame() 
     {
@@ -29,16 +31,17 @@ public class ChessGame
         this.inputHandler = new InputHandler();
         this.leaderboard = new Ranking();
         
-        this.players = new Player[2]; // player count for flexabuility in assignement 2
+        this.players = new HashMap<>(); // player count for flexabuility in assignement 2
 
-        this.players[0] = new Player("Guest 1", Team.WHITE);
-        this.players[1] = new Player("Guest 2", Team.BLACK);
+        players.put(Team.WHITE, new Player("Guest 1", Team.WHITE));
+        players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));
+        
         this.leaderboard.getLeaderboard(LEADERBOARD_FILE);
     }
     
     public void start() 
     {
-        displayWelcome(); 
+        Display.displayWelcome(); 
         
         MenuOption userSelection = menu.displayMenu(this.leaderboard);
 
@@ -54,7 +57,7 @@ public class ChessGame
         } 
         else if (userSelection == MenuOption.EXIT) 
         {
-            displayExit();
+            Display.displayExit();
         }
     }
     
@@ -66,7 +69,7 @@ public class ChessGame
         while (true) 
         {           
             Team currentTeam = board.getCurrentTeam();
-            Team enemyTeam = getEnemyTeam(currentTeam);
+            Team enemyTeam = currentTeam.getOppositeTeam();
 
             Player currentPlayer = getPlayerInTeam(currentTeam);
 
@@ -74,7 +77,7 @@ public class ChessGame
 
             if (moveSet == null)  //if player exits game (RESIGNATION)
             {
-                displayResignation(currentTeam);
+                Display.displayResignation(currentTeam);
                 break;
             }
 
@@ -83,22 +86,22 @@ public class ChessGame
             if (board.isInCheck(currentTeam)) // is Player move in check
             {
                 board.undoMove();
-                displayInCheckWarning(); 
+                Display.displayInCheckWarning(); 
             }
             else 
             {
                 if (board.isCheckmate(enemyTeam)) { // ends game (CHECKMATE)
-                    displayGameOver(currentTeam);
+                    Display.displayGameOver(currentTeam);
                     break;
                 }
                 else if (board.isInCheck(enemyTeam)) { // warns player of invalid move due to check
-                    displayInCheckNotification(enemyTeam);
+                    Display.displayInCheckNotification(enemyTeam);
                 }
                 if (board.isPawnPromotable()) { // Gets user input for PawnPromotion
                     PawnOption promotionPiece = getPromotionPiece(currentTeam, currentPlayer);
                     if (promotionPiece == PawnOption.EXIT_GAME) 
                     {
-                        displayResignation(currentTeam);
+                        Display.displayResignation(currentTeam);
                         break;
                     }
                     else
@@ -114,7 +117,7 @@ public class ChessGame
         this.clock.terminate();
             
         //displayEloPromotion(getPlayerInTeam(getEnemyTeam(board.getCurrentTeam())), getPlayerInTeam(board.getCurrentTeam()));
-        this.changeElo(getPlayerInTeam(getEnemyTeam(board.getCurrentTeam())), getPlayerInTeam(board.getCurrentTeam()));
+        this.changeElo(getPlayerInTeam(board.getCurrentTeam().getOppositeTeam()), getPlayerInTeam(board.getCurrentTeam()));
             
         //saving scores to the file just before the program exits
         this.leaderboard.saveScores(LEADERBOARD_FILE);
@@ -122,9 +125,9 @@ public class ChessGame
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...
     {
-        for (Player player : players) 
+        for (Team team : players.keySet()) 
         {
-            playerLogin(player);
+            playerLogin(players.get(team));
         }
         System.out.println("----------------------------------------------------");
     }
@@ -267,13 +270,13 @@ public class ChessGame
         
         if(playerInput.toUpperCase().trim().equals("T"))
         {
-            System.out.println(this.TimerToString());
+            System.out.println(clock.toString());
             return getPlayerTurn(player);  //try again
         }
         
         if (playerInput.toUpperCase().equals("H"))
         {
-            displayHelp();
+            Display.displayHelp();
             return getPlayerTurn(player);  //try again
         }
         
@@ -320,83 +323,8 @@ public class ChessGame
         return true;
     }
     
-    private String TimerToString() // FIX THIS
-    {
-        Team currentTeam = board.getCurrentTeam();
-        Player currentPlayer = getPlayerInTeam(currentTeam);
-            
-        long seconds = 0;
-        for(int i = 0; i < this.players.length; i++)
-        {
-            if(this.players[i].equals(currentPlayer))
-            {
-                seconds = this.clock.getTime(i) / 1000;
-            }
-        }
-        int mins = (int)(seconds/60);
-        seconds = seconds%60;
-        
-        return ("Remaining time: "+mins+":"+seconds);
-    }
-    
-    private void displayInCheckWarning() 
-    {
-        System.out.println("Invalid move! Your king is facing check, try again");
-    }
-    
-    private void displayInCheckNotification(Team team) 
-    {
-        System.out.println("CHECK! " + team.teamName() + " IS NOW IN CHECK");
-        System.out.println("----------------------------------------------------");  
-    }
-    
-    private void displayGameOver(Team winningTeam)
-    {
-        System.out.println("CHECKMATE! " + winningTeam.teamName() + " WINS!");
-        System.out.println("----------------------------------------------------"); 
-    }
-    
-    private void displayResignation(Team resigningTeam)
-    {
-        System.out.println("----------------------------------------------------"); 
-        System.out.println(resigningTeam.teamName() + " HAS RESIGNED! "+ getEnemyTeam(resigningTeam).teamName() +" WINS!");
-        System.out.println("----------------------------------------------------");  
-    }
-    
-    private void displayWelcome() 
-    {
-        System.out.println("----------------------------------------------------");
-        System.out.println("Welcome to Chess!");
-        System.out.println("Program Produced by Andrew Kennedy & Finlay Baynham\n");
-        System.out.println("This Program is a part of Assignment 1 for PDC 2025");
-        System.out.println("----------------------------------------------------");
-    }
-    
-    private void displayHelp() 
-    {
-        System.out.println("----------------------------------------------------");
-        System.out.println("CHESS HELP");
-        System.out.println("Resign Game          > X");
-        System.out.println("Chess Help           > H");
-        System.out.println("Show remaining time  > T");
-        System.out.println("Move format   > From Tile -> 'A1 B2' <- To Tile");
-    }
-    
-    private void displayExit() 
-    {
-        System.out.println("----------------------------------------------------");
-        System.out.println("THANKS FOR PLAYING!");
-        System.out.println("Program Produced by Andrew Kennedy & Finlay Baynham");
-        System.out.println("----------------------------------------------------");
-    }
-    
     private Player getPlayerInTeam(Team team) 
     {
-        return players[team == Team.WHITE ? 0 : 1];
-    }
-        
-    private Team getEnemyTeam(Team team) { // will need to update for scalabuility
-        return team == Team.WHITE ? Team.BLACK : Team.WHITE;
-    }
-    
+        return players.get(team);
+    }    
 }

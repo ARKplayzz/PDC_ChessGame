@@ -293,14 +293,14 @@ public class ChessBoard implements BoardState
                     if(k == 2 && this.board[x][y].getPiece() != null)
                     {
                         if(isOdd(x+1) == isOdd(y+1))
-                            System.out.print(" ■ "+ this.board[x][y].getPiece().getPieceUnicode() +" ■");
+                            System.out.print(" # "+ this.board[x][y].getPiece().getPieceUnicode() +" #");
                         else
                             System.out.print("   "+ this.board[x][y].getPiece().getPieceUnicode() +"  ");
                     }
                     else
                     {
                         if(isOdd(x+1) == isOdd(y+1))
-                            System.out.print(" ■ ■ ■");
+                            System.out.print(" # # #");
                         else
                             System.out.print("      ");
                     }
