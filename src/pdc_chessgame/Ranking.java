@@ -68,7 +68,7 @@ public class Ranking
     public boolean hasPlayed(String user) //has played before?
     {
         if(this.leaderboard.containsKey(user))
-            return false;
+            return true;
         return false;
     }
     

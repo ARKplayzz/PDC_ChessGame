@@ -109,13 +109,15 @@ public class ChessGame
                 board.getNextTurn(); //next turn
                 board.displayBoard();
             } 
-        }        
-            this.clock.terminate();
+        }    
+        
+        this.clock.terminate();
             
-            displayEloPromotion(getPlayerInTeam(getEnemyTeam(board.getCurrentTeam())), getPlayerInTeam(board.getCurrentTeam()));
+        //displayEloPromotion(getPlayerInTeam(getEnemyTeam(board.getCurrentTeam())), getPlayerInTeam(board.getCurrentTeam()));
+        this.changeElo(getPlayerInTeam(getEnemyTeam(board.getCurrentTeam())), getPlayerInTeam(board.getCurrentTeam()));
             
-            //saving scores to the file just before the program exits
-            this.leaderboard.saveScores(LEADERBOARD_FILE);
+        //saving scores to the file just before the program exits
+        this.leaderboard.saveScores(LEADERBOARD_FILE);
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...
@@ -131,7 +133,7 @@ public class ChessGame
     {
         System.out.println("----------------------------------------------------");
         System.out.println("PLAYER "+ (player.getTeam() == Team.WHITE ? "1" : "2") +" LOGIN                           (X) TO QUIT");
-        System.out.println("Please enter your username or 'Guest' to skip");
+        System.out.println("Please enter your username or 'Guest' to skip (Case sensitive)");
         
         String userInput = inputHandler.getStringInput("> ");
         
@@ -182,11 +184,32 @@ public class ChessGame
     }
     
     // used in chackmate and for a forfiet
-    private void changeElo(String winner, String loser)
+    private void changeElo(Player winner, Player loser)
     {
-        int[] t = this.leaderboard.changeElo(winner, loser);
-        System.out.println("\n"+winner+" elo change: "+t[0]+" -> "+this.leaderboard.getElo(winner));
-        System.out.println("\n"+loser+" elo change: "+t[1]+" -> "+this.leaderboard.getElo(loser));
+        if (winner.getName().contains("Guest "))
+        {
+            System.out.println("CONGRATS TO " + winner.getName());  
+        }
+        else
+        {
+            System.out.println("CONGRATS TO " + winner.getName());  
+        }
+        if (loser.getName().contains("Guest "))
+        {
+            System.out.println("BETTER LUCK NEXT TIME " + loser.getName()); 
+        }
+        else
+        {
+            System.out.println("UNFORTUNATLY " + loser.getName() + ", HAS BEEN DEFEATED"); 
+        }
+        
+        int[] t = this.leaderboard.changeElo(winner.getName(), loser.getName());
+        System.out.println("\n"+winner+" elo change: "+t[0]+" -> "+this.leaderboard.getElo(winner.getName()));
+        System.out.println("\n"+loser+" elo change: "+t[1]+" -> "+this.leaderboard.getElo(loser.getName()));
+        
+        System.out.println();
+        System.out.println("Login and play more games to rank up!");
+        System.out.println("----------------------------------------------------");  
     }
     
     public PawnOption getPromotionPiece(Team team, Player player)//need to handle resignation  
@@ -245,6 +268,7 @@ public class ChessGame
         if(playerInput.toUpperCase().trim().equals("T"))
         {
             System.out.println(this.TimerToString());
+            return getPlayerTurn(player);  //try again
         }
         
         if (playerInput.toUpperCase().equals("H"))
@@ -336,30 +360,6 @@ public class ChessGame
     {
         System.out.println("----------------------------------------------------"); 
         System.out.println(resigningTeam.teamName() + " HAS RESIGNED! "+ getEnemyTeam(resigningTeam).teamName() +" WINS!");
-        System.out.println("----------------------------------------------------");  
-    }
-    
-    private void displayEloPromotion(Player winner, Player looser)
-    {
-        if (winner.getName().contains("Guest "))
-        {
-            System.out.println("CONGRATS TO " + winner.getName());  
-        }
-        else
-        {
-            System.out.println("CONGRATS TO " + winner.getName() + ", WITH A NEW ELO OF: ");  
-        }
-        if (looser.getName().contains("Guest "))
-        {
-            System.out.println("BETTER LUCK NEXT TIME " + looser.getName()); 
-        }
-        else
-        {
-            System.out.println("UNFORTUNATLY " + looser.getName() + ", HAS BEEN DROPPED TO: ELO"); 
-        }
-        
-        System.out.println();
-        System.out.println("Login and play more games to rank up!");
         System.out.println("----------------------------------------------------");  
     }
     
