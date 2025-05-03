@@ -15,7 +15,8 @@ public class Turn
 {
     private int turn = 0;
     private Team team = Team.WHITE;
-
+    
+    // do not make this final
     @SuppressWarnings("FieldMayBeFinal")
     private List<MoveState> moveHistory;
     
