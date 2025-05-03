@@ -10,7 +10,6 @@ package pdc_chessgame;
  */
 public class MoveState
     {
-    
         private Piece piece;
         private Piece capturedPiece;
         private Tile from;
