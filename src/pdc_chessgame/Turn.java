@@ -68,14 +68,20 @@ public class Turn
 
         return lastMove;
     }
-    
+   
     // returns the amount of distance the specified piece moved on its last turn
-    public int distanceLastMoved(Pieces p) // MIGHT NOT BE COMPLETLY FUNCTIONAL
+    public int distanceLastMoved(Pieces p) 
     {
         MoveState m = this.lastMove(p);
-        return GameTools.distanceBetween(m.getFromTile().getX(), m.getToTile().getX(), m.getFromTile().getY(), m.getToTile().getY());
+        
+        int dx = m.getToTile().getX() - m.getFromTile().getX();
+        int dy = m.getToTile().getY() - m.getFromTile().getY();
+        
+        int distance = (int) Math.sqrt(dx * dx + dy * dy);
+        
+        return distance;
     }
-    
+
     // returns the amount of turns since the specified piece moved, returns 1 if the move was last turn
     public int turnsSinceLastMoved(Pieces p)
     {

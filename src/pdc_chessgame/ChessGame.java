@@ -97,8 +97,7 @@ public class ChessGame
                 board.turnCounter.nextTurn(); //next turn
                 board.displayBoard();
             } 
-        }
-        
+        }        
             this.clock.terminate();
             
             displayEloPromotion(getPlayerInTeam(getEnemyTeam(board.turnCounter.getTeam())), getPlayerInTeam(board.turnCounter.getTeam()));
@@ -157,7 +156,7 @@ public class ChessGame
         playerLogin(player);
     }
     
-    public void customiseClock()
+    private void customiseClock()
     {
         System.out.println("CLOCK SETTING                           (X) TO QUIT\n");
         System.out.print("Please enter the time limit for every\nplayer (in minutes, will be rounded)\n");
@@ -246,7 +245,7 @@ public class ChessGame
     }
     
     //pawn promotion needs to be re factored
-    public static Pieces getPromotionPiece(Player player, Pawn pawn)//need to handle resignation  
+    private Pieces getPromotionPiece(Player player, Pawn pawn)//need to handle resignation  
     {
         InputHandler inputHandler = new InputHandler();
 

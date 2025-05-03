@@ -6,7 +6,7 @@ package pdc_chessgame;
 
 /**
  *
- * @author finlay
+ * @author Andrew & Finlay
  */
 public class Clock extends Thread
 {

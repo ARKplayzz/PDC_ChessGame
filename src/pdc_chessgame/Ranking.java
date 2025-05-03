@@ -21,8 +21,7 @@ import java.util.logging.Logger;
  */
 public class Ranking 
 {
-    // DO NOT make this final
-    @SuppressWarnings("FieldMayBeFinal")
+
     private HashMap<String, Integer> leaderboard;
 
     public Ranking() 

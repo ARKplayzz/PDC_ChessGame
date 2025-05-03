@@ -205,6 +205,11 @@ public class ChessBoard
         return this.width;
     }
     
+    private static boolean isOdd(int n)
+    {
+        return (n % 2 == 0);
+    }
+    
     public void displayBoard()
     { //update this to use tile.white so we don't have to run isOdd 4 times every time we print
         // again changed from i,j to x,y to clear up confusion
@@ -221,14 +226,14 @@ public class ChessBoard
                 {
                     if(k == 2 && this.board[x][y].getPiece() != null)
                     {
-                        if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1))
+                        if(isOdd(x+1) == isOdd(y+1))
                             System.out.print(" ■ "+ this.board[x][y].getPiece().getPieceUnicode() +" ■");
                         else
                             System.out.print("   "+ this.board[x][y].getPiece().getPieceUnicode() +"  ");
                     }
                     else
                     {
-                        if(GameTools.isOdd(x+1) == GameTools.isOdd(y+1))
+                        if(isOdd(x+1) == isOdd(y+1))
                             System.out.print(" ■ ■ ■");
                         else
                             System.out.print("      ");

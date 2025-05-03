@@ -20,8 +20,8 @@ public class Tile
         this.x = x;
         this.y = y;
         this.piece = null;
-        
-        if(!GameTools.isOdd(x+1) == GameTools.isOdd(y+1))
+
+        if (!((x + 1) % 2 != 0) == ((y + 1) % 2 != 0)) //if tile is odd then tile = white
             this.white = true;
     }
     
