@@ -65,12 +65,12 @@ public class ChessGame
         
         while (true) 
         {           
-            Team currentTeam = board.turnCounter.getTeam();
+            Team currentTeam = board.getCurrentTeam();
             Team enemyTeam = getEnemyTeam(currentTeam);
 
             Player currentPlayer = getPlayerInTeam(currentTeam);
 
-            Input moveSet = getPlayerTurn(currentPlayer); //gets player move
+            Move moveSet = getPlayerTurn(currentPlayer); //gets player move
 
             if (moveSet == null)  //if player exits game (RESIGNATION)
             {
@@ -106,13 +106,13 @@ public class ChessGame
                         board.promotePawn(promotionPiece);
                     }
                 }
-                board.turnCounter.nextTurn(); //next turn
+                board.getNextTurn(); //next turn
                 board.displayBoard();
             } 
         }        
             this.clock.terminate();
             
-            displayEloPromotion(getPlayerInTeam(getEnemyTeam(board.turnCounter.getTeam())), getPlayerInTeam(board.turnCounter.getTeam()));
+            displayEloPromotion(getPlayerInTeam(getEnemyTeam(board.getCurrentTeam())), getPlayerInTeam(board.getCurrentTeam()));
             
             //saving scores to the file just before the program exits
             this.leaderboard.saveScores(LEADERBOARD_FILE);
@@ -162,7 +162,7 @@ public class ChessGame
             System.out.println("PROCEEDING AS: " + player.getName());
             
             if(this.leaderboard.hasPlayed(userInput) == false)
-                this.leaderboard.newUser(userInput);
+                this.leaderboard.isNewUser(userInput);
             return;
         }
         playerLogin(player);
@@ -229,7 +229,7 @@ public class ChessGame
         return getPromotionPiece(team, player);
     }
     
-    private Input getPlayerTurn(Player player)
+    private Move getPlayerTurn(Player player)
     {
         System.out.println("----------------------------------------------------");
         System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
@@ -253,7 +253,7 @@ public class ChessGame
             return getPlayerTurn(player);  //try again
         }
         
-        Input moveSet = Input.getMove(playerInput.trim().toUpperCase());
+        Move moveSet = Move.getMove(playerInput.trim().toUpperCase());
         
         if (moveSet == null)
         {
@@ -272,7 +272,7 @@ public class ChessGame
         return moveSet;
     }
     
-    private boolean isValidMove(Input move, Team team, String input) 
+    private boolean isValidMove(Move move, Team team, String input) 
     {
         if (board.getTile(move.fromX, move.fromY) == null || board.getTile(move.fromX, move.fromY).getPiece() == null) 
         {
@@ -280,7 +280,7 @@ public class ChessGame
             System.out.println(input.charAt(0) +""+ input.charAt(1) + " Does not contain a piece, Eg 'A1 B2'");
             return false;
         }
-        Pieces piece = board.getTile(move.fromX, move.fromY).getPiece();
+        Piece piece = board.getTile(move.fromX, move.fromY).getPiece();
         if (piece.getPieceTeam() != team) 
         {
             System.out.println("----------------------------------------------------");
@@ -298,7 +298,7 @@ public class ChessGame
     
     private String TimerToString() // FIX THIS
     {
-        Team currentTeam = board.turnCounter.getTeam();
+        Team currentTeam = board.getCurrentTeam();
         Player currentPlayer = getPlayerInTeam(currentTeam);
             
         long seconds = 0;

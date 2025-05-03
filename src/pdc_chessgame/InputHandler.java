@@ -10,7 +10,7 @@ import java.util.Scanner;
  *
  * @author Andrew & Finlay
  */
-public class InputHandler //reference for this is stack overflow
+public class InputHandler
 {
     private Scanner scanner;
 
@@ -33,8 +33,8 @@ public class InputHandler //reference for this is stack overflow
         System.out.println(message + " ('Y' or 'N')");
         System.out.print("> ");
         
-        String response = scanner.nextLine();
+        String userInput = scanner.nextLine();
         
-        return response.toUpperCase().equals("Y");
+        return userInput.toUpperCase().equals("Y");
     }
 }

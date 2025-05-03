@@ -11,9 +11,11 @@ package pdc_chessgame;
 public class Tile 
 {
     private int x, y;
-    private Pieces piece;
-    // we are assuming that if a piece isn't white then it's black
-    boolean white = false;
+    private Piece piece;
+    
+    // we are assuming that if a piece is odd it is white
+    // odd is not called as of yet as it is only required in assignment 2 for GUI tile colouring
+    private boolean odd = false;
     
     public Tile(int x, int y)
     {
@@ -22,15 +24,15 @@ public class Tile
         this.piece = null;
 
         if (!((x + 1) % 2 != 0) == ((y + 1) % 2 != 0)) //if tile is odd then tile = white
-            this.white = true;
+            this.odd = true;
     }
     
-    public void setPiece(Pieces p)
+    public void setPiece(Piece p)
     {
         this.piece = p;
     }
     
-    public Pieces getPiece()
+    public Piece getPiece()
     {
         return this.piece;
     }

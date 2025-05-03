@@ -10,7 +10,14 @@ package pdc_chessgame;
  */
 public class MoveState
     {
-        public MoveState(Pieces piece, Pieces capturedPiece, Tile from, Tile to, int turn)
+    
+        private Piece piece;
+        private Piece capturedPiece;
+        private Tile from;
+        private Tile to;
+        private int moveNo;
+        
+        public MoveState(Piece piece, Piece capturedPiece, Tile from, Tile to, int turn)
         {
             this.piece = piece;
             this.capturedPiece = capturedPiece;
@@ -18,25 +25,19 @@ public class MoveState
             this.to = to;
             this.moveNo = turn;
         }
-        
-        private Pieces piece;
-        private Pieces capturedPiece;
-        private Tile from;
-        private Tile to;
-        private int moveNo;
-        
+
         @Override
         public String toString()
         {
             return (String)(this.piece.getPieceUnicode()+" "+this.from.getX()+","+this.from.getY()+" "+this.to.getX()+","+this.to.getY()+" "+this.moveNo);
         }
         
-        public Pieces getPiece()
+        public Piece getPiece()
         {
             return this.piece;
         }
         
-        public Pieces getCapturedPiece()
+        public Piece getCapturedPiece()
         {
             return this.capturedPiece;
         }
@@ -54,5 +55,15 @@ public class MoveState
         public int getMoveNumber()
         {
             return this.moveNo;
+        }
+        
+        public int getDistanceMoved() 
+        {
+            int dx = this.getToTile().getX() - this.getFromTile().getX();
+            int dy = this.getToTile().getY() - this.getFromTile().getY();
+
+            int distance = (int) Math.sqrt(dx * dx + dy * dy);
+
+            return distance;
         }
     }

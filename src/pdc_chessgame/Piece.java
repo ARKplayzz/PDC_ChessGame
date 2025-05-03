@@ -11,28 +11,21 @@ import java.util.List;
  *
  * @author Andrew & Finlay
  */
-public abstract class Pieces 
+public abstract class Piece 
 { 
     //Unicode doesnt work in netbeans so we will use letters ):
     private String pieceUnicode = "?"; 
-    private String pieceAltSymbol = "?";
         
     private int x, y;
     
     private Team pieceTeam;  
 
-    public Pieces(int x, int y, String pieceAltSymbol, String pieceUnicode, Team pieceTeam) 
+    public Piece(int x, int y, String pieceUnicode, Team pieceTeam) 
     {
         this.x = x;
         this.y = y;
         this.pieceUnicode = pieceUnicode;
-        this.pieceAltSymbol = pieceAltSymbol;
         this.pieceTeam = pieceTeam;
-    }
-    
-    public String getPieceAltSymbol()
-    {
-        return this.pieceAltSymbol;
     }
 
     public String getPieceUnicode() 
@@ -64,20 +57,11 @@ public abstract class Pieces
     {
         this.y = y;
     }
-
-    public void setTeamColour(String pieceUnicode) {//is this nessisary as a function?
-        this.pieceUnicode = pieceUnicode;
-    }
-    
-    public boolean isWithinBoard(int x, int y, ChessBoard board) 
-    {
-        return x >= 0 && x < board.getWidth() && y >= 0 && y < board.getHeight();
-    }
         
     public abstract int[][] getDirection();
     
     //returns a list of all tiles that the piece can move to
-    public List<Tile> canMove(ChessBoard board)
+    public List<Tile> canMove(BoardState board)
     {        
         List<Tile> possibleMoves = new ArrayList<>();
 
@@ -89,10 +73,10 @@ public abstract class Pieces
             int x = getX() + xDirection;
             int y = getY() + yDirection;
 
-            while (isWithinBoard(x, y, board)) 
+            while (board.isWithinBoard(x, y)) 
             {
-                Tile targetTile = board.getTile(x, y); //these can be shrunken if tile did not exist (:
-                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
+                Tile targetTile = board.getTile(x, y); 
+                Piece targetPiece = targetTile.getPiece();
 
                 if (targetPiece == null) // if Tile empty or Contains enemy
                 { 

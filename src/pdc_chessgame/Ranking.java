@@ -55,7 +55,7 @@ public class Ranking
         return (int)(1.0 / (1 + Math.pow(10, (this.leaderboard.get(player) - this.leaderboard.get(opponent)) / 400.0)));
     }
     
-    public boolean newUser(String user)
+    public boolean isNewUser(String user)
     {
         if(this.leaderboard.containsKey(user))
             return false;
@@ -80,7 +80,7 @@ public class Ranking
         }
     }
     
-    public boolean isEmpty()
+    public boolean isLeaderboardEmpty()
     {
         if(this.leaderboard.size() < 1)
             return true;
@@ -89,7 +89,6 @@ public class Ranking
     
     public boolean getLeaderboard(String file)
     {
-        @SuppressWarnings("UnusedAssignment")
         FileReader f = null;
         try {
             f = new FileReader(file);
@@ -133,7 +132,7 @@ public class Ranking
         try {
             pw = new PrintWriter(new FileOutputStream(file));
         } catch (FileNotFoundException ex) {
-            System.out.println("Failed to create file output");
+            System.out.println("Failed to create file, no new rankings have been saved");
             return false;
         }
         

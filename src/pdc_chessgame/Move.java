@@ -8,11 +8,11 @@ package pdc_chessgame;
  *
  * @author Finlay & Andrew
  */
-public class Input 
+public class Move 
 {
     public int fromX, fromY, toX, toY; // efficent storing for move cases
     
-    public Input(int fromRow, int fromCol, int toRow, int toCol) 
+    public Move(int fromRow, int fromCol, int toRow, int toCol) 
     { 
         this.fromX = fromRow;
         this.fromY = fromCol;
@@ -21,7 +21,7 @@ public class Input
     }
     
     
-    public static Input getMove(String userMovement) { // This should be working now
+    public static Move getMove(String userMovement) { // This should be working now
                 
         String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces
         
@@ -35,12 +35,12 @@ public class Input
         int toX = (parts[1].charAt(0) - 65); // A to H = 0 to 7
         int toY = Character.getNumericValue(parts[1].charAt(1))-1; //  Translates char to int (-1 for start point at 0)
 
-        return new Input(fromX, fromY, toX, toY);
+        return new Move(fromX, fromY, toX, toY);
     }
     
-    public static Input getMove(int fromX, int fromY, int toX, int toY) {
+    public static Move getMove(int fromX, int fromY, int toX, int toY) {
 
-        return new Input(fromX, fromY, toX, toY);
+        return new Move(fromX, fromY, toX, toY);
     }
         
     private static boolean isValidTile(String pos) 

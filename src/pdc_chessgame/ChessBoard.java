@@ -11,21 +11,20 @@ import java.util.List;
  *
  * @author Finlay & Andrew
  */
-public class ChessBoard 
+public class ChessBoard implements BoardState
 {
     /*
         When changing to graphical for part2 make a tile class that
         holds piece and colour.
     */
-    @SuppressWarnings("FieldMayBeFinal")
     
     private Tile[][] board;
-    private List<Pieces> capturedPieces;
+    private List<Piece> capturedPieces;
         
     private int width;
     private int height;
     
-    public Turn turnCounter = new Turn();
+    private Turn turnCounter = new Turn();
     
     public ChessBoard(int width, int height)
     {
@@ -86,21 +85,28 @@ public class ChessBoard
         setTile(new Rook(7, 7, Team.BLACK), 7, 7);
     }
     
+    @Override
     public Tile getTile(int x, int y)
     { // will return null if the tile is empty
         return this.board[x][y];
     }
         
-    public void setTile(Pieces p, int x, int y)
+    public void setTile(Piece p, int x, int y)
     {
         getTile(x, y).setPiece(p);
+    }
+    
+    @Override
+    public boolean isWithinBoard(int x, int y) 
+    {
+        return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
     }
     
     public boolean captureTile(int x, int y) 
     {
         if (getTile(x, y).getPiece() != null) 
         {
-            Pieces capturedPiece = getTile(x, y).getPiece();
+            Piece capturedPiece = getTile(x, y).getPiece();
             this.capturedPieces.add(capturedPiece);
             getTile(x, y).deletePiece();
             return true;
@@ -108,9 +114,9 @@ public class ChessBoard
         return false;
     }
     
-    public boolean moveTile(Input moveSet) 
+    public boolean moveTile(Move moveSet) 
     {
-        Pieces targetPiece = getTile(moveSet.fromX, moveSet.fromY).getPiece();
+        Piece targetPiece = getTile(moveSet.fromX, moveSet.fromY).getPiece();
         
         // only one special can occur per move (ordered in likelyhood)
         if (tryCastle(targetPiece, moveSet)) 
@@ -129,7 +135,7 @@ public class ChessBoard
     
     }
     
-    private boolean tryCastle(Pieces piece, Input moveSet)
+    private boolean tryCastle(Piece piece, Move moveSet)
     {
         if (piece instanceof King)
         {
@@ -160,14 +166,14 @@ public class ChessBoard
         return false;
     }
     
-    private boolean tryEnPessant(Pieces piece, Input moveSet)
+    private boolean tryEnPessant(Piece piece, Move moveSet)
     {
         if (piece instanceof Pawn)
         {
             int direction = piece.getPieceTeam() == Team.BLACK ? 1 : -1;
             
             Tile targetTile = getTile(moveSet.toX, moveSet.toY + direction);
-            Pieces targetPawn = targetTile.getPiece();
+            Piece targetPawn = targetTile.getPiece();
             
             if (targetPawn != null && //target is a piece
                 targetPawn instanceof Pawn && // if target is a pawn
@@ -182,7 +188,7 @@ public class ChessBoard
     
     public boolean isPawnPromotable()
     {
-        Pieces targetPiece = this.turnCounter.getPriorMove(0).getPiece();
+        Piece targetPiece = this.turnCounter.getPriorMove(0).getPiece();
         if (targetPiece instanceof Pawn && ((Pawn) targetPiece).canPromotion(this))
         {
             return true;
@@ -193,7 +199,7 @@ public class ChessBoard
     public void promotePawn(PawnOption promotionPiece)
     {
         Tile toTile = this.turnCounter.getPriorMove(0).getToTile();
-        Pieces newPiece = null;
+        Piece newPiece = null;
         
         int x = toTile.getX();
         int y = toTile.getY();
@@ -219,19 +225,50 @@ public class ChessBoard
         }
     }
     
-    public Tile[][] getBoard()
-    {
-        return this.board;
-    }
-    
+    @Override
     public int getHeight()
     {
         return this.height;
     }
     
+    @Override
     public int getWidth()
     {
         return this.width;
+    }
+    
+    @Override
+    public int getPieceMoveCount(Piece piece) 
+    {
+        return turnCounter.getPieceMoveCount(piece);
+    }
+    
+    @Override
+    public int turnsSinceLastMoved(Piece piece) 
+    {
+        return turnCounter.turnsSinceLastMoved(piece);
+    }
+    
+    @Override
+    public boolean hasPieceMoved(Piece piece) 
+    {
+        return turnCounter.hasPieceMoved(piece);
+    }
+    
+    @Override
+    public MoveState getPieceLastMove(Piece piece) 
+    {
+        return turnCounter.getPieceLastMove(piece);
+    }
+    
+    public void getNextTurn() 
+    {
+        turnCounter.nextTurn();
+    }
+    
+    public Team getCurrentTeam() 
+    {
+        return turnCounter.getTeam();
     }
     
     private static boolean isOdd(int n)
@@ -315,14 +352,14 @@ public class ChessBoard
         
         MoveState priorMoveState = turnCounter.deleteRecentMove(); 
         
-        Pieces movedPiece = priorMoveState.getPiece();
+        Piece movedPiece = priorMoveState.getPiece();
 
         Tile fromTile = priorMoveState.getFromTile();
         Tile toTile = priorMoveState.getToTile();
 
-        Pieces capturedPiece = priorMoveState.getCapturedPiece();
+        Piece capturedPiece = priorMoveState.getCapturedPiece();
 
-        Pieces currentPiece = toTile.getPiece(); 
+        Piece currentPiece = toTile.getPiece(); 
         if (currentPiece != null && currentPiece.getClass() != movedPiece.getClass()) //check if piece has changed during movement (pawn promotion)
         {
         toTile.setPiece(movedPiece);
@@ -353,7 +390,7 @@ public class ChessBoard
         {
             for (int y = 0; y < this.height; y++) 
             {
-                Pieces piece = this.getTile(x, y).getPiece();
+                Piece piece = this.getTile(x, y).getPiece();
                 
                 if (piece instanceof King && piece.getPieceTeam() == team) 
                 {
@@ -387,14 +424,14 @@ public class ChessBoard
             return false;
         }
         
-        List<Pieces> attackingPieces = king.getAttackingPieces(this);
+        List<Piece> attackingPieces = king.getAttackingPieces(this);
 
         if (attackingPieces.size() > 1) // if more than one piece is checking the king then its jover
         {
             return true; 
         }
         
-        Pieces enemy = attackingPieces.get(0); // the numpty causing the check
+        Piece enemy = attackingPieces.get(0); // the numpty causing the check
         
         List<Tile> attackPath = getPiecePath(getTile(enemy.getX(), enemy.getY()), getTile(king.getX(), king.getY()));
         
@@ -402,7 +439,7 @@ public class ChessBoard
         {
             for (int y = 0; y < this.height; y++) 
             {
-                Pieces targetPiece = getTile(x, y).getPiece();
+                Piece targetPiece = getTile(x, y).getPiece();
 
                 if (targetPiece != null && targetPiece.getPieceTeam() == team && !(targetPiece instanceof King)) 
                 {

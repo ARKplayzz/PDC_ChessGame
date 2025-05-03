@@ -23,7 +23,7 @@ public class Turn
         this.moveHistory = new ArrayList<>();
     }
     
-    public void addMoveToHistory(Pieces piece, Pieces capturedPiece, Tile from, Tile to)
+    public void addMoveToHistory(Piece piece, Piece capturedPiece, Tile from, Tile to)
     {
         MoveState m = new MoveState(piece, capturedPiece, from, to, this.turn);
         this.moveHistory.add(m);
@@ -39,7 +39,7 @@ public class Turn
         return this.moveHistory.get(this.moveHistory.size() - priorMoveNumber);
     }
 
-    private MoveState lastMove(Pieces p)
+    public MoveState getPieceLastMove(Piece p) //gets the last move for a piece
     {
         MoveState m = new MoveState(null, null, null, null, -1);
         for(int i = 0; i < this.moveHistory.size(); i++)
@@ -68,24 +68,11 @@ public class Turn
 
         return lastMove;
     }
-   
-    // returns the amount of distance the specified piece moved on its last turn
-    public int distanceLastMoved(Pieces p) 
-    {
-        MoveState m = this.lastMove(p);
-        
-        int dx = m.getToTile().getX() - m.getFromTile().getX();
-        int dy = m.getToTile().getY() - m.getFromTile().getY();
-        
-        int distance = (int) Math.sqrt(dx * dx + dy * dy);
-        
-        return distance;
-    }
 
     // returns the amount of turns since the specified piece moved, returns 1 if the move was last turn
-    public int turnsSinceLastMoved(Pieces p)
+    public int turnsSinceLastMoved(Piece p)
     {
-        MoveState m = this.lastMove(p);
+        MoveState m = this.getPieceLastMove(p);
         if(m != null) 
         {
             return m.getMoveNumber() - this.turn;
@@ -98,7 +85,7 @@ public class Turn
         return this.moveHistory.contains(m);
     }
     
-    public boolean hasPieceMoved(Pieces p)
+    public boolean hasPieceMoved(Piece p)
     {
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
@@ -110,7 +97,7 @@ public class Turn
         return false;
     }
     
-    public int pieceMoveCount(Pieces p)
+    public int getPieceMoveCount(Piece p)
     {
         int n = 0;
         for(int i = 0; i < this.moveHistory.size(); i++)
@@ -122,13 +109,7 @@ public class Turn
         }
         return n;
     }
-    
-    public void printMoveHistory()
-    {
-        System.out.println("Move history:\nPIECE    FROM    TO    TURN");
-        // do move.toString() in order of moveNo
-    }
-    
+
     public void deleteMoveHistory()
     {
         this.moveHistory.clear();
@@ -144,13 +125,9 @@ public class Turn
         return this.team;
     }
     
-    public void nextTurn()
+    public void nextTurn() //increment turn count and swap current team
     {
         this.turn++;
-        
-        if(this.team == Team.WHITE)
-            this.team = Team.BLACK;
-        else
-            this.team = Team.WHITE;
+        this.team = this.team == Team.BLACK ? Team.WHITE : Team.BLACK; 
     }
 }

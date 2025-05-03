@@ -88,7 +88,7 @@ public class GameMenu
         System.out.println("----------------------------------------------------");
         System.out.println("CHESS LEADERBOARD");
         
-        if(rankings.isEmpty())
+        if(rankings.isLeaderboardEmpty())
             System.out.println("The leaderboard appears to be empty, \nyou should play some games to fill it in.");
         rankings.printLeaderboard(); 
         

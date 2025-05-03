@@ -11,11 +11,11 @@ import java.util.List;
  *
  * @author Andrew & Finlay
  */
-public class Knight extends Pieces {
+public class Knight extends Piece {
 
     public Knight(int x, int y, Team pieceTeam) 
     {
-        super(x, y, pieceTeam == Team.BLACK ? "♞" : "♘", pieceTeam == Team.BLACK ? "n" : "N", pieceTeam); // Need to confirm we are doing subclassess correctly
+        super(x, y, pieceTeam == Team.BLACK ? "n" : "N", pieceTeam);
     }
     
     @Override
@@ -34,7 +34,7 @@ public class Knight extends Pieces {
     }
     
     @Override
-    public List<Tile> canMove(ChessBoard board)
+    public List<Tile> canMove(BoardState board)
     {        
         List<Tile> possibleMoves = new ArrayList<>();
 
@@ -43,10 +43,10 @@ public class Knight extends Pieces {
             int x = getX() + dir[0];
             int y = getY() + dir[1];
 
-            if (isWithinBoard(x, y, board)) 
+            if (board.isWithinBoard(x, y)) 
             {
                 Tile targetTile = board.getTile(x, y);
-                Pieces targetPiece = targetTile.getPiece();
+                Piece targetPiece = targetTile.getPiece();
 
                 if (targetPiece == null || targetPiece.getPieceTeam() != getPieceTeam()) // if Tile empty or Contains enemy
                 { 

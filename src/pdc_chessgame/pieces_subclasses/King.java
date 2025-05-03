@@ -11,35 +11,31 @@ import java.util.List;
  *
  * @author Andrew & Finlay
  */
-public class King extends Pieces {
+public class King extends Piece {
 
     public King(int x, int y, Team pieceTeam) 
     {
-        super(x, y, pieceTeam == Team.BLACK ? "♚" : "♔", pieceTeam == Team.BLACK ? "k" : "K", pieceTeam); // Need to confirm we are doing subclassess correctly
+        super(x, y, pieceTeam == Team.BLACK ? "k" : "K", pieceTeam);
     }
     
-    public boolean isCheck(ChessBoard board)
+    public boolean isCheck(BoardState board)
     {
         return isCheck(getX(), getY(), board);
     }
     
-    private boolean isCheck(int x, int y, ChessBoard board)
+    private boolean isCheck(int x, int y, BoardState board)
     {
-        if (getAttackingPieces(x, y, board).size() > 0)
-        {
-            return true;
-        }
-        return false;
+        return !getAttackingPieces(x, y, board).isEmpty();
     }
     
-    public List<Pieces> getAttackingPieces(ChessBoard board)
+    public List<Piece> getAttackingPieces(BoardState board)
     {
         return getAttackingPieces(getX(), getY(), board);
     }
     
-    private List<Pieces> getAttackingPieces(int x, int y, ChessBoard board) 
+    private List<Piece> getAttackingPieces(int x, int y, BoardState board) 
     {
-        List<Pieces> attackers = new ArrayList<>();
+        List<Piece> attackers = new ArrayList<>();
 
         //checks line of sight for pieces
         int[][] scanDirections = { 
@@ -73,11 +69,11 @@ public class King extends Pieces {
             int newX = x + xDirection;
             int newY = y + yDirection;
 
-            while (isWithinBoard(newX, newY, board)) 
+            while (board.isWithinBoard(newX, newY)) 
             {
-                Tile targetTile = board.getTile(newX, newY); //these can be shrunken if tile did not exist (:
-                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
-
+                Tile targetTile = board.getTile(newX, newY); 
+                Piece targetPiece = targetTile.getPiece();
+                
                 if (targetPiece != null) // if Tile empty or Contains enemy
                 { 
                     if (targetPiece.getPieceTeam() != getPieceTeam())
@@ -104,10 +100,10 @@ public class King extends Pieces {
             int newX = x + dir[0];
             int newY = y + dir[1];
 
-            if (isWithinBoard(newX, newY, board)) 
+            if (board.isWithinBoard(newX, newY)) 
             {
-                Tile targetTile = board.getTile(newX, newY); //these can be shrunken if tile did not exist (:
-                Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
+                Tile targetTile = board.getTile(newX, newY);
+                Piece targetPiece = targetTile.getPiece();
 
                 if (targetPiece != null && targetPiece.getPieceTeam() != getPieceTeam() && targetPiece instanceof Knight)
                 {
@@ -134,7 +130,7 @@ public class King extends Pieces {
     } 
     
     @Override
-    public List<Tile> canMove(ChessBoard board)
+    public List<Tile> canMove(BoardState board)
     {        
         List<Tile> possibleMoves = new ArrayList<>();
 
@@ -143,10 +139,10 @@ public class King extends Pieces {
             int x = getX() + dir[0];
             int y = getY() + dir[1];
 
-            if (isWithinBoard(x, y, board)) 
+            if (board.isWithinBoard(x, y)) 
             {
                 Tile targetTile = board.getTile(x, y);
-                Pieces targetPiece = targetTile.getPiece();
+                Piece targetPiece = targetTile.getPiece();
 
                 if (targetPiece == null || targetPiece.getPieceTeam() != getPieceTeam()) // if Tile empty or Contains enemy
                 { 
@@ -159,26 +155,25 @@ public class King extends Pieces {
         }
         
         //castle move
-        if (board.turnCounter.pieceMoveCount(this) == 0 && !isCheck(board)) //if kings first move and not currently in check
-        {
-                        
+        if (board.getPieceMoveCount(this) == 0 && !isCheck(board)) //if kings first move and not currently in check
+        {     
             for (int dir : new int[]{1, -1})
             {
             int x = getX() + 1 * dir;
             
-                while (isWithinBoard(x, getY(), board)) 
+                while (board.isWithinBoard(x, getY())) 
                 {
-
-                    Tile targetTile = board.getTile(x, getY()); //these can be shrunken if tile did not exist (:
-                    Pieces targetPiece = targetTile.getPiece(); //these can be shrunken if tile did not exist (:
+                    Tile targetTile = board.getTile(x, getY()); 
+                    Piece targetPiece = targetTile.getPiece(); 
 
                     if (targetPiece != null) 
                     {
                         if (targetPiece instanceof Rook)
                         {
-                            if (targetPiece.getPieceTeam() == getPieceTeam() && board.turnCounter.pieceMoveCount(targetPiece) == 0)
+                            if (targetPiece.getPieceTeam() == getPieceTeam() && board.getPieceMoveCount(targetPiece) == 0)
                             {
-                                possibleMoves.add(targetTile = board.getTile(getX() + (dir * 2), getY())); //king side Castle
+                                targetTile = board.getTile(getX() + (dir * 2), getY());
+                                possibleMoves.add(targetTile); //king side Castle
                             }
                         }
                         else
