@@ -94,6 +94,18 @@ public class ChessGame
                 else if (board.isInCheck(enemyTeam)) { // warns player of invalid move due to check
                     displayInCheckNotification(enemyTeam);
                 }
+                if (board.isPawnPromotable()) { // Gets user input for PawnPromotion
+                    PawnOption promotionPiece = getPromotionPiece(currentTeam, currentPlayer);
+                    if (promotionPiece == PawnOption.EXIT_GAME) 
+                    {
+                        displayResignation(currentTeam);
+                        break;
+                    }
+                    else
+                    {
+                        board.promotePawn(promotionPiece);
+                    }
+                }
                 board.turnCounter.nextTurn(); //next turn
                 board.displayBoard();
             } 
@@ -177,6 +189,46 @@ public class ChessGame
         System.out.println("\n"+loser+" elo change: "+t[1]+" -> "+this.leaderboard.getElo(loser));
     }
     
+    public PawnOption getPromotionPiece(Team team, Player player)//need to handle resignation  
+    {
+        InputHandler inputHandler = new InputHandler();
+
+        System.out.println(team.toString()+" PAWN PROMOTION!                    (X) TO QUIT");
+        System.out.println();
+        System.out.println("INPUT WHAT YOU WOULD LIKE TO PROMOTE YOUR PAWN TOO:");
+        System.out.println("   <BISHOP>  =  R,   <ROOK>   =  B, ");
+        System.out.println("   <KNIGHT>  =  N,   <QUEEN>  =  Q ");
+      
+        String userInput = inputHandler.getStringInput(player.getName() + ">");
+
+        if (userInput.equals("X")) 
+        {
+            return PawnOption.EXIT_GAME;
+        } 
+        else if (userInput.equals("R")) 
+        {
+            return PawnOption.ROOK;
+        } 
+        else if (userInput.equals("N")) 
+        {
+            return PawnOption.KNIGHT;
+        } 
+        else if (userInput.equals("B")) 
+        {
+            return PawnOption.BISHOP;
+        } 
+        else if (userInput.equals("Q")) 
+        {
+            return PawnOption.QUEEN;
+        } 
+
+        System.out.println("----------------------------------------------------");
+        System.out.println("Invalid option. Please try again.");
+        System.out.println("----------------------------------------------------");     
+
+        return getPromotionPiece(team, player);
+    }
+    
     private Input getPlayerTurn(Player player)
     {
         System.out.println("----------------------------------------------------");
@@ -242,54 +294,6 @@ public class ChessGame
             return false;
         }
         return true;
-    }
-    
-    //pawn promotion needs to be re factored
-    private Pieces getPromotionPiece(Player player, Pawn pawn)//need to handle resignation  
-    {
-        InputHandler inputHandler = new InputHandler();
-
-        System.out.println(pawn.getPieceTeam().toString()+" PAWN PROMOTION!                    (X) TO QUIT");
-        System.out.println();
-        System.out.println("INPUT WHAT YOU WOULD LIKE TO PROMOTE YOUR PAWN TOO:");
-        System.out.println("   <BISHOP>  =  R,   <ROOK>   =  B, ");
-        System.out.println("   <KNIGHT>  =  N,   <QUEEN>  =  Q ");
-      
-        String playerInput = inputHandler.getStringInput(player.getName() + ">");
-        Pieces promotedPiece = null;
- 
-        switch (playerInput) 
-        {
-            case "X":
-                System.out.println("----------------------------------------------------");
-                return null;
-            case "R":
-                promotedPiece = new Rook(pawn.getX(), pawn.getY(), pawn.getPieceTeam());
-                break;
-            case "B":
-                promotedPiece = new Bishop(pawn.getX(), pawn.getY(), pawn.getPieceTeam());
-                break;
-            case "N":
-                promotedPiece = new Knight(pawn.getX(), pawn.getY(), pawn.getPieceTeam());
-                break;
-            case "Q":
-                promotedPiece = new Queen(pawn.getX(), pawn.getY(), pawn.getPieceTeam());
-                break;
-        }
-
-        if (promotedPiece != null) 
-        {
-            System.out.println("----------------------------------------------------");
-            return promotedPiece;
-        } 
-        else 
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println("Invalid option chosen, please try again");
-            System.out.println("----------------------------------------------------");
-            
-            return getPromotionPiece(player, pawn); // Try again
-        }
     }
     
     private String TimerToString() // FIX THIS

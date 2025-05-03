@@ -113,10 +113,10 @@ public class ChessBoard
         Pieces targetPiece = getTile(moveSet.fromX, moveSet.fromY).getPiece();
         
         // only one special can occur per move (ordered in likelyhood)
-        if (tryCastle(targetPiece, moveSet)) {
-        } else if (tryEnPessant(targetPiece, moveSet)) {
-        } else if (tryPromotePawn(targetPiece, moveSet)) {
-        }
+        if (tryCastle(targetPiece, moveSet)) 
+        {} 
+        else if (tryEnPessant(targetPiece, moveSet)) 
+        {}
         
         // add move to history
         this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.toX, moveSet.toY).getPiece(), getTile(moveSet.fromX, moveSet.fromY), getTile(moveSet.toX, moveSet.toY));
@@ -180,14 +180,43 @@ public class ChessBoard
         return false;
     }
     
-    private boolean tryPromotePawn(Pieces piece, Input moveSet)
+    public boolean isPawnPromotable()
     {
-        if (piece instanceof Pawn && ((Pawn) piece).canPromotion(this))
+        Pieces targetPiece = this.turnCounter.getPriorMove(0).getPiece();
+        if (targetPiece instanceof Pawn && ((Pawn) targetPiece).canPromotion(this))
         {
-            setTile(ChessGame.getPromotionPiece("Player", (Pawn) piece), moveSet.fromX, moveSet.fromY);
             return true;
         }
         return false;
+    }
+    
+    public void promotePawn(PawnOption promotionPiece)
+    {
+        Tile toTile = this.turnCounter.getPriorMove(0).getToTile();
+        Pieces newPiece = null;
+        
+        int x = toTile.getX();
+        int y = toTile.getY();
+        Team team = toTile.getPiece().getPieceTeam();
+
+        switch (promotionPiece) {
+            case ROOK:
+                newPiece = new Rook(x, y, team);
+                break;
+            case BISHOP:
+                newPiece = new Bishop(x, y, team);
+                break;
+            case KNIGHT:
+                newPiece = new Knight(x, y, team);
+                break;
+            case QUEEN:
+                newPiece = new Queen(x, y, team);
+                break;
+        }
+
+        if (newPiece != null) {
+            setTile(newPiece, x, y);
+        }
     }
     
     public Tile[][] getBoard()

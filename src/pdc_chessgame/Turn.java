@@ -38,7 +38,7 @@ public class Turn
     {
         return this.moveHistory.get(this.moveHistory.size() - priorMoveNumber);
     }
-    
+
     private MoveState lastMove(Pieces p)
     {
         MoveState m = new MoveState(null, null, null, null, -1);

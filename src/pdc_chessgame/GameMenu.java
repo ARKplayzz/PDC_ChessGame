@@ -30,40 +30,37 @@ public class GameMenu
     
     public MenuOption displayMenu(Ranking rankings) 
     {
-        while (true) 
+        System.out.println("CHESS MENU                               (X) TO QUIT\n");
+        System.out.println("WHAT YOU WOULD LIKE TO DO?");
+        System.out.println("  <Start a game>          =  'START',");
+        System.out.println("  <Check your ranking>    =  'RANK'");
+        System.out.println("  <View the leaderboard>  =  'LEADERBOARD',");
+
+        System.out.print("> ");
+        String userInput = scanner.nextLine().toUpperCase();
+
+        if (userInput.equals("START")) 
         {
-            System.out.println("CHESS MENU                               (X) TO QUIT\n");
-            System.out.println("WHAT YOU WOULD LIKE TO DO?");
-            System.out.println("  <Start a game>          =  'START',");
-            System.out.println("  <Check your ranking>    =  'RANK'");
-            System.out.println("  <View the leaderboard>  =  'LEADERBOARD',");
-            
-            System.out.print("> ");
-            String userInput = scanner.nextLine().toUpperCase();
-            
-            if (userInput.equals("START")) 
-            {
-                return MenuOption.START_GAME;
-            } 
-            else if (userInput.equals("RANK")) 
-            {
-                this.displayRankings(rankings);
-            } 
-            else if (userInput.equals("LEADERBOARD")) 
-            {
-                this.displayLeaderboard(rankings);
-            } 
-            else if (userInput.equals("X")) 
-            {
-                return MenuOption.EXIT;
-            } 
-            else 
-            {
-                System.out.println("----------------------------------------------------");
-                System.out.println("Invalid option. Please try again.");
-                System.out.println("----------------------------------------------------");
-            }
-        }
+            return MenuOption.START_GAME;
+        } 
+        else if (userInput.equals("RANK")) 
+        {
+            this.displayRankings(rankings);
+        } 
+        else if (userInput.equals("LEADERBOARD")) 
+        {
+            this.displayLeaderboard(rankings);
+        } 
+        else if (userInput.equals("X")) 
+        {
+            return MenuOption.EXIT;
+        } 
+
+        System.out.println("----------------------------------------------------");
+        System.out.println("Invalid option. Please try again.");
+        System.out.println("----------------------------------------------------");     
+
+        return displayMenu(rankings);
     }
     
     private void displayRankings(Ranking rankings) 
