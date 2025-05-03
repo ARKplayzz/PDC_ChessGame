@@ -35,6 +35,12 @@ public class Clock extends Thread
         }
     }
     
+    @Override
+    public String toString()
+    {
+        return "finish this method, will return time as MM:SS";
+    }
+    
     private long minsToMillis(int minutes)
     {
         return (long)minutes * 60000;

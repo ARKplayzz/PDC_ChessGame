@@ -206,9 +206,9 @@ public class ChessGame
             System.out.println("UNFORTUNATLY " + loser.getName() + ", HAS BEEN DEFEATED"); 
         }
         
-        int[] t = this.leaderboard.changeElo(winner.getName(), loser.getName());
-        System.out.println("\n"+winner+" elo change: "+t[0]+" -> "+this.leaderboard.getElo(winner.getName()));
-        System.out.println("\n"+loser+" elo change: "+t[1]+" -> "+this.leaderboard.getElo(loser.getName()));
+        double[] t = this.leaderboard.changeElo(winner.getName(), loser.getName());
+        System.out.println("\n"+winner.getName()+" elo change: "+(int)t[0]+" -> "+this.leaderboard.getElo(winner.getName()));
+        System.out.println("\n"+loser.getName()+" elo change: "+(int)t[1]+" -> "+this.leaderboard.getElo(loser.getName()));
         
         System.out.println();
         System.out.println("Login and play more games to rank up!");
