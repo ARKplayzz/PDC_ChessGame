@@ -19,8 +19,7 @@ public class Move
         this.toX = toRow;
         this.toY = toCol;
     }
-    
-    
+
     public static Move getMove(String userMovement) { // This should be working now
                 
         String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces

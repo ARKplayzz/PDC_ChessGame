@@ -16,7 +16,7 @@ public class Turn
     private int turn = 0;
     private Team team = Team.WHITE;
 
-    private List<MoveState> moveHistory;
+    private final List<MoveState> moveHistory;
     
     public Turn()
     {
