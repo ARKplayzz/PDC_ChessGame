@@ -36,6 +36,16 @@ public class Turn
     
     public MoveState getPriorMove(int priorMoveNumber) // not last move, one before for undo indexing
     {
+        if (priorMoveNumber < 0 || priorMoveNumber > this.moveHistory.size()) 
+        {
+            return null;
+        }
+        
+        if (priorMoveNumber == 0 && !this.moveHistory.isEmpty()) 
+        {
+            return this.moveHistory.get(this.moveHistory.size() - 1);
+        }
+        
         return this.moveHistory.get(this.moveHistory.size() - priorMoveNumber);
     }
 
