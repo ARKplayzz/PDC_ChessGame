@@ -16,5 +16,10 @@ public enum Team
     {
         return this.toString();
     }
+    
+    public Team getOppositeTeam()
+    {
+        return this == Team.WHITE ? Team.BLACK : Team.WHITE;
+    }
 }
 
