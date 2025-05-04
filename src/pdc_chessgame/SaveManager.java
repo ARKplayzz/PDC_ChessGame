@@ -47,6 +47,16 @@ public class SaveManager
         return this.loadedGame.get(i);
     }
     
+    // used after loading the file to restore the board
+    public void simulateGame(ChessBoard board)
+    {
+        for(int i = 0; i < this.getSaveLength(); i++)
+        {
+            board.moveTile(MoveInput.getMoveInput(this.getSaveEntry(i)));
+            board.getNextTurn();
+        }
+    }
+    
     public boolean SaveGameToFile(String file, Turn history, HashMap<Team, Player> players)
     {
         PrintWriter pw;
@@ -54,6 +64,11 @@ public class SaveManager
         if(file.contains("."))
         {
             System.out.println("Please do not enter anything that could be\ninterpreted as a file extension");
+            return false;
+        }
+        if(file.contains(" "))
+        {
+            System.out.println("Please no whitespace");
             return false;
         }
         // add the actaul file extension, this is so the .gitignore will work and the markers won't end up with our saves in their copy
@@ -93,6 +108,11 @@ public class SaveManager
             System.out.println("Please do not enter anything that could be\ninterpreted a a file extension");
             return false;
         }
+        if(file.contains(" "))
+        {
+            System.out.println("Please no whitespace");
+            return false;
+        }
         FileReader f = null;
         file = file.concat(".sav");
         // create the buffered reader
@@ -120,10 +140,12 @@ public class SaveManager
                     String[] parts = currentLine.trim().toUpperCase().split(" ");
                     
                     // actully add the players to the hashmap
-                    if(parts[0].equals("BLACK"))
-                        players.put(Team.BLACK, new Player(parts[1], Team.BLACK));
-                    else if(parts[0].equals("WHITE"))
-                        players.put(Team.WHITE, new Player(parts[1], Team.WHITE));
+                    if(parts[1].equals("BLACK"))
+                        players.put(Team.BLACK, new Player(parts[0], Team.BLACK));
+                    else if(parts[1].equals("WHITE"))
+                        players.put(Team.WHITE, new Player(parts[0], Team.WHITE));
+                    
+                    
                 }
                 else
                 { // if the current line contains move info

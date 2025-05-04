@@ -40,7 +40,7 @@ public class GameMenu
         System.out.println("  <View the leaderboard>  =  'LEADERBOARD',");
 
         System.out.print("> ");
-        String userInput = scanner.nextLine().toUpperCase();
+        String userInput = scanner.nextLine().toUpperCase().trim();
 
         if (userInput.equals("START")) 
         {
@@ -89,7 +89,7 @@ public class GameMenu
             return false;
         }
         
-        if(file.toUpperCase().contains("X"))
+        if(file.toUpperCase().equals("X"))
         {
             Display.displayExit();
             System.exit(0);

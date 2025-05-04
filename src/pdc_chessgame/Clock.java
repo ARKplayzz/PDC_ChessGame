@@ -59,7 +59,8 @@ public class Clock extends Thread
         while(!this.quit)
         {
             // reduce this players limit
-            this.playerTimes[this.activePlayer]--;
+            if(this.playerTimes[this.activePlayer] > 0)
+                this.playerTimes[this.activePlayer]--;
             
             try {
                 Thread.sleep(1000L);
