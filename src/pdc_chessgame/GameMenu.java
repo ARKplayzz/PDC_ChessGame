@@ -56,8 +56,8 @@ public class GameMenu
         } 
         else if (userInput.equals("LOAD")) 
         {
-            this.displayLoadGame(loader, players);
-            return MenuOption.LOAD_SAVE;
+            if(this.displayLoadGame(loader, players))
+                return MenuOption.LOAD_SAVE;
         } 
         else if (userInput.equals("X")) 
         {
@@ -73,30 +73,41 @@ public class GameMenu
         return displayMenu(rankings, loader, players);
     }
     
-    private void displayLoadGame(SaveManager loader, HashMap<Team, Player> players)
+    private boolean displayLoadGame(SaveManager loader, HashMap<Team, Player> players)
     {
         System.out.println("----------------------------------------------------");
         System.out.println("LOAD GAME                                (X) TO QUIT");
-        System.out.println("Please enter the name of the save file you wish to load\n(Case sensitive / do not include a file extension):");
+        System.out.println("Please enter the name of the save file to load\n(Case sensitive / do not include a file extension):");
         
         System.out.print("> ");
         String file = scanner.nextLine();
         
+        if(file.contains("."))
+        {
+            System.out.println("Please do not enter anything that could be\ninterpreted a a file extension");
+            System.out.println("----------------------------------------------------");
+            return false;
+        }
+        
         if(file.toUpperCase().contains("X"))
         {
+            Display.displayExit();
             System.exit(0);
-            return;
+            return false;
         }
         
         if(!loader.LoadGameFromFile(file, players))
         {
             System.out.println("Please make sure you entered the name of an existing\nsave file.");
+            System.out.println("----------------------------------------------------");
+            return false;
         }
         else
         {
             System.out.println("\nThank you, loading save file now");
+            System.out.println("----------------------------------------------------");
+            return true;
         }
-        System.out.println("----------------------------------------------------");
     }
     
     private void displayRankings(Ranking rankings) 
