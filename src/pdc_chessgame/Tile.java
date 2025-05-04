@@ -21,6 +21,7 @@ public class Tile
     {
         this.x = x;
         this.y = y;
+        // setting default value to null so we can can check for it
         this.piece = null;
 
         if (!((x + 1) % 2 != 0) == ((y + 1) % 2 != 0)) //if tile is odd then tile = white
@@ -54,13 +55,16 @@ public class Tile
     
     public boolean movePieceTo(Tile tile)
     {
+        // check that a piece actully exists
         if(this.piece == null)
             return false;
         
         this.piece.setX(tile.x); //updating piece to contain new location
         this.piece.setY(tile.y);
         
+        // move piece to the new tile
         tile.setPiece(this.piece);
+        // delete the instance on this tile
         this.deletePiece();
         return true;
     }

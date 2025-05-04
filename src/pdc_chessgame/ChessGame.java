@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class ChessGame 
 {
     
-    private final ChessBoard board;
+    private ChessBoard board;
     private final HashMap<Team, Player> players;
     
     private static final String LEADERBOARD_FILE = "rankings.txt";
@@ -43,7 +43,9 @@ public class ChessGame
     
     public void start() 
     {
-        display.displayWelcome(); 
+        this.board = new ChessBoard(8, 8);
+        this.board.getHistory().deleteMoveHistory();
+        Display.displayWelcome(); 
         
         MenuOption userSelection = menu.displayMenu(this.leaderboard, this.savemanager, this.players);
 
@@ -136,7 +138,6 @@ public class ChessGame
             
         //displayEloPromotion(getPlayerInTeam(getEnemyTeam(board.getCurrentTeam())), getPlayerInTeam(board.getCurrentTeam()));
         this.changeElo(getPlayerInTeam(board.getCurrentTeam().getOppositeTeam()), getPlayerInTeam(board.getCurrentTeam()));
-            
         //saving scores to the file just before the program exits
         this.leaderboard.saveScores(LEADERBOARD_FILE);
     }
