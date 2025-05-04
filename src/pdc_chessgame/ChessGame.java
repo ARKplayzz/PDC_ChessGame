@@ -280,7 +280,7 @@ public class ChessGame
             return getPlayerTurn(player);  //try again
         }
         
-        Move moveSet = Move.getMove(playerInput.trim().toUpperCase());
+        Move moveSet = MoveInput.getMove(playerInput.trim().toUpperCase());
         
         if (moveSet == null)
         {
@@ -301,20 +301,20 @@ public class ChessGame
     
     private boolean isValidMove(Move move, Team team, String input) 
     {
-        if (board.getTile(move.fromX, move.fromY) == null || board.getTile(move.fromX, move.fromY).getPiece() == null) 
+        if (board.getTile(move.getFromX(), move.getFromY()) == null || board.getTile(move.getFromX(), move.getFromY()).getPiece() == null) 
         {
             System.out.println("----------------------------------------------------");
             System.out.println(input.charAt(0) +""+ input.charAt(1) + " Does not contain a piece, Eg 'A1 B2'");
             return false;
         }
-        Piece piece = board.getTile(move.fromX, move.fromY).getPiece();
+        Piece piece = board.getTile(move.getFromX(), move.getFromY()).getPiece();
         if (piece.getPieceTeam() != team) 
         {
             System.out.println("----------------------------------------------------");
             System.out.println(input.charAt(0) +""+ input.charAt(1) + " Is not your Piece, please try again");
             return false;
         }
-        if (!piece.canMove(board).contains(board.getTile(move.toX, move.toY))) 
+        if (!piece.canMove(board).contains(board.getTile(move.getToX(), move.getToY()))) 
         {
             System.out.println("----------------------------------------------------");
             System.out.println(input + " is an invalid move for this piece, try again");

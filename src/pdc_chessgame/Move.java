@@ -20,11 +20,6 @@ public class Move
         this.toY = toCol;
     }
     
-    public static Move getMove(String userMovement) 
-    {
-        return MoveInput.getMoveInput(userMovement);
-    }
-    
     public int getFromX()
     {
         return fromX;
