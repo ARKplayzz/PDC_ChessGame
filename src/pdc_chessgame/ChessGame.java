@@ -71,6 +71,7 @@ public class ChessGame
         else if (userSelection == MenuOption.EXIT) 
         {
             Display.displayExit();
+            System.exit(0);
         }
     }
     
@@ -123,6 +124,7 @@ public class ChessGame
                     }
                 }
                 board.getNextTurn(); //next turn
+                this.clock.swapClock();
                 board.displayBoard();
             } 
         }    

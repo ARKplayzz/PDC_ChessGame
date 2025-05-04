@@ -12,6 +12,9 @@ public class GameSimulator
 {
     public void simulateGame(SaveManager save, ChessBoard board)
     {
-        
+        for(int i = 0; i < save.getSaveLength(); i++)
+        {
+            
+        }
     }
 }
