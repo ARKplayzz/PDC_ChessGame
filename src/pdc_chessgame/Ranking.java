@@ -21,6 +21,8 @@ import java.util.logging.Logger;
  */
 public class Ranking 
 {
+    private static final String LEADERBOARD_FILE = "rankings.txt";
+    
     // leaderboard holds usernames and the ELO scores associated with them
     private HashMap<String, Integer> leaderboard;
 
@@ -104,12 +106,12 @@ public class Ranking
     }
     
     // loads the leaderboard from the specified leaderboard file
-    public boolean getLeaderboard(String file)
+    public boolean getLeaderboard()
     {
         //create the filereader and check for errors
         FileReader f = null;
         try {
-            f = new FileReader(file);
+            f = new FileReader(this.LEADERBOARD_FILE);
         } catch (FileNotFoundException ex) {
             System.out.println("Could not find input file");
             return false;
@@ -144,12 +146,12 @@ public class Ranking
     }
     
     // write the leaderboard to the specified leaderboard file, will overwrite existing contents
-    public boolean saveScores(String file)
+    public boolean saveScores()
     { 
         PrintWriter pw;
         // create the printwriter and check for errors
         try {
-            pw = new PrintWriter(new FileOutputStream(file));
+            pw = new PrintWriter(new FileOutputStream(this.LEADERBOARD_FILE));
         } catch (FileNotFoundException ex) {
             System.out.println("Failed to create file, no new rankings have been saved");
             return false;
