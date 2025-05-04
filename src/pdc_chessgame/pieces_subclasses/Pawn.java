@@ -88,5 +88,11 @@ public class Pawn extends Piece {
     {
         return getY() + ((getPieceTeam() == Team.BLACK) ? (board.getHeight() - 1) : 2) == board.getHeight();
     }
+
+    @Override
+    public String getName() 
+    {
+        return "Pawn";
+    }
    
 }

@@ -20,5 +20,4 @@ public class PDC_ChessGame
         ChessGame game = new ChessGame();
         game.start();
     }
-
 }

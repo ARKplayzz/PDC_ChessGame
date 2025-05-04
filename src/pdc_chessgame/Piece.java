@@ -60,6 +60,8 @@ public abstract class Piece
         
     public abstract int[][] getDirection();
     
+    public abstract String getName();
+    
     //returns a list of all tiles that the piece can move to
     public List<Tile> canMove(BoardState board)
     {        

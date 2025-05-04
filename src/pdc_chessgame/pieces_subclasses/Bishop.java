@@ -25,4 +25,10 @@ public class Bishop extends Piece {
         {1, 1}      // down right
         };
     } 
+
+    @Override
+    public String getName() 
+    {
+        return "Bishop";
+    }
 }

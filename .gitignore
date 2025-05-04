@@ -4,3 +4,5 @@
 
 #This is for ignoring the rankings file
 *.txt
+# this is for ignoring saves
+*.sav
