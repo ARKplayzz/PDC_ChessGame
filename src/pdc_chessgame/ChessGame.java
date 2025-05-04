@@ -126,6 +126,7 @@ public class ChessGame
                 board.getNextTurn(); //next turn
                 this.clock.swapClock();
                 board.displayBoard();
+                System.out.println("Remaining time: "+this.clock.toString());
             } 
         }    
         
@@ -215,13 +216,25 @@ public class ChessGame
         playerLogin(player);
     }
     
+    // I don't know why netbeans is complaining it won't recurse infinitly, only as long as the user keeps input bogus numbers
+    @SuppressWarnings("InfiniteRecursion")
     private void customiseClock()
     {
         System.out.println("CLOCK SETTING                           (X) TO QUIT\n");
         System.out.print("Please enter the time limit for every\nplayer (in minutes, will be rounded)\n");
         
         String userInput = inputHandler.getStringInput("> ").trim(); 
-        int tl = Integer.parseInt(userInput);
+        
+        int tl;
+        try
+        {
+            tl = Integer.parseInt(userInput);
+        } catch (final NumberFormatException e){
+            System.out.println("Please input a whole number");
+            System.out.println("----------------------------------------------------");
+            this.customiseClock();
+            return;
+        }
         
         System.out.println("Set players time limit as "+tl+" minutes.");
         System.out.println("----------------------------------------------------");

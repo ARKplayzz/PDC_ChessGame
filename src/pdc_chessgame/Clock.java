@@ -4,77 +4,71 @@
  */
 package pdc_chessgame;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Andrew & Finlay
  */
 public class Clock extends Thread
-{
-    private class timer
-    {
-        long startTime;
-        long limit;
-    }
-    
-    // start time holds the start of the game
-    private long startTime;
+{   
+    // for quitting the clock from another thread
     private boolean quit = false;
     
     private int activePlayer;
-    private timer[] playerTimes;
+    private int[] playerTimes;
     
     // playerTime is the amount of time each player gets
     public Clock(int playerTime, int numPlayers)
     {
-        this.playerTimes = new timer[numPlayers];
+        this.playerTimes = new int[numPlayers];
         
         for(int i = 0; i < numPlayers; i++)
         {
-            this.playerTimes[i] = new timer();
-            this.playerTimes[i].limit = this.minsToMillis(playerTime);
+            this.playerTimes[i] = (playerTime * 60);
         }
     }
     
     @Override
     public String toString()
     {
-        return (String)(((this.playerTimes[this.activePlayer].limit / 1000) / 60) +":"+ ((int)(this.playerTimes[this.activePlayer].limit / 1000) % 60));
-    }
-    
-    private long minsToMillis(int minutes)
-    {
-        return (long)minutes * 60000;
+        return (String)((this.playerTimes[this.activePlayer] / 60) +":"+ ((int)(this.playerTimes[this.activePlayer] % 60)));
     }
     
     public long getTime(int n)
     {
-        return this.playerTimes[n].limit;
+        return this.playerTimes[n];
     }
     
     public void swapClock()
     {
         // add 10 seconds to the current players time
-        this.playerTimes[this.activePlayer].limit += 10000;
+        this.playerTimes[this.activePlayer] += 10;
         
         if(this.activePlayer < this.playerTimes.length-1)
             this.activePlayer++;
         else
             this.activePlayer = 0;
-        
-        this.playerTimes[this.activePlayer].startTime = System.currentTimeMillis();
     }
     
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run()
     {
-        this.startTime = System.currentTimeMillis();
         while(!this.quit)
         {
             // reduce this players limit
-            this.playerTimes[this.activePlayer].limit -= (System.currentTimeMillis() - this.playerTimes[this.activePlayer].startTime);
+            this.playerTimes[this.activePlayer]--;
+            
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             // if the player has used up all of their time
-            if(this.playerTimes[this.activePlayer].limit < 1)
+            if(this.playerTimes[this.activePlayer] < 1)
             {
                 
             }
