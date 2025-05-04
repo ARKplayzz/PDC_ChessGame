@@ -114,7 +114,7 @@ public class GameMenu
     {
         System.out.println("----------------------------------------------------");
         System.out.println("PLAYER RANKINGS");
-        System.out.println("Please enter your username to check your rank (Case sensitive):");
+        System.out.println("Please enter your username to check your rank \n(Case sensitive):");
         
         System.out.print("> ");
         String username = scanner.nextLine();
