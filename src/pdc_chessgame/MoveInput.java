@@ -34,8 +34,8 @@ public class MoveInput {
             return null;
         }
 
-        String from = "" + (char) (move.getFromX() + 'A') + (move.getFromY() + 1);
-        String to = "" + (char) (move.getToX() + 'A') + (move.getToY() + 1);
+        String from = "" + (char) (move.getFromX() + 65) + (move.getFromY() + 1);
+        String to = "" + (char) (move.getToX() + 65) + (move.getToY() + 1);
 
         return from + " " + to;
     }

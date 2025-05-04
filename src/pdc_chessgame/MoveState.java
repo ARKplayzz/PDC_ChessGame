@@ -17,7 +17,6 @@ public class MoveState
     private int moveNo;
     
     // this is only used for saving
-    private String originialInput;
         
     public MoveState(Piece piece, Piece capturedPiece, Tile from, Tile to, int turn, String originialInput)
     {
@@ -26,7 +25,6 @@ public class MoveState
         this.from = from;
         this.to = to;
         this.moveNo = turn;
-        this.originialInput = originialInput;
     }
 
     @Override
@@ -37,7 +35,7 @@ public class MoveState
     
     public String getStringInput()
     {
-        return this.originialInput;
+        return MoveInput.getMoveOutput(new Move(from.getX(), from.getY(), to.getX(), to.getY()));
     }
         
     public Piece getPiece()
