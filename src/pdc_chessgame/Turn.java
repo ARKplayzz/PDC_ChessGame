@@ -139,7 +139,7 @@ public class Turn
     
     public String toString(int i)
     {
-        return (String)(this.moveHistory.get(i).getPiece().getPieceTeam().teamName() +" "+ this.moveHistory.get(i).getPiece().getName()+" From: "+this.moveHistory.get(i).getFromTile().getX()+","+this.moveHistory.get(i).getFromTile().getY() +" To: "+this.moveHistory.get(i).getToTile().getX() +","+this.moveHistory.get(i).getToTile().getY());
+        return (String)(this.moveHistory.get(i).getPiece().getPieceTeam().teamName() +" "+ this.moveHistory.get(i).getPiece().getName()+" From: "+(char) (this.moveHistory.get(i).getFromTile().getX()+ 65) +""+this.moveHistory.get(i).getFromTile().getY() +" To: "+(char) (this.moveHistory.get(i).getToTile().getX()+ 65) +""+this.moveHistory.get(i).getToTile().getY());
     }
     
     public Team getTeam()

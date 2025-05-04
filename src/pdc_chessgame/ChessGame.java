@@ -241,7 +241,6 @@ public class ChessGame
         
         System.out.println();
         System.out.println("Login and play more games to rank up!");
-        System.out.println("----------------------------------------------------");  
     }
     
     public PawnOption getPromotionPiece(Team team, Player player)//need to handle resignation  
@@ -349,7 +348,6 @@ public class ChessGame
         {
             System.out.println((i+1)+": "+this.board.getHistory().toString(i));
         }
-        System.out.println("----------------------------------------------------");     
     }
     
     private void saveGame()
