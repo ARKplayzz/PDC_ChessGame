@@ -14,7 +14,8 @@ public class GameSimulator
     {
         for(int i = 0; i < save.getSaveLength(); i++)
         {
-            
+            board.moveTile(MoveInput.getMoveInput(save.getSaveEntry(i)));
+            board.getNextTurn();
         }
     }
 }
