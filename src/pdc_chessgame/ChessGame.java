@@ -321,7 +321,7 @@ public class ChessGame
             return getPlayerTurn(player);  //try again
         }
         
-        Move moveSet = Move.getMove(playerInput.trim().toUpperCase());
+        Move moveSet = MoveInput.getMoveInput(playerInput.trim().toUpperCase());
         
         if (moveSet == null)
         {

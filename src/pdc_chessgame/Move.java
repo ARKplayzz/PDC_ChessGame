@@ -14,18 +14,13 @@ public class Move
     // stores the originial string, used for saving and loading
     private String input;
     
-    public Move(int fromRow, int fromCol, int toRow, int toCol, String input) 
+    public Move(int fromRow, int fromCol, int toRow, int toCol) 
     { 
         this.fromX = fromRow;
         this.fromY = fromCol;
         this.toX = toRow;
         this.toY = toCol;
         this.input = input;
-    }
-    
-    public static Move getMove(String userMovement) 
-    {
-        return MoveInput.getMoveInput(userMovement);
     }
     
     public String getInput()

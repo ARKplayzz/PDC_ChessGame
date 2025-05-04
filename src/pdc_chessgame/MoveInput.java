@@ -24,7 +24,20 @@ public class MoveInput {
         int toX = (parts[1].charAt(0) - 65); // A to H = 0 to 7
         int toY = Character.getNumericValue(parts[1].charAt(1))-1; //  Translates char to int (-1 for start point at 0)
 
-        return new Move(fromX, fromY, toX, toY, userMovement);
+        return new Move(fromX, fromY, toX, toY);
+    }
+    
+    public static String getMoveOutput(Move move) 
+    {
+        if (move == null) 
+        {
+            return null;
+        }
+
+        String from = "" + (char) (move.getFromX() + 'A') + (move.getFromY() + 1);
+        String to = "" + (char) (move.getToX() + 'A') + (move.getToY() + 1);
+
+        return from + " " + to;
     }
         
     private static boolean isValidTile(String pos) 
