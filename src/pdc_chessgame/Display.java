@@ -10,11 +10,10 @@ package pdc_chessgame;
  */
 public final class Display {
     
-    private final InputHandler inputHandler;
+    private final InputHandler inputHandler = new InputHandler();
     
     public Display() 
     {
-        this.inputHandler = new InputHandler();
     }
     
     public static void displayInCheckWarning() 
@@ -139,6 +138,91 @@ public final class Display {
         for(int i = 0; i < board.getHistory().getMoveCount(); i++)
         {
             System.out.println((i+1)+": "+ board.getHistory().toString(i));
+        }
+    }
+    
+    public static void displayEloChange(Player winner, Player loser, double[] eloChanges, int[] newElos) 
+    {
+        if (winner.getName().contains("Guest ")) 
+        {
+            System.out.println("CONGRATS TO " + winner.getName());  
+        } 
+        else 
+        {
+            System.out.println("CONGRATS TO " + winner.getName());  
+        }
+        
+        if (loser.getName().contains("Guest ")) 
+        {
+            System.out.println("BETTER LUCK NEXT TIME " + loser.getName()); 
+        } 
+        else 
+        {
+            System.out.println("UNFORTUNATLY " + loser.getName() + ", HAS BEEN DEFEATED"); 
+        }
+        
+        System.out.println("\n" + winner.getName() + " elo change: " + (int)eloChanges[0] + " -> " + newElos[0]);
+        System.out.println("\n" + loser.getName() + " elo change: " + (int)eloChanges[1] + " -> " + newElos[1]);
+        
+        System.out.println();
+        System.out.println("Login and play more games to rank up!");
+    }
+    
+    public String displayPlayerLogin(Team team, String defaultName) 
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println("PLAYER " + (team == Team.WHITE ? "1" : "2") + " LOGIN                           (X) TO QUIT");
+        System.out.println("Please enter your username or 'Guest' to skip \n(Case sensitive)");
+        
+        return inputHandler.getStringInput("> ");
+    }
+    
+    public String displayPlayerMove(Player player, Clock clock) 
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
+        System.out.println("Remaining time: " + clock.toString());
+        
+        return inputHandler.getStringInput(player.getName() + "> ");
+    }
+   
+    public int getClockTimeLimit() 
+    {
+        System.out.println("CLOCK SETTING                           (X) TO QUIT\n");
+        System.out.print("Please enter the time limit for every\nplayer (in minutes, will be rounded)\n");
+        
+        String userInput = inputHandler.getStringInput("> ").trim(); 
+        
+        try 
+        {
+            return Integer.parseInt(userInput);
+        } 
+        catch (final NumberFormatException e) 
+        {
+            System.out.println("Please input a whole number");
+            System.out.println("----------------------------------------------------");
+            
+            return getClockTimeLimit();
+        }
+    }
+    
+    public String getSaveFileName() 
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println("Please enter the name of the new save file\n(Do not include a file extension):");
+        
+        return inputHandler.getStringInput("> ");
+    }
+    
+    public void displaySaveResult(boolean success, String fileName) 
+    {
+        if (!success) 
+        {
+            System.out.println("\nPlease ensure that you input a valid file name.");
+        } 
+        else 
+        {
+            System.out.println("\nSuccesfully saved as '" + fileName + "'");
         }
     }
     
