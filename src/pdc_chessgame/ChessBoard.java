@@ -116,7 +116,7 @@ public class ChessBoard implements BoardState
     
     public boolean moveTile(Move moveSet) 
     {
-        Piece targetPiece = getTile(moveSet.fromX, moveSet.fromY).getPiece();
+        Piece targetPiece = getTile(moveSet.getFromX(), moveSet.getFromY()).getPiece();
         
         // only one special can occur per move (ordered in likelyhood)
         if (tryCastle(targetPiece, moveSet)) 
@@ -125,13 +125,13 @@ public class ChessBoard implements BoardState
         {}
         
         // add move to history
-        this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.toX, moveSet.toY).getPiece(), getTile(moveSet.fromX, moveSet.fromY), getTile(moveSet.toX, moveSet.toY));
+        this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.getToX(), moveSet.getToY()).getPiece(), getTile(moveSet.getFromX(), moveSet.getFromY()), getTile(moveSet.getToX(), moveSet.getToY()));
         // check if a piece needs to be captured before its Tile is overridden
-        if (getTile(moveSet.toX, moveSet.toY).getPiece() != null){
-            captureTile(moveSet.toX, moveSet.toY);
+        if (getTile(moveSet.getToX(), moveSet.getToY()).getPiece() != null){
+            captureTile(moveSet.getToX(), moveSet.getToY());
         }
         // move the piece
-        return getTile(moveSet.fromX, moveSet.fromY).movePieceTo(getTile(moveSet.toX, moveSet.toY));
+        return getTile(moveSet.getFromX(), moveSet.getFromY()).movePieceTo(getTile(moveSet.getToX(), moveSet.getToY()));
     
     }
     
@@ -139,24 +139,24 @@ public class ChessBoard implements BoardState
     {
         if (piece instanceof King)
         {
-            int distanceX = moveSet.toX - moveSet.fromX;
+            int distanceX = moveSet.getToX() - moveSet.getFromX();
 
             if (Math.abs(distanceX) == 2)  //check if move is a castle move
             {
-                int x = moveSet.fromY; 
+                int x = moveSet.getFromY(); 
                 int rookFromX, rookToX;
 
                 if (distanceX > 0) 
                 {
                     // King side
                     rookFromX = 7; 
-                    rookToX = moveSet.toX - 1; // rook is left of the king
+                    rookToX = moveSet.getToX() - 1; // rook is left of the king
                 } 
                 else 
                 {
                     // queen side
                     rookFromX = 0;  
-                    rookToX = moveSet.toX + 1; // rook is right of the king
+                    rookToX = moveSet.getToX() + 1; // rook is right of the king
                     
                 }
                 this.board[rookFromX][x].movePieceTo(board[rookToX][x]);
@@ -172,14 +172,14 @@ public class ChessBoard implements BoardState
         {
             int direction = piece.getPieceTeam() == Team.BLACK ? 1 : -1;
             
-            Tile targetTile = getTile(moveSet.toX, moveSet.toY + direction);
+            Tile targetTile = getTile(moveSet.getToX(), moveSet.getToY() + direction);
             Piece targetPawn = targetTile.getPiece();
             
             if (targetPawn != null && //target is a piece
                 targetPawn instanceof Pawn && // if target is a pawn
                 piece.getPieceTeam() != targetPawn.getPieceTeam()) // if target is an enemy
             {
-                captureTile(moveSet.toX , moveSet.toY + direction); // dewit!
+                captureTile(moveSet.getToX() , moveSet.getToY() + direction); // dewit!
                 return true;
             }
         }

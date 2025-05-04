@@ -10,7 +10,7 @@ package pdc_chessgame;
  */
 public class Move 
 {
-    public int fromX, fromY, toX, toY; // efficent storing for move cases
+    private final int fromX, fromY, toX, toY; // efficent storing for move cases
     
     public Move(int fromRow, int fromCol, int toRow, int toCol) 
     { 
@@ -19,34 +19,29 @@ public class Move
         this.toX = toRow;
         this.toY = toCol;
     }
-
-    public static Move getMove(String userMovement) { // This should be working now
-                
-        String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces
-        
-        if (parts.length != 2 || !isValidTile(parts[0]) || !isValidTile(parts[1])) {
-            return null;
-        }
-        
-        int fromX = ( parts[0].charAt(0) - 65); // A to H = 0 to 7
-        int fromY = Character.getNumericValue(parts[0].charAt(1))- 1; // Translates char to int (-1 for start point at 0)
-
-        int toX = (parts[1].charAt(0) - 65); // A to H = 0 to 7
-        int toY = Character.getNumericValue(parts[1].charAt(1))-1; //  Translates char to int (-1 for start point at 0)
-
-        return new Move(fromX, fromY, toX, toY);
+    
+    public static Move getMove(String userMovement) 
+    {
+        return MoveInput.getMoveInput(userMovement);
     }
     
-    public static Move getMove(int fromX, int fromY, int toX, int toY) {
-
-        return new Move(fromX, fromY, toX, toY);
-    }
-        
-    private static boolean isValidTile(String pos) 
+    public int getFromX()
     {
-        if (pos.length() != 2) {
-            return false;
-        }
-        return pos.charAt(0) >= 'A' && pos.charAt(0) <= 'H' && pos.charAt(1) >= '1' && pos.charAt(1) <= '8';
+        return fromX;
+    }
+    
+    public int getFromY()
+    {
+        return fromY;
+    }
+    
+    public int getToX()
+    {
+        return toX;
+    }
+    
+    public int getToY()
+    {
+        return toY;
     }
 }
