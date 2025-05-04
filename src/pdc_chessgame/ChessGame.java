@@ -16,7 +16,7 @@ public class ChessGame
     private final ChessBoard board;
     private final HashMap<Team, Player> players;
     
-    private static final String LEADERBOARD_FILE = "rankings.txt";
+    
     private final Ranking leaderboard;
     
     private SaveManager savemanager;
@@ -38,7 +38,7 @@ public class ChessGame
         players.put(Team.WHITE, new Player("Guest 1", Team.WHITE));
         players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));
         
-        this.leaderboard.getLeaderboard(LEADERBOARD_FILE);
+        this.leaderboard.getLeaderboard();
     }
     
     public void start() // this is recursive so it will start again after a game has finished
@@ -143,7 +143,7 @@ public class ChessGame
         display.displayEloChange(winner, loser, eloChanges, newElos);
         
         //saving scores to the file just before the program exits
-        this.leaderboard.saveScores(LEADERBOARD_FILE);
+        this.leaderboard.saveScores();
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...

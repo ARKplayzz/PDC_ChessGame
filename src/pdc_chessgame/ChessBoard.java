@@ -386,8 +386,7 @@ public class ChessBoard implements BoardState
         return true;
     }
 
-    
-    // alternative: storing kingLocation within board...?
+   
     private King getKing(Team team) 
     {
         for (int x = 0; x < this.width; x++) 
