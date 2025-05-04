@@ -149,6 +149,10 @@ public class ChessGame
         
         //saving scores to the file just before the program exits
         this.leaderboard.saveScores();
+        
+        players.clear();
+        players.put(Team.WHITE, new Player("Guest 1", Team.WHITE));
+        players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...
@@ -187,7 +191,7 @@ public class ChessGame
         
         if(userInput.toUpperCase().equals("X"))
         {
-            display.displayExit();
+            Display.displayExit();
             System.exit(0);
             return;
         }

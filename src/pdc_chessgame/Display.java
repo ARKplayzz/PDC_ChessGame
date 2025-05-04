@@ -200,10 +200,10 @@ public final class Display {
             System.exit(0);
             return 0;
         }
-        
+        int t;
         try 
         {
-            return Integer.parseInt(userInput);
+            t = Integer.parseInt(userInput);
         } 
         catch (final NumberFormatException e) 
         {
@@ -212,6 +212,15 @@ public final class Display {
             
             return getClockTimeLimit();
         }
+        if(t > 300)// max of 300 minutes
+        {
+            System.out.println("5 hours is the maximum time allowed");
+            System.out.println("----------------------------------------------------");
+            
+            return getClockTimeLimit();
+        }
+        
+        return t;
     }
     
     public String getSaveFileName() 
