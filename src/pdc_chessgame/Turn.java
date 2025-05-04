@@ -15,8 +15,10 @@ public class Turn
 {
     private int turn = 0;
     private Team team = Team.WHITE;
-
-    private final List<MoveState> moveHistory;
+    
+    // do not make this final
+    @SuppressWarnings("FieldMayBeFinal")
+    private List<MoveState> moveHistory;
     
     public Turn()
     {
@@ -123,6 +125,16 @@ public class Turn
     public void deleteMoveHistory()
     {
         this.moveHistory.clear();
+    }
+    
+    public int getHistoryLength()
+    {
+        return this.moveHistory.size();
+    }
+    
+    public MoveState getHistoryEntry(int i)
+    {
+        return this.moveHistory.get(i);
     }
     
     public int getTurn()
