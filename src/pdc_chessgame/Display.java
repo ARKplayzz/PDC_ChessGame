@@ -10,6 +10,13 @@ package pdc_chessgame;
  */
 public final class Display {
     
+    private final InputHandler inputHandler;
+    
+    public Display() 
+    {
+        this.inputHandler = new InputHandler();
+    }
+    
     public static void displayInCheckWarning() 
     {
         System.out.println("Invalid move! Your king is facing check, try again");
@@ -69,4 +76,69 @@ public final class Display {
         System.out.println("Program Produced by Andrew Kennedy & Finlay Baynham");
         System.out.println("----------------------------------------------------");
     }
+    
+    public String promptPlayerMove(Player player, Clock clock) 
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
+        System.out.println("Remaining time: " + clock.toString());
+        
+        return inputHandler.getStringInput(player.getName() + "> ");
+    }
+    
+    public void displayInvalidMove(String message) 
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println(message);
+    }
+    
+    public PawnOption getPromotionPiece(Team team, Player player) 
+    {
+        System.out.println(team.toString()+" PAWN PROMOTION!                    (X) TO QUIT");
+        System.out.println();
+        System.out.println("INPUT WHAT YOU WOULD LIKE TO PROMOTE YOUR PAWN TOO:");
+        System.out.println("   <BISHOP>  =  R,   <ROOK>   =  B, ");
+        System.out.println("   <KNIGHT>  =  N,   <QUEEN>  =  Q ");
+      
+        String userInput = inputHandler.getStringInput(player.getName() + ">");
+
+        if (userInput.equals("X")) 
+        {
+            return PawnOption.EXIT_GAME;
+        } 
+        else if (userInput.equals("R")) 
+        {
+            return PawnOption.ROOK;
+        } 
+        else if (userInput.equals("N")) 
+        {
+            return PawnOption.KNIGHT;
+        } 
+        else if (userInput.equals("B")) 
+        {
+            return PawnOption.BISHOP;
+        } 
+        else if (userInput.equals("Q")) 
+        {
+            return PawnOption.QUEEN;
+        } 
+
+        System.out.println("----------------------------------------------------");
+        System.out.println("Invalid option. Please try again.");
+        System.out.println("----------------------------------------------------");     
+
+        return getPromotionPiece(team, player);
+    }
+    
+    public static void printHistory(ChessBoard board)
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println("Move history:");
+        
+        for(int i = 0; i < board.getHistory().getMoveCount(); i++)
+        {
+            System.out.println((i+1)+": "+ board.getHistory().toString(i));
+        }
+    }
+    
 }

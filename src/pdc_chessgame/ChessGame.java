@@ -24,14 +24,13 @@ public class ChessGame
     
     private GameSimulator simulator;
         
-    private final GameMenu menu;
-    private final InputHandler inputHandler;
+    public final Display display = new Display();
+    private final GameMenu menu = new GameMenu();
+    private final InputHandler inputHandler = new InputHandler();
 
     public ChessGame() 
     {
         this.board = new ChessBoard(8, 8);
-        this.menu = new GameMenu();
-        this.inputHandler = new InputHandler();
         this.leaderboard = new Ranking();
         this.savemanager = new SaveManager();
         this.simulator = new GameSimulator();
@@ -46,7 +45,7 @@ public class ChessGame
     
     public void start() 
     {
-        Display.displayWelcome(); 
+        display.displayWelcome(); 
         
         MenuOption userSelection = menu.displayMenu(this.leaderboard, this.savemanager, this.players);
 
@@ -70,7 +69,7 @@ public class ChessGame
         }
         else if (userSelection == MenuOption.EXIT) 
         {
-            Display.displayExit();
+            display.displayExit();
             System.exit(0);
         }
     }
@@ -91,13 +90,13 @@ public class ChessGame
 
             if (moveSet == null)  //if player exits game (RESIGNATION)
             {
-                Display.displayResignation(currentTeam);
+                display.displayResignation(currentTeam);
                 break;
             }
             
             if(clock.getTime() < 1)
             {
-                Display.displayTimeOver(currentTeam);
+                display.displayTimeOver(currentTeam);
                 break;
             }
 
@@ -106,22 +105,22 @@ public class ChessGame
             if (board.isInCheck(currentTeam)) // is Player move in check
             {
                 board.undoMove();
-                Display.displayInCheckWarning(); 
+                display.displayInCheckWarning(); 
             }
             else 
             {
                 if (board.isCheckmate(enemyTeam)) { // ends game (CHECKMATE)
-                    Display.displayGameOver(currentTeam);
+                    display.displayGameOver(currentTeam);
                     break;
                 }
                 else if (board.isInCheck(enemyTeam)) { // warns player of invalid move due to check
-                    Display.displayInCheckNotification(enemyTeam);
+                    display.displayInCheckNotification(enemyTeam);
                 }
                 if (board.isPawnPromotable()) { // Gets user input for PawnPromotion
-                    PawnOption promotionPiece = getPromotionPiece(currentTeam, currentPlayer);
+                    PawnOption promotionPiece = display.getPromotionPiece(currentTeam, currentPlayer);
                     if (promotionPiece == PawnOption.EXIT_GAME) 
                     {
-                        Display.displayResignation(currentTeam);
+                        display.displayResignation(currentTeam);
                         break;
                     }
                     else
@@ -132,7 +131,6 @@ public class ChessGame
                 board.getNextTurn(); //next turn
                 this.clock.swapClock();
                 board.displayBoard();
-                System.out.println("Remaining time: "+this.clock.toString());
             } 
         }    
         
@@ -184,7 +182,7 @@ public class ChessGame
         
         if(userInput.toUpperCase().equals("X"))
         {
-            Display.displayExit();
+            display.displayExit();
             System.exit(0);
             return;
         }
@@ -275,50 +273,11 @@ public class ChessGame
         System.out.println("Login and play more games to rank up!");
     }
     
-    public PawnOption getPromotionPiece(Team team, Player player)//need to handle resignation  
-    {
-        InputHandler inputHandler = new InputHandler();
-
-        System.out.println(team.toString()+" PAWN PROMOTION!                    (X) TO QUIT");
-        System.out.println();
-        System.out.println("INPUT WHAT YOU WOULD LIKE TO PROMOTE YOUR PAWN TOO:");
-        System.out.println("   <BISHOP>  =  R,   <ROOK>   =  B, ");
-        System.out.println("   <KNIGHT>  =  N,   <QUEEN>  =  Q ");
-      
-        String userInput = inputHandler.getStringInput(player.getName() + ">");
-
-        if (userInput.equals("X")) 
-        {
-            return PawnOption.EXIT_GAME;
-        } 
-        else if (userInput.equals("R")) 
-        {
-            return PawnOption.ROOK;
-        } 
-        else if (userInput.equals("N")) 
-        {
-            return PawnOption.KNIGHT;
-        } 
-        else if (userInput.equals("B")) 
-        {
-            return PawnOption.BISHOP;
-        } 
-        else if (userInput.equals("Q")) 
-        {
-            return PawnOption.QUEEN;
-        } 
-
-        System.out.println("----------------------------------------------------");
-        System.out.println("Invalid option. Please try again.");
-        System.out.println("----------------------------------------------------");     
-
-        return getPromotionPiece(team, player);
-    }
-    
     private Move getPlayerTurn(Player player)
     {
         System.out.println("----------------------------------------------------");
         System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
+        System.out.println("Remaining time: " +clock.toString());
         System.out.print(player.getName() + "> ");
         
         String playerInput = inputHandler.getStringInput("");
@@ -330,13 +289,14 @@ public class ChessGame
         
         if(playerInput.toUpperCase().trim().equals("T"))
         {
+            System.out.println("----------------------------------------------------");
             System.out.println("Remaining time: " +clock.toString());
             return getPlayerTurn(player);  //try again
         }
         
         if (playerInput.toUpperCase().equals("H"))
         {
-            Display.displayHelp();
+            display.displayHelp();
             return getPlayerTurn(player);  //try again
         }
         
@@ -348,7 +308,7 @@ public class ChessGame
         
         if(playerInput.toUpperCase().equals("MH"))
         { // show move history
-            this.printHistory();
+            display.printHistory(this.board);
             return getPlayerTurn(player);  //try again
         }
         
@@ -370,18 +330,7 @@ public class ChessGame
         System.out.println("----------------------------------------------------");        
         return moveSet;
     }
-    
-    private void printHistory()
-    {
-        System.out.println("----------------------------------------------------");
-        System.out.println("Move history:");
-        
-        for(int i = 0; i < this.board.getHistory().getMoveCount(); i++)
-        {
-            System.out.println((i+1)+": "+this.board.getHistory().toString(i));
-        }
-    }
-    
+
     private void saveGame()
     { // this might be better in display or some other class
         System.out.println("----------------------------------------------------");
