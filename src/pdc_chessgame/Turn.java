@@ -13,12 +13,13 @@ import java.util.List;
  */
 public class Turn 
 {
+    // current turn number and current team taking its turn
     private int turn = 0;
     private Team team = Team.WHITE;
     
     // do not make this final
     @SuppressWarnings("FieldMayBeFinal")
-    private List<MoveState> moveHistory;
+    private List<MoveState> moveHistory; // this is a list of movestates recording every action taken by the players
     
     public Turn()
     {
@@ -26,13 +27,13 @@ public class Turn
     }
     
     public void addMoveToHistory(Piece piece, Piece capturedPiece, Tile from, Tile to, String input)
-    {
+    { // add a new entry to the history list
         MoveState m = new MoveState(piece, capturedPiece, from, to, this.turn, input);
         this.moveHistory.add(m);
     }
     
     public int getMoveCount()
-    {
+    { // return the amount of elements int the move history
         return this.moveHistory.size();
     }
     
@@ -97,10 +98,10 @@ public class Turn
         return this.moveHistory.contains(m);
     }
     
-    public boolean hasPieceMoved(Piece p)
+    public boolean hasPieceMoved(Piece p) // returns true if the specified piece has moved at some point
     {
         for(int i = 0; i < this.moveHistory.size(); i++)
-        {
+        {// just loops through the history
             if(this.moveHistory.get(i).getPiece().equals(p))
             {
                 return true;
@@ -109,13 +110,13 @@ public class Turn
         return false;
     }
     
-    public int getPieceMoveCount(Piece p)
+    public int getPieceMoveCount(Piece p) // returns the amount of times the specified piece has moved
     {
         int n = 0;
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
             if(this.moveHistory.get(i).getPiece().equals(p))
-            {
+            { // just counting them by incrementing n
                 n++;
             }
         }
@@ -123,27 +124,27 @@ public class Turn
     }
 
     public void deleteMoveHistory()
-    {
+    { // clear the move history
         this.moveHistory.clear();
     }
     
     public MoveState getHistoryEntry(int i)
-    {
+    { // get the specified entry in the history
         return this.moveHistory.get(i);
     }
     
     public int getTurn()
-    {
+    { // get the current round number
         return this.turn;
     }
     
     public String toString(int i)
-    {
+    { // return the specified memeber of the move history formatted into a string
         return (String)(this.moveHistory.get(i).getPiece().getPieceTeam().teamName() +" "+ this.moveHistory.get(i).getPiece().getName()+" From: "+(char) (this.moveHistory.get(i).getFromTile().getX()+ 65) +""+this.moveHistory.get(i).getFromTile().getY() +" To: "+(char) (this.moveHistory.get(i).getToTile().getX()+ 65) +""+this.moveHistory.get(i).getToTile().getY());
     }
     
     public Team getTeam()
-    {
+    { // return current active team
         return this.team;
     }
     

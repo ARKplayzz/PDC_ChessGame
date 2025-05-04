@@ -32,7 +32,7 @@ public class Clock extends Thread
     
     @Override
     public String toString()
-    {
+    { // return the current time formatted as MM:SS
         return (String)((this.playerTimes[this.activePlayer] / 60) +":"+ ((int)(this.playerTimes[this.activePlayer] % 60)));
     }
     
@@ -62,7 +62,7 @@ public class Clock extends Thread
             if(this.playerTimes[this.activePlayer] > 0)
                 this.playerTimes[this.activePlayer]--;
             
-            try {
+            try { // sleep for 1 second
                 Thread.sleep(1000L);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
@@ -71,7 +71,7 @@ public class Clock extends Thread
     }
     
     public void terminate()
-    {
+    { // used for the main thread to terminate this one
         this.quit = true;
     }
 }

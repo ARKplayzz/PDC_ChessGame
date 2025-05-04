@@ -141,7 +141,8 @@ public class ChessGame
         int[] newElos = {this.leaderboard.getElo(winner.getName()), this.leaderboard.getElo(loser.getName())};
         
         display.displayEloChange(winner, loser, eloChanges, newElos);
-            
+        
+        //saving scores to the file just before the program exits
         this.leaderboard.saveScores(LEADERBOARD_FILE);
     }
     
@@ -289,20 +290,9 @@ public class ChessGame
 
     private void saveGame()
     {
-        System.out.println("----------------------------------------------------");
-        System.out.println("Please enter the name of the new save file\n(Do not include a file extension):");
-        System.out.print("> ");
-        
-        String fileInput = inputHandler.getStringInput("");
-        
-        if(!this.savemanager.SaveGameToFile(fileInput, this.board.getHistory(), this.players))
-        {
-            System.out.println("\nPlease ensure that you input a valid file name.");
-        }
-        else
-        {
-            System.out.println("\nSuccesfully saved as '"+fileInput+"'");
-        }
+        String fileName = display.getSaveFileName();
+        boolean success = this.savemanager.SaveGameToFile(fileName, this.board.getHistory(), this.players);
+        display.displaySaveResult(success, fileName);
     }
     
     private boolean isValidMove(Move move, Team team, String input) 

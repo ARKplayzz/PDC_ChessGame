@@ -21,11 +21,12 @@ import java.util.logging.Logger;
  */
 public class Ranking 
 {
-
+    // leaderboard holds usernames and the ELO scores associated with them
     private HashMap<String, Integer> leaderboard;
 
     public Ranking() 
     {
+        // init the leaderboard
         this.leaderboard = new HashMap<>();
     }
     
@@ -43,24 +44,27 @@ public class Ranking
         double winnerElo;
         double loserElo;
         
+        // if it's a guest assume 100 elo
         if(this.hasPlayed(winner))
             winnerElo = this.leaderboard.get(winner);
         else winnerElo = 100;
-        
+        // same for loser
         if(this.hasPlayed(loser))
             loserElo = this.leaderboard.get(loser);
         else loserElo = 100;
         
-        
+        // if player is not a guest then calculate their new elos
         if(this.hasPlayed(winner)) 
             this.leaderboard.put(winner, (int)((double)this.leaderboard.get(winner) + 25 *(1 - this.predictElo((double)winnerElo, (double)loserElo))) );
         if(this.hasPlayed(loser))
             this.leaderboard.put(loser, (int)((double)this.leaderboard.get(loser) + 25 *(0 - this.predictElo((double)loserElo, (double)winnerElo))) );
         
+        //return the old elos for display purposes
         double[] t = {winnerElo, loserElo};
         return t;
     }
     
+    // this is used in calculating a new elo score in the method above
     private double predictElo(double player, double opponent)
     {
         return 1.0 / (1 + Math.pow(10, (player - opponent) / 400.0));
@@ -87,19 +91,22 @@ public class Ranking
     { // unordered, add order later
         for(Map.Entry<String, Integer> entry : this.leaderboard.entrySet())
         {
+            // loop through the items in the leaderboard and print their names + scores
             System.out.println((String)entry.getKey() + " " + entry.getValue());
         }
     }
     
-    public boolean isLeaderboardEmpty()
+    public boolean isLeaderboardEmpty() // self explanatory
     {
         if(this.leaderboard.size() < 1)
             return true;
         return false;
     }
     
+    // loads the leaderboard from the specified leaderboard file
     public boolean getLeaderboard(String file)
     {
+        //create the filereader and check for errors
         FileReader f = null;
         try {
             f = new FileReader(file);
@@ -114,7 +121,7 @@ public class Ranking
         
         try {
            while((i=fp.readLine())!= null)
-           {
+           { // loop through the whole file and insert the keys and values into the leaderboard
                if(i.isBlank() || i.isEmpty())
                    continue;
                
@@ -122,12 +129,12 @@ public class Ranking
                
                this.leaderboard.put(r[0], Integer.valueOf(r[1]));
            }
-        } catch (IOException ex) {
+        } catch (IOException ex) { //check for errors
            System.out.println("IO exception");
            return false;
         }
         
-        try {
+        try { // close the file pointer
            fp.close();
         } catch (IOException ex) {
            Logger.getLogger(Ranking.class.getName()).log(Level.SEVERE, null, ex);
@@ -136,10 +143,11 @@ public class Ranking
         return true;
     }
     
+    // write the leaderboard to the specified leaderboard file, will overwrite existing contents
     public boolean saveScores(String file)
     { 
         PrintWriter pw;
-        
+        // create the printwriter and check for errors
         try {
             pw = new PrintWriter(new FileOutputStream(file));
         } catch (FileNotFoundException ex) {
@@ -148,12 +156,12 @@ public class Ranking
         }
         
         for(Map.Entry<String, Integer> entry : this.leaderboard.entrySet())
-        {
+        { // insert everyone in the leaderboard except the guests into the new file
             if(!entry.getKey().toUpperCase().equals("GUEST"))
                 pw.println((String)entry.getKey() + " " + entry.getValue());
         }
         
-        pw.close();
+        pw.close(); // actully save the changes
         return true;
     }
 }

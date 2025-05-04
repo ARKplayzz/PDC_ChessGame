@@ -28,7 +28,7 @@ public class MoveInput {
     }
     
     public static String getMoveOutput(Move move) 
-    {
+    { // reverses a move structure into the command that produced it, need for saving and loading
         if (move == null) 
         {
             return null;
