@@ -22,7 +22,6 @@ public class ChessGame
     private SaveManager savemanager;
     private Clock clock;
     
-    private GameSimulator simulator;
         
     private final GameMenu menu;
     private final InputHandler inputHandler;
@@ -34,7 +33,6 @@ public class ChessGame
         this.inputHandler = new InputHandler();
         this.leaderboard = new Ranking();
         this.savemanager = new SaveManager();
-        this.simulator = new GameSimulator();
         
         this.players = new HashMap<>(); // player count for flexabuility in assignement 2
 
@@ -62,7 +60,7 @@ public class ChessGame
         } 
         else if(userSelection == MenuOption.LOAD_SAVE)
         { 
-            this.simulator.simulateGame(this.savemanager, this.board);
+            this.savemanager.simulateGame(this.board);
             // I'm not bothering to save the clock because they might want to alter it + it's a bunch of effort for something irrelevent
             customiseClock();
             gameLoop();
@@ -349,6 +347,12 @@ public class ChessGame
         if(playerInput.toUpperCase().equals("MH"))
         { // show move history
             this.printHistory();
+            return getPlayerTurn(player);  //try again
+        }
+        
+        if(playerInput.toUpperCase().equals("B"))
+        {
+            this.board.displayBoard();
             return getPlayerTurn(player);  //try again
         }
         
