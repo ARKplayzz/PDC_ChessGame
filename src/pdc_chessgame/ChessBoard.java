@@ -50,31 +50,26 @@ public class ChessBoard implements BoardState
         //place white pawns
         for (int row = 0; row < 8; row++) 
         {
-        //    setTile(new Pawn(row, 1, Team.WHITE), row, 1);
+            setTile(new Pawn(row, 1, Team.WHITE), row, 1);
         }
 
         //place black pawns
         for (int row = 0; row < 8; row++) 
         {
-        //    setTile(new Pawn(row, 6, Team.BLACK), row, 6);
+            setTile(new Pawn(row, 6, Team.BLACK), row, 6);
         }
         
         //place white back row
-        setTile(new Rook(4, 2, Team.WHITE), 4, 2);
-
-        //setTile(new Rook(0, 0, Team.WHITE), 0, 0);
-        //setTile(new Knight(1, 0, Team.WHITE), 1, 0);
-        //setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
-        //setTile(new Queen(3, 0, Team.WHITE), 3, 0);
+        setTile(new Rook(0, 0, Team.WHITE), 0, 0);
+        setTile(new Knight(1, 0, Team.WHITE), 1, 0);
+        setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
+        setTile(new Queen(3, 0, Team.WHITE), 3, 0);
         setTile(new King(4, 0, Team.WHITE), 4, 0);
-        //setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
-        //setTile(new Knight(6, 0, Team.WHITE), 6, 0);
-        //setTile(new Rook(7, 0, Team.WHITE), 7, 0);
+        setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
+        setTile(new Knight(6, 0, Team.WHITE), 6, 0);
+        setTile(new Rook(7, 0, Team.WHITE), 7, 0);
 
         //place black back row
-        setTile(new Queen(4, 6, Team.BLACK), 4, 6);
-
-        
         setTile(new Rook(0, 7, Team.BLACK), 0, 7);
         setTile(new Knight(1, 7, Team.BLACK), 1, 7);
         setTile(new Bishop(2, 7, Team.BLACK), 2, 7);
