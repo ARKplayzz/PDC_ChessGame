@@ -5,7 +5,9 @@
 package pdc_chessgame;
 
 /**
- *
+ * Queen, a subclass of Piece.
+ * Includes move rules & capturing logic.
+ * 
  * @author Andrew & Finlay
  */
 public class Queen extends Piece {
@@ -16,7 +18,7 @@ public class Queen extends Piece {
     }
     
     @Override
-    public int[][] getDirection()
+    public int[][] getDirection() //returns the directional requirements for a move (x,y)
     {
         return new int[][]{
         {0, 1},     // up

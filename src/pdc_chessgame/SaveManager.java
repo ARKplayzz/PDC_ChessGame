@@ -53,7 +53,7 @@ public class SaveManager
         // check user hasn't tried to add a file extension
         if(file.contains("."))
         {
-            System.out.println("Please do not enter anything that could be\ninterpreted a a file extension");
+            System.out.println("Please do not enter anything that could be\ninterpreted as a file extension");
             return false;
         }
         // add the actaul file extension, this is so the .gitignore will work and the markers won't end up with our saves in their copy

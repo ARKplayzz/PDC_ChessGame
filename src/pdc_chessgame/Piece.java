@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Piece, an abstract master class.
+ * Includes abstract piece requirements, base piece variables, base move rules.
+ * 
  * @author Andrew & Finlay
  */
 public abstract class Piece 

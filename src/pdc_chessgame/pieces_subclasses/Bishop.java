@@ -5,7 +5,9 @@
 package pdc_chessgame;
 
 /**
- *
+ * Bishop, a subclass of Piece.
+ * Includes move rules & capturing logic.
+ * 
  * @author Andrew & Finlay
  */
 public class Bishop extends Piece {
@@ -16,7 +18,7 @@ public class Bishop extends Piece {
     }
    
     @Override
-    public int[][] getDirection()
+    public int[][] getDirection() //returns the directional requirements for a move (x,y)
     {
         return new int[][]{
         {-1, -1},   // up left

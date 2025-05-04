@@ -371,9 +371,8 @@ public class ChessGame
         }
         else
         {
-            System.out.println("\nSuccesfully saved to "+fileInput);
+            System.out.println("\nSuccesfully saved as '"+fileInput+"'");
         }
-        System.out.println("----------------------------------------------------");     
     }
     
     private boolean isValidMove(Move move, Team team, String input) 
