@@ -10,7 +10,7 @@ package pdc_chessgame;
  */
 public class MoveInput {
     
-    public static Move getMove(String userMovement) 
+    public static Move getMoveInput(String userMovement) 
     { 
         String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces
         
@@ -24,7 +24,7 @@ public class MoveInput {
         int toX = (parts[1].charAt(0) - 65); // A to H = 0 to 7
         int toY = Character.getNumericValue(parts[1].charAt(1))-1; //  Translates char to int (-1 for start point at 0)
 
-        return new Move(fromX, fromY, toX, toY);
+        return new Move(fromX, fromY, toX, toY, userMovement);
     }
         
     private static boolean isValidTile(String pos) 

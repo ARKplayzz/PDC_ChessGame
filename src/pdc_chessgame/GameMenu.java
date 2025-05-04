@@ -4,6 +4,7 @@ package pdc_chessgame;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -16,6 +17,7 @@ enum MenuOption
     START_GAME,
     VIEW_RANK,
     VIEW_LEADERBOARD,
+    LOAD_SAVE,
     EXIT
 }
 
@@ -28,11 +30,12 @@ public class GameMenu
         this.scanner = new Scanner(System.in);
     }
     
-    public MenuOption displayMenu(Ranking rankings) 
+    public MenuOption displayMenu(Ranking rankings, SaveManager loader, HashMap<Team, Player> players) 
     {
         System.out.println("CHESS MENU                               (X) TO QUIT\n");
         System.out.println("WHAT YOU WOULD LIKE TO DO?");
         System.out.println("  <Start a game>          =  'START',");
+        System.out.println("  <Load a game>           =  'LOAD',");
         System.out.println("  <Check your ranking>    =  'RANK'");
         System.out.println("  <View the leaderboard>  =  'LEADERBOARD',");
 
@@ -51,6 +54,11 @@ public class GameMenu
         {
             this.displayLeaderboard(rankings);
         } 
+        else if (userInput.equals("LOAD")) 
+        {
+            this.displayLoadGame(loader, players);
+            return MenuOption.LOAD_SAVE;
+        } 
         else if (userInput.equals("X")) 
         {
             return MenuOption.EXIT;
@@ -62,7 +70,27 @@ public class GameMenu
             System.out.println("----------------------------------------------------");  
         }   
 
-        return displayMenu(rankings);
+        return displayMenu(rankings, loader, players);
+    }
+    
+    private void displayLoadGame(SaveManager loader, HashMap<Team, Player> players)
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println("LOAD GAME");
+        System.out.println("Please enter the name of the save file you wish to load\n(Case sensitive):");
+        
+        System.out.print("> ");
+        String file = scanner.nextLine();
+        
+        if(!loader.LoadGameFromFile(file, players))
+        {
+            System.out.println("Please make sure you entered the name of an existing\nsave file.");
+        }
+        else
+        {
+            System.out.println("\nThank you, loading save file now");
+        }
+        System.out.println("----------------------------------------------------");
     }
     
     private void displayRankings(Ranking rankings) 

@@ -50,6 +50,8 @@ public final class Display {
         System.out.println("Resign Game          > X");
         System.out.println("Chess Help           > H");
         System.out.println("Show remaining time  > T");
+        System.out.println("Save the game        > S");
+        System.out.println("View move history    > MH");
         System.out.println("Move format   > From Tile -> 'A1 B2' <- To Tile");
     }
     

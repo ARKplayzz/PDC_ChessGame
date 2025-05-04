@@ -25,4 +25,10 @@ public class Rook extends Piece {
         {-1, 0},    // left
         };
     }
+
+    @Override
+    public String getName() 
+    {
+        return "Rook";
+    }
 }

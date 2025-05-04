@@ -11,13 +11,26 @@ package pdc_chessgame;
 public class Move 
 {
     private final int fromX, fromY, toX, toY; // efficent storing for move cases
+    // stores the originial string, used for saving and loading
+    private String input;
     
-    public Move(int fromRow, int fromCol, int toRow, int toCol) 
+    public Move(int fromRow, int fromCol, int toRow, int toCol, String input) 
     { 
         this.fromX = fromRow;
         this.fromY = fromCol;
         this.toX = toRow;
         this.toY = toCol;
+        this.input = input;
+    }
+    
+    public static Move getMove(String userMovement) 
+    {
+        return MoveInput.getMoveInput(userMovement);
+    }
+    
+    public String getInput()
+    {
+        return this.input;
     }
     
     public int getFromX()

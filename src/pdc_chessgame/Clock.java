@@ -38,7 +38,7 @@ public class Clock extends Thread
     @Override
     public String toString()
     {
-        return "finish this method, will return time as MM:SS";
+        return (String)(((this.playerTimes[this.activePlayer].limit / 1000) / 60) +":"+ ((int)(this.playerTimes[this.activePlayer].limit / 1000) % 60));
     }
     
     private long minsToMillis(int minutes)

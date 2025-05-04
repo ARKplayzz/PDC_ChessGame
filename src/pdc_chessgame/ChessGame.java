@@ -18,8 +18,11 @@ public class ChessGame
     
     private static final String LEADERBOARD_FILE = "rankings.txt";
     private final Ranking leaderboard;
-        
+    
+    private SaveManager savemanager;
     private Clock clock;
+    
+    private GameSimulator simulator;
         
     private final GameMenu menu;
     private final InputHandler inputHandler;
@@ -30,6 +33,8 @@ public class ChessGame
         this.menu = new GameMenu();
         this.inputHandler = new InputHandler();
         this.leaderboard = new Ranking();
+        this.savemanager = new SaveManager();
+        this.simulator = new GameSimulator();
         
         this.players = new HashMap<>(); // player count for flexabuility in assignement 2
 
@@ -43,7 +48,7 @@ public class ChessGame
     {
         Display.displayWelcome(); 
         
-        MenuOption userSelection = menu.displayMenu(this.leaderboard);
+        MenuOption userSelection = menu.displayMenu(this.leaderboard, this.savemanager, this.players);
 
         if (userSelection == MenuOption.START_GAME) 
         {
@@ -55,9 +60,18 @@ public class ChessGame
                     
             start();
         } 
+        else if(userSelection == MenuOption.LOAD_SAVE)
+        { 
+            this.simulator.simulateGame(this.savemanager, this.board);
+            // I'm not bothering to save the clock because they might want to alter it + it's a bunch of effort for something irrelevent
+            customiseClock();
+            gameLoop();
+            start();
+        }
         else if (userSelection == MenuOption.EXIT) 
         {
             Display.displayExit();
+            System.exit(0);
         }
     }
     
@@ -110,6 +124,7 @@ public class ChessGame
                     }
                 }
                 board.getNextTurn(); //next turn
+                this.clock.swapClock();
                 board.displayBoard();
             } 
         }    
@@ -136,9 +151,23 @@ public class ChessGame
     {
         System.out.println("----------------------------------------------------");
         System.out.println("PLAYER "+ (player.getTeam() == Team.WHITE ? "1" : "2") +" LOGIN                           (X) TO QUIT");
-        System.out.println("Please enter your username or 'Guest' to skip (Case sensitive)");
+        System.out.println("Please enter your username or 'Guest' to skip \n(Case sensitive)");
         
         String userInput = inputHandler.getStringInput("> ");
+        
+        if(userInput.contains("$"))
+        {
+            System.out.println("Please do not include '$' in your name");
+            playerLogin(player);
+            return;
+        }
+        
+        if(userInput.toUpperCase().contains("BLACK") || userInput.toUpperCase().contains("WHITE"))
+        {
+            System.out.println("Please refrain from using team names as logins");
+            playerLogin(player);
+            return;
+        }
         
         if (userInput.toUpperCase().equals("GUEST"))
         {   
@@ -270,7 +299,7 @@ public class ChessGame
         
         if(playerInput.toUpperCase().trim().equals("T"))
         {
-            System.out.println(clock.toString());
+            System.out.println("Remaining time: " +clock.toString());
             return getPlayerTurn(player);  //try again
         }
         
@@ -280,7 +309,19 @@ public class ChessGame
             return getPlayerTurn(player);  //try again
         }
         
-        Move moveSet = MoveInput.getMove(playerInput.trim().toUpperCase());
+        if(playerInput.toUpperCase().equals("S"))
+        { // save the game
+            this.saveGame();
+            return getPlayerTurn(player);  //try again
+        }
+        
+        if(playerInput.toUpperCase().equals("MH"))
+        { // show move history
+            this.printHistory();
+            return getPlayerTurn(player);  //try again
+        }
+        
+        Move moveSet = Move.getMove(playerInput.trim().toUpperCase());
         
         if (moveSet == null)
         {
@@ -297,6 +338,37 @@ public class ChessGame
         
         System.out.println("----------------------------------------------------");        
         return moveSet;
+    }
+    
+    private void printHistory()
+    {
+        System.out.println("----------------------------------------------------");
+        System.out.println("Move history:");
+        
+        for(int i = 0; i < this.board.getHistory().getMoveCount(); i++)
+        {
+            System.out.println((i+1)+": "+this.board.getHistory().toString(i));
+        }
+        System.out.println("----------------------------------------------------");     
+    }
+    
+    private void saveGame()
+    { // this might be better in display or some other class
+        System.out.println("----------------------------------------------------");
+        System.out.println("Please enter the name of the new save file\n(Do not include a file extension):");
+        System.out.print("> ");
+        
+        String fileInput = inputHandler.getStringInput("");
+        
+        if(!this.savemanager.SaveGameToFile(fileInput, this.board.getHistory(), this.players))
+        {
+            System.out.println("\nPlease ensure that you input a valid file name.");
+        }
+        else
+        {
+            System.out.println("\nSuccesfully saved to "+fileInput);
+        }
+        System.out.println("----------------------------------------------------");     
     }
     
     private boolean isValidMove(Move move, Team team, String input) 

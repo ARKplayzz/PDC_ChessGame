@@ -125,7 +125,7 @@ public class ChessBoard implements BoardState
         {}
         
         // add move to history
-        this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.getToX(), moveSet.getToY()).getPiece(), getTile(moveSet.getFromX(), moveSet.getFromY()), getTile(moveSet.getToX(), moveSet.getToY()));
+        this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.getToX(), moveSet.getToY()).getPiece(), getTile(moveSet.getFromX(), moveSet.getFromY()), getTile(moveSet.getToX(), moveSet.getToY()), moveSet.getInput());
         // check if a piece needs to be captured before its Tile is overridden
         if (getTile(moveSet.getToX(), moveSet.getToY()).getPiece() != null){
             captureTile(moveSet.getToX(), moveSet.getToY());
@@ -223,6 +223,11 @@ public class ChessBoard implements BoardState
         if (newPiece != null) {
             setTile(newPiece, x, y);
         }
+    }
+    
+    public Turn getHistory()
+    {
+        return this.turnCounter;
     }
     
     @Override

@@ -25,9 +25,9 @@ public class Turn
         this.moveHistory = new ArrayList<>();
     }
     
-    public void addMoveToHistory(Piece piece, Piece capturedPiece, Tile from, Tile to)
+    public void addMoveToHistory(Piece piece, Piece capturedPiece, Tile from, Tile to, String input)
     {
-        MoveState m = new MoveState(piece, capturedPiece, from, to, this.turn);
+        MoveState m = new MoveState(piece, capturedPiece, from, to, this.turn, input);
         this.moveHistory.add(m);
     }
     
@@ -53,7 +53,7 @@ public class Turn
 
     public MoveState getPieceLastMove(Piece p) //gets the last move for a piece
     {
-        MoveState m = new MoveState(null, null, null, null, -1);
+        MoveState m = new MoveState(null, null, null, null, -1, "");
         for(int i = 0; i < this.moveHistory.size(); i++)
         {
             if(this.moveHistory.get(i).getPiece().equals(p) && m.getMoveNumber() < this.moveHistory.get(i).getMoveNumber())
@@ -127,11 +127,6 @@ public class Turn
         this.moveHistory.clear();
     }
     
-    public int getHistoryLength()
-    {
-        return this.moveHistory.size();
-    }
-    
     public MoveState getHistoryEntry(int i)
     {
         return this.moveHistory.get(i);
@@ -140,6 +135,11 @@ public class Turn
     public int getTurn()
     {
         return this.turn;
+    }
+    
+    public String toString(int i)
+    {
+        return (String)(this.moveHistory.get(i).getPiece().getPieceTeam().teamName() +" "+ this.moveHistory.get(i).getPiece().getName()+" From: "+this.moveHistory.get(i).getFromTile().getX()+","+this.moveHistory.get(i).getFromTile().getY() +" To: "+this.moveHistory.get(i).getToTile().getX() +","+this.moveHistory.get(i).getToTile().getY());
     }
     
     public Team getTeam()
