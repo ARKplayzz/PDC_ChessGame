@@ -4,6 +4,7 @@ package pdc_chessgame;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -29,7 +30,7 @@ public class GameMenu
         this.scanner = new Scanner(System.in);
     }
     
-    public MenuOption displayMenu(Ranking rankings, SaveManager loader) 
+    public MenuOption displayMenu(Ranking rankings, SaveManager loader, HashMap<Team, Player> players) 
     {
         System.out.println("CHESS MENU                               (X) TO QUIT\n");
         System.out.println("WHAT YOU WOULD LIKE TO DO?");
@@ -55,7 +56,7 @@ public class GameMenu
         } 
         else if (userInput.equals("LOAD")) 
         {
-            this.displayLoadGame(loader);
+            this.displayLoadGame(loader, players);
             return MenuOption.LOAD_SAVE;
         } 
         else if (userInput.equals("X")) 
@@ -69,10 +70,10 @@ public class GameMenu
             System.out.println("----------------------------------------------------");  
         }   
 
-        return displayMenu(rankings, loader);
+        return displayMenu(rankings, loader, players);
     }
     
-    private void displayLoadGame(SaveManager loader)
+    private void displayLoadGame(SaveManager loader, HashMap<Team, Player> players)
     {
         System.out.println("----------------------------------------------------");
         System.out.println("LOAD GAME");
@@ -81,7 +82,7 @@ public class GameMenu
         System.out.print("> ");
         String file = scanner.nextLine();
         
-        if(!loader.LoadGameFromFile(file))
+        if(!loader.LoadGameFromFile(file, players))
         {
             System.out.println("Please make sure you entered the name of an existing\nsave file.");
         }

@@ -45,7 +45,7 @@ public class ChessGame
     {
         Display.displayWelcome(); 
         
-        MenuOption userSelection = menu.displayMenu(this.leaderboard, this.savemanager);
+        MenuOption userSelection = menu.displayMenu(this.leaderboard, this.savemanager, this.players);
 
         if (userSelection == MenuOption.START_GAME) 
         {
@@ -145,6 +145,20 @@ public class ChessGame
         System.out.println("Please enter your username or 'Guest' to skip \n(Case sensitive)");
         
         String userInput = inputHandler.getStringInput("> ");
+        
+        if(userInput.contains("$"))
+        {
+            System.out.println("Please do not include '$' in your name");
+            playerLogin(player);
+            return;
+        }
+        
+        if(userInput.toUpperCase().contains("BLACK") || userInput.toUpperCase().contains("WHITE"))
+        {
+            System.out.println("Please refrain from using team names as logins");
+            playerLogin(player);
+            return;
+        }
         
         if (userInput.toUpperCase().equals("GUEST"))
         {   

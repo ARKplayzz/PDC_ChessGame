@@ -85,7 +85,7 @@ public class SaveManager
         return true;
     }
     
-    public boolean LoadGameFromFile(String file)
+    public boolean LoadGameFromFile(String file, HashMap<Team, Player> players)
     {
         FileReader f = null;
         // create the buffered reader
@@ -99,7 +99,8 @@ public class SaveManager
         //load the game
         
         String currentLine = null;
-        
+        // clear any existing players from previous games
+        players.clear();
         // actully load the history while checking for errors
         try 
         {
@@ -108,11 +109,14 @@ public class SaveManager
             {
                 if(currentLine.startsWith("$"))
                 { // if the current line contains player info
+                    currentLine = currentLine.replace("$", "");
+                    String[] parts = currentLine.trim().toUpperCase().split(" ");
+                    
                     
                 }
                 else
                 { // if the current line contains move info
-                    
+                    this.loadedGame.add(currentLine);
                 }
             }
         } catch (IOException ex) {
