@@ -16,38 +16,38 @@ public final class Display {
     {
     }
     
-    public static void displayInCheckWarning() 
+    public void displayInCheckWarning() 
     {
         System.out.println("Invalid move! Your king is facing check, try again");
     }
     
-    public static void displayInCheckNotification(Team team) 
+    public void displayInCheckNotification(Team team) 
     {
         System.out.println("CHECK! " + team.teamName() + " IS NOW IN CHECK");
         System.out.println("----------------------------------------------------");  
     }
     
-    public static void displayGameOver(Team winningTeam)
+    public void displayGameOver(Team winningTeam)
     {
         System.out.println("CHECKMATE! " + winningTeam.teamName() + " WINS!");
         System.out.println("----------------------------------------------------"); 
     }
     
-    public static void displayResignation(Team resigningTeam)
+    public void displayResignation(Team resigningTeam)
     {
         System.out.println("----------------------------------------------------"); 
         System.out.println(resigningTeam.teamName() + " HAS RESIGNED! "+ resigningTeam.getOppositeTeam().teamName() +" WINS!");
         System.out.println("----------------------------------------------------");  
     }
     
-    public static void displayTimeOver(Team loser)
+    public void displayTimeOver(Team loser)
     {
         System.out.println("----------------------------------------------------"); 
         System.out.println(loser.teamName() + " HAS RUN OUT OF TIME!\n"+ loser.getOppositeTeam().teamName() +" WINS!");
         System.out.println("----------------------------------------------------");  
     }
     
-    public static void displayWelcome() 
+    public void displayWelcome() 
     {
         System.out.println("----------------------------------------------------");
         System.out.println("Welcome to Chess!");
@@ -56,7 +56,7 @@ public final class Display {
         System.out.println("----------------------------------------------------");
     }
     
-    public static void displayHelp() 
+    public void displayHelp() 
     {
         System.out.println("----------------------------------------------------");
         System.out.println("CHESS HELP");
@@ -92,6 +92,7 @@ public final class Display {
         System.out.println(message);
     }
     
+    @SuppressWarnings("NonPublicExported")
     public PawnOption getPromotionPiece(Team team, Player player) 
     {
         System.out.println(team.toString()+" PAWN PROMOTION!                    (X) TO QUIT");
@@ -130,7 +131,7 @@ public final class Display {
         return getPromotionPiece(team, player);
     }
     
-    public static void printHistory(ChessBoard board)
+    public void printHistory(ChessBoard board)
     {
         System.out.println("----------------------------------------------------");
         System.out.println("Move history:");
@@ -141,7 +142,7 @@ public final class Display {
         }
     }
     
-    public static void displayEloChange(Player winner, Player loser, double[] eloChanges, int[] newElos) 
+    public void displayEloChange(Player winner, Player loser, double[] eloChanges, int[] newElos) 
     {
         if (winner.getName().contains("Guest ")) 
         {
@@ -192,6 +193,13 @@ public final class Display {
         System.out.print("Please enter the time limit for every\nplayer (in minutes, will be rounded)\n");
         
         String userInput = inputHandler.getStringInput("> ").trim(); 
+        
+        if(userInput.trim().toUpperCase().equals("X"))
+        {
+            Display.displayExit();
+            System.exit(0);
+            return 0;
+        }
         
         try 
         {

@@ -41,12 +41,12 @@ public class ChessGame
         this.leaderboard.getLeaderboard(LEADERBOARD_FILE);
     }
     
-    public void start() 
+    public void start() // this is recursive so it will start again after a game has finished
     {
         display.displayWelcome(); 
-        
+        // get the users choice
         MenuOption userSelection = menu.displayMenu(this.leaderboard, this.savemanager, this.players);
-
+        // start load or quit
         if (userSelection == MenuOption.START_GAME) 
         {
             initialisePlayers();
@@ -67,15 +67,15 @@ public class ChessGame
         }
         else if (userSelection == MenuOption.EXIT) 
         {
-            display.displayExit();
+            Display.displayExit();
             System.exit(0);
         }
     }
     
-    private void gameLoop() 
+    private void gameLoop() // This is the actaul main loop of the program
     {
         board.displayBoard();
-        this.clock.start();
+        this.clock.start(); // start the clock
         
         while (true) 
         {           
@@ -92,7 +92,7 @@ public class ChessGame
                 break;
             }
             
-            if(clock.getTime() < 1)
+            if(clock.getTime() < 1) // after the player enters his commmand check to see if he ran out of time during the wait
             {
                 display.displayTimeOver(currentTeam);
                 break;
@@ -132,11 +132,11 @@ public class ChessGame
             } 
         }    
         
-        this.clock.terminate();
+        this.clock.terminate(); // end the clock
             
         Player winner = getPlayerInTeam(board.getCurrentTeam().getOppositeTeam());
         Player loser = getPlayerInTeam(board.getCurrentTeam());
-        double[] eloChanges = this.leaderboard.changeElo(winner.getName(), loser.getName());
+        double[] eloChanges = this.leaderboard.changeElo(winner.getName(), loser.getName()); // change the elos of the players
         
         int[] newElos = {this.leaderboard.getElo(winner.getName()), this.leaderboard.getElo(loser.getName())};
         
@@ -155,7 +155,7 @@ public class ChessGame
         System.out.println("----------------------------------------------------");
     }
     
-    private void playerLogin(Player player)
+    private void playerLogin(Player player) // this is the function that asks for your usernames
     {
         
         String userInput = display.displayPlayerLogin(player.getTeam(), player.getName());
@@ -288,7 +288,7 @@ public class ChessGame
         return moveSet;
     }
 
-    private void saveGame()
+    private void saveGame() /// will prompt the user to save the game
     {
         String fileName = display.getSaveFileName();
         boolean success = this.savemanager.SaveGameToFile(fileName, this.board.getHistory(), this.players);
@@ -320,7 +320,7 @@ public class ChessGame
     }
     
     private Player getPlayerInTeam(Team team) 
-    {
+    { // get the player for this team
         return players.get(team);
     }    
 }
