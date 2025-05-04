@@ -112,7 +112,11 @@ public class SaveManager
                     currentLine = currentLine.replace("$", "");
                     String[] parts = currentLine.trim().toUpperCase().split(" ");
                     
-                    
+                    // actully add the players to the hashmap
+                    if(parts[0].equals("BLACK"))
+                        players.put(Team.BLACK, new Player(parts[1], Team.BLACK));
+                    else if(parts[0].equals("WHITE"))
+                        players.put(Team.WHITE, new Player(parts[1], Team.WHITE));
                 }
                 else
                 { // if the current line contains move info

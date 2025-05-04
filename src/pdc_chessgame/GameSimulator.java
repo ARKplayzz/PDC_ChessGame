@@ -10,5 +10,8 @@ package pdc_chessgame;
  */
 public class GameSimulator 
 {
-    
+    public void simulateGame(SaveManager save, ChessBoard board)
+    {
+        
+    }
 }
