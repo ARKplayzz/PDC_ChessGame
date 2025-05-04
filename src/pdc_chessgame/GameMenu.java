@@ -76,11 +76,17 @@ public class GameMenu
     private void displayLoadGame(SaveManager loader, HashMap<Team, Player> players)
     {
         System.out.println("----------------------------------------------------");
-        System.out.println("LOAD GAME");
-        System.out.println("Please enter the name of the save file you wish to load\n(Case sensitive):");
+        System.out.println("LOAD GAME                                (X) TO QUIT");
+        System.out.println("Please enter the name of the save file you wish to load\n(Case sensitive / do not include a file extension):");
         
         System.out.print("> ");
         String file = scanner.nextLine();
+        
+        if(file.toUpperCase().contains("X"))
+        {
+            System.exit(0);
+            return;
+        }
         
         if(!loader.LoadGameFromFile(file, players))
         {

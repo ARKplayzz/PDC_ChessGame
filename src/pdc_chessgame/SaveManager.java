@@ -87,7 +87,14 @@ public class SaveManager
     
     public boolean LoadGameFromFile(String file, HashMap<Team, Player> players)
     {
+        // check for a users file extension
+        if(file.contains("."))
+        {
+            System.out.println("Please do not enter anything that could be\ninterpreted a a file extension");
+            return false;
+        }
         FileReader f = null;
+        file = file.concat(".sav");
         // create the buffered reader
         try {
             f = new FileReader(file);

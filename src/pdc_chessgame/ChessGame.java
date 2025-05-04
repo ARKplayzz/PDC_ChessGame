@@ -169,6 +169,13 @@ public class ChessGame
             return;
         }
         
+        if(userInput.toUpperCase().equals("X"))
+        {
+            Display.displayExit();
+            System.exit(0);
+            return;
+        }
+        
         if (userInput.toUpperCase().equals("GUEST"))
         {   
             System.out.println("----------------------------------------------------");
