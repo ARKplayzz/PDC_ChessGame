@@ -155,6 +155,12 @@ public class ChessGame
         
         String userInput = inputHandler.getStringInput("> ");
         
+        if (userInput.length() > 16) 
+        {
+            System.out.println("Please keep your username within 16 characters long");
+            return;
+        }
+        
         if(userInput.contains("$"))
         {
             System.out.println("Please do not include '$' in your name");
