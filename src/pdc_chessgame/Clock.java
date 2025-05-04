@@ -36,9 +36,9 @@ public class Clock extends Thread
         return (String)((this.playerTimes[this.activePlayer] / 60) +":"+ ((int)(this.playerTimes[this.activePlayer] % 60)));
     }
     
-    public long getTime(int n)
+    public int getTime()
     {
-        return this.playerTimes[n];
+        return this.playerTimes[this.activePlayer];
     }
     
     public void swapClock()
@@ -65,12 +65,6 @@ public class Clock extends Thread
                 Thread.sleep(1000L);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            // if the player has used up all of their time
-            if(this.playerTimes[this.activePlayer] < 1)
-            {
-                
             }
         }
     }

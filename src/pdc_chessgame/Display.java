@@ -34,6 +34,13 @@ public final class Display {
         System.out.println("----------------------------------------------------");  
     }
     
+    public static void displayTimeOver(Team loser)
+    {
+        System.out.println("----------------------------------------------------"); 
+        System.out.println(loser.teamName() + " HAS RUN OUT OF TIME!\n"+ loser.getOppositeTeam().teamName() +" WINS!");
+        System.out.println("----------------------------------------------------");  
+    }
+    
     public static void displayWelcome() 
     {
         System.out.println("----------------------------------------------------");

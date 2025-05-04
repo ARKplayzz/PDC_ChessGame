@@ -94,6 +94,12 @@ public class ChessGame
                 Display.displayResignation(currentTeam);
                 break;
             }
+            
+            if(clock.getTime() < 1)
+            {
+                Display.displayTimeOver(currentTeam);
+                break;
+            }
 
             board.moveTile(moveSet); // Player move
 
