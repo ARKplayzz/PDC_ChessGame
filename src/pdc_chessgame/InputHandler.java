@@ -15,7 +15,7 @@ public class InputHandler
     private Scanner scanner;
 
     public InputHandler() 
-    {
+    { // init the scanner
         this.scanner = new Scanner(System.in);
     }
     
@@ -29,7 +29,7 @@ public class InputHandler
     }
 
     public boolean confirmAction(String message) 
-    {
+    { // used to ask the player yes or no
         System.out.println(message + " ('Y' or 'N')");
         System.out.print("> ");
         

@@ -15,8 +15,7 @@ public class MoveState
     private Tile from;
     private Tile to;
     private int moveNo;
-    
-    // this is only used for saving
+   
         
     public MoveState(Piece piece, Piece capturedPiece, Tile from, Tile to, int turn, String originialInput)
     {

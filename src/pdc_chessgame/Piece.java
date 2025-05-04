@@ -60,6 +60,7 @@ public abstract class Piece
         this.y = y;
     }
         
+    // movement function oveeridden by the subclasses
     public abstract int[][] getDirection();
     
     public abstract String getName();

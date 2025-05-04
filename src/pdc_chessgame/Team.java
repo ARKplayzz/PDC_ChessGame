@@ -8,6 +8,7 @@ package pdc_chessgame;
  *
  * @author Andrew & Finlay
  */
+// simple enum to store teams
 public enum Team 
 {
     BLACK, WHITE;

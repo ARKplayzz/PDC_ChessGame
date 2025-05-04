@@ -93,12 +93,12 @@ public class ChessBoard implements BoardState
     
     @Override
     public boolean isWithinBoard(int x, int y) 
-    {
+    { // returns true if provided x and y are within the bounds of the board
         return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
     }
     
     public boolean captureTile(int x, int y) 
-    {
+    { // captures the specified piece, returns false if it fails
         if (getTile(x, y).getPiece() != null) 
         {
             Piece capturedPiece = getTile(x, y).getPiece();
@@ -111,6 +111,7 @@ public class ChessBoard implements BoardState
     
     public boolean moveTile(Move moveSet) 
     {
+        // name is misleading, used by the board to move the piece on the tile
         Piece targetPiece = getTile(moveSet.getFromX(), moveSet.getFromY()).getPiece();
         
         // only one special can occur per move (ordered in likelyhood)
@@ -130,10 +131,12 @@ public class ChessBoard implements BoardState
     
     }
     
+    // try to castle
     private boolean tryCastle(Piece piece, Move moveSet)
     {
         if (piece instanceof King)
         {
+            //find distance
             int distanceX = moveSet.getToX() - moveSet.getFromX();
 
             if (Math.abs(distanceX) == 2)  //check if move is a castle move
@@ -154,21 +157,22 @@ public class ChessBoard implements BoardState
                     rookToX = moveSet.getToX() + 1; // rook is right of the king
                     
                 }
-                this.board[rookFromX][x].movePieceTo(board[rookToX][x]);
+                this.board[rookFromX][x].movePieceTo(board[rookToX][x]);// do the castle
                 return true;
             }
         }
-        return false;
+        return false; // castle failed
     }
     
+    // try to perform an en pessent
     private boolean tryEnPessant(Piece piece, Move moveSet)
     {
         if (piece instanceof Pawn)
         {
             int direction = piece.getPieceTeam() == Team.BLACK ? 1 : -1;
             
-            Tile targetTile = getTile(moveSet.getToX(), moveSet.getToY() + direction);
-            Piece targetPawn = targetTile.getPiece();
+            Tile targetTile = getTile(moveSet.getToX(), moveSet.getToY() + direction);// get the target tile
+            Piece targetPawn = targetTile.getPiece();// get the target
             
             if (targetPawn != null && //target is a piece
                 targetPawn instanceof Pawn && // if target is a pawn
@@ -182,7 +186,7 @@ public class ChessBoard implements BoardState
     }
     
     public boolean isPawnPromotable()
-    {
+    { // check to see if a pawn can turn into a queen
         Piece targetPiece = this.turnCounter.getPriorMove(0).getPiece();
         if (targetPiece instanceof Pawn && ((Pawn) targetPiece).canPromotion(this))
         {
@@ -192,7 +196,7 @@ public class ChessBoard implements BoardState
     }
     
     public void promotePawn(PawnOption promotionPiece)
-    {
+    { // promoting a pawn
         Tile toTile = this.turnCounter.getPriorMove(0).getToTile();
         Piece newPiece = null;
         
@@ -221,7 +225,7 @@ public class ChessBoard implements BoardState
     }
     
     public Turn getHistory()
-    {
+    { // get the turn history
         return this.turnCounter;
     }
     
@@ -317,8 +321,8 @@ public class ChessBoard implements BoardState
         System.out.print("\n");
     }
     
-    private List<Tile> getPiecePath(Tile tileFrom, Tile tileTo) {
-        
+    private List<Tile> getPiecePath(Tile tileFrom, Tile tileTo) 
+    {
         List<Tile> path = new ArrayList<>();
 
         int xDirection = Integer.compare(tileTo.getX() - tileFrom.getX(), 0); // getting direction from 1 to 2
@@ -407,6 +411,7 @@ public class ChessBoard implements BoardState
         return king.isCheck(this);
     }
     
+    //check to see if the king is in checkmate
     public boolean isCheckmate(Team team) 
     {        
         King king = getKing(team);

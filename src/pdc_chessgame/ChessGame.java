@@ -228,6 +228,13 @@ public class ChessGame
         
         String userInput = inputHandler.getStringInput("> ").trim(); 
         
+        if(userInput.toUpperCase().equals("X"))
+        {
+            display.displayExit();
+            System.exit(0);
+            return;
+        }
+        
         int tl;
         try
         {
