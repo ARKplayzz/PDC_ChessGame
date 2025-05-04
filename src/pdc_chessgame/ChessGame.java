@@ -12,13 +12,15 @@ import java.util.HashMap;
  */
 public class ChessGame 
 {
-    
-    private final ChessBoard board;
+    // Do not make the board final please
+    private ChessBoard board;
+    // hashmap of the players and teams
     private final HashMap<Team, Player> players;
     
-    
+    // the leaderboard
     private final Ranking leaderboard;
     
+    // the savemanager and clock
     private SaveManager savemanager;
     private Clock clock;
     
@@ -43,6 +45,9 @@ public class ChessGame
     
     public void start() // this is recursive so it will start again after a game has finished
     {
+        // reset the board, this is so 
+        this.board = new ChessBoard(8, 8);
+        this.board.getHistory().deleteMoveHistory();
         display.displayWelcome(); 
         // get the users choice
         MenuOption userSelection = menu.displayMenu(this.leaderboard, this.savemanager, this.players);

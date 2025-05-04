@@ -46,7 +46,7 @@ public class Pawn extends Piece {
             {
                 y = getY() + (2 * getDirection()[0][1]); 
                 // checks if the double jump tile is empty and valid
-                if (board.isWithinBoard(getX(), y) && targetPiece == null)  //within for dupdated double jump size
+                if (board.isWithinBoard(getX(), y) && targetPiece == null && board.getTile(getX(), y).getPiece() == null)  //within for dupdated double jump size
                 {
                     targetTile = board.getTile(getX(), y);
                     targetPiece = targetTile.getPiece(); 
