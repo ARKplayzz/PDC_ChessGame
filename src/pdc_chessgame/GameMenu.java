@@ -11,7 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 /**
  *
  * @author Andrew & Finlay
@@ -30,62 +31,65 @@ public class GameMenu extends JPanel
 {
     private Scanner scanner;
     
-    private JButton menuStartButton = new JButton("Start Game");
-    private JButton menuExitButton = new JButton("Exit");
+    private JButton menuStartButton = new JButton("New Game");
+    private JButton menuSaveButton = new JButton("Load Game");
     private JButton menuRankButton = new JButton("View Ranking");
     private JButton menuLeaderboardButton = new JButton("View Leaderboard");
-    private JButton menuSaveButton = new JButton("Save Game");
+    private JButton menuExitButton = new JButton("Exit");
 
-    public GameMenu() 
-    {
 
-        
-        //this.setLayout(new GridLayout(5, 1, 10, 10));
-        this.setBackground(new Color(60, 60, 60));
-        this.setLayout(null);
-        this.setBorder(BorderFactory.createLineBorder(Color.white));
-        this.setBounds(0, 0, 200, 220);
+    public GameMenu() {
+        setBackground(new Color(60, 60, 60));
+        setBorder(BorderFactory.createLineBorder(Color.white));
+        setLayout(new BorderLayout(10, 10));
 
-        menuStartButton.setBounds(0, 0, 20, 20);
-        menuStartButton.setText("Start");
-        menuStartButton.setVisible(true);
-        
-        menuExitButton.setBounds(0, 0, 20, 20);
-        menuExitButton.setVisible(true);
-        
-        menuRankButton.setBounds(0, 0, 20, 20);
-        menuRankButton.setVisible(true);
-        
-        menuLeaderboardButton.setBounds(0, 0, 20, 20);
-        menuLeaderboardButton.setVisible(true);
-        
-        menuSaveButton.setBounds(0, 0, 20, 20);
-        menuSaveButton.setVisible(true);
-        
-        //testing reference
-            int y = 10;
-            int height = 30;
-            int gap = 10;
+        JPanel buttonGrid = new JPanel(new GridLayout(2, 2, 1, 1));
+        buttonGrid.setOpaque(false); // transparent background
 
-            menuStartButton.setBounds(10, y, 180, height);
-            y += height + gap;
-            menuSaveButton.setBounds(10, y, 180, height);
-            y += height + gap;
-            menuRankButton.setBounds(10, y, 180, height);
-            y += height + gap;
-            menuLeaderboardButton.setBounds(10, y, 180, height);
-            y += height + gap;
-            menuExitButton.setBounds(10, y, 180, height);
-        
-        this.add(menuStartButton);
-        this.add(menuExitButton);
-        this.add(menuRankButton);
-        this.add(menuLeaderboardButton);
-        this.add(menuSaveButton);
-        this.setVisible(true);
+        Color normalBg = new Color(40, 40, 40);
+        Color hoverBg = new Color(50, 50, 50);
+        Color textColor = new Color(189, 229, 225);
 
+        setupButton(menuStartButton, normalBg, hoverBg, textColor);
+        setupButton(menuSaveButton, normalBg, hoverBg, textColor);
+        setupButton(menuRankButton, normalBg, hoverBg, textColor);
+        setupButton(menuLeaderboardButton, normalBg, hoverBg, textColor);
+        
+        menuStartButton.setMargin(new Insets(10, 20, 10, 20));
+        menuSaveButton.setMargin(new Insets(10, 20, 10, 20));
+        menuRankButton.setMargin(new Insets(10, 20, 10, 20));
+        menuLeaderboardButton.setMargin(new Insets(10, 20, 10, 20));
+
+        buttonGrid.add(menuStartButton);
+        buttonGrid.add(menuSaveButton);
+        buttonGrid.add(menuRankButton);
+        buttonGrid.add(menuLeaderboardButton);
+
+        add(buttonGrid, BorderLayout.NORTH);
+        setVisible(true);
     }
-    
+
+    private void setupButton(JButton button, Color normalBg, Color hoverBg, Color textColor) {
+        button.setBackground(normalBg);
+        button.setForeground(textColor);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
+        button.setBorder(null);
+
+        button.addMouseListener(new MouseAdapter() { //hovering effects
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(hoverBg);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(normalBg);
+            }
+        });
+    }
     
     public MenuOption displayMenu(Ranking rankings, SaveManager loader, HashMap<Team, Player> players) 
     {
@@ -119,7 +123,7 @@ public class GameMenu extends JPanel
             selectedOption[0] = MenuOption.EXIT;
         });
 
-        while (selectedOption == null) //waits for input (decreases cpu usage?)
+        while (selectedOption[0] == null) //waits for input (decreases cpu usage?)
         {
             try 
             {
@@ -131,8 +135,8 @@ public class GameMenu extends JPanel
             }
         }
         
-        //this.setVisible(false);
-
+        this.setVisible(false);
+        System.out.println(">>> "+ selectedOption[0] +" <<<");
         return selectedOption[0];
     }
     
