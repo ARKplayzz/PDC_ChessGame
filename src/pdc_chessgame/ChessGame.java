@@ -27,7 +27,7 @@ public class ChessGame
     public final Display display = new Display();
     
     //private final GameMenu menu = new GameMenu();
-    private final InputHandler inputHandler = new InputHandler();
+    private final InputHandler inputHandler = new InputHandler(null);
 
     public ChessGame() 
     {
