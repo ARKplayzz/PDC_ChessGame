@@ -24,9 +24,9 @@ public class ChessGame
     private SaveManager savemanager;
     private Clock clock;
     
-        
     public final Display display = new Display();
-    private final GameMenu menu = new GameMenu();
+    
+    //private final GameMenu menu = new GameMenu();
     private final InputHandler inputHandler = new InputHandler();
 
     public ChessGame() 
@@ -45,12 +45,13 @@ public class ChessGame
     
     public void start() // this is recursive so it will start again after a game has finished
     {
+        
         // reset the board, this is so 
         this.board = new ChessBoard(8, 8);
         this.board.getHistory().deleteMoveHistory();
         display.displayWelcome(); 
         // get the users choice
-        MenuOption userSelection = menu.displayMenu(this.leaderboard, this.savemanager, this.players);
+        MenuOption userSelection = display.gameMenu.displayMenu(this.leaderboard, this.savemanager, this.players);
         // start load or quit
         if (userSelection == MenuOption.START_GAME) 
         {

@@ -4,16 +4,48 @@
  */
 package pdc_chessgame;
 
+import java.awt.Color;
+import javax.swing.*;
+
 /**
  *
  * @author ARKen
  */
-public final class Display {
+public final class Display extends JFrame {
     
     private final InputHandler inputHandler = new InputHandler();
     
+    public final GameMenu gameMenu = new GameMenu();
+    
     public Display() 
     {
+        this.setTitle("Chess Menu");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(800,800);
+        this.setVisible(true);
+        this.getContentPane().setBackground(new Color(50, 50, 50)); //dark grey
+        
+        this.setLayout(null);
+        
+        //ImageIcon image new ImageIcon("logo.png");
+        //frame.setIconImage(image.getImage());
+        
+        JPanel SideBar = new JPanel();
+        SideBar.setLayout(null);
+        SideBar.setBackground(new Color(40, 40, 40));
+        SideBar.setBorder(BorderFactory.createLineBorder(Color.white));
+        SideBar.setBounds(450, 0, 200, 450);
+        this.add(SideBar);
+        
+        JPanel chessBoard = new JPanel();
+        chessBoard.setBackground(new Color(40, 40, 40));
+        chessBoard.setBorder(BorderFactory.createLineBorder(Color.white));
+        chessBoard.setBounds(0, 0, 450, 450);
+        this.add(chessBoard);
+        System.out.println("GameMenu constructed");
+        SideBar.add(gameMenu);
+        //this.add(gameMenu);
+        
     }
     
     public void displayInCheckWarning() 

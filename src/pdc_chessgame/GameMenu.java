@@ -7,6 +7,11 @@ package pdc_chessgame;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  *
  * @author Andrew & Finlay
@@ -21,56 +26,114 @@ enum MenuOption
     EXIT
 }
 
-public class GameMenu 
+public class GameMenu extends JPanel
 {
-   private Scanner scanner;
+    private Scanner scanner;
     
+    private JButton menuStartButton = new JButton("Start Game");
+    private JButton menuExitButton = new JButton("Exit");
+    private JButton menuRankButton = new JButton("View Ranking");
+    private JButton menuLeaderboardButton = new JButton("View Leaderboard");
+    private JButton menuSaveButton = new JButton("Save Game");
+
     public GameMenu() 
     {
-        this.scanner = new Scanner(System.in);
+
+        
+        //this.setLayout(new GridLayout(5, 1, 10, 10));
+        this.setBackground(new Color(60, 60, 60));
+        this.setLayout(null);
+        this.setBorder(BorderFactory.createLineBorder(Color.white));
+        this.setBounds(0, 0, 200, 220);
+
+        menuStartButton.setBounds(0, 0, 20, 20);
+        menuStartButton.setText("Start");
+        menuStartButton.setVisible(true);
+        
+        menuExitButton.setBounds(0, 0, 20, 20);
+        menuExitButton.setVisible(true);
+        
+        menuRankButton.setBounds(0, 0, 20, 20);
+        menuRankButton.setVisible(true);
+        
+        menuLeaderboardButton.setBounds(0, 0, 20, 20);
+        menuLeaderboardButton.setVisible(true);
+        
+        menuSaveButton.setBounds(0, 0, 20, 20);
+        menuSaveButton.setVisible(true);
+        
+        //testing reference
+            int y = 10;
+            int height = 30;
+            int gap = 10;
+
+            menuStartButton.setBounds(10, y, 180, height);
+            y += height + gap;
+            menuSaveButton.setBounds(10, y, 180, height);
+            y += height + gap;
+            menuRankButton.setBounds(10, y, 180, height);
+            y += height + gap;
+            menuLeaderboardButton.setBounds(10, y, 180, height);
+            y += height + gap;
+            menuExitButton.setBounds(10, y, 180, height);
+        
+        this.add(menuStartButton);
+        this.add(menuExitButton);
+        this.add(menuRankButton);
+        this.add(menuLeaderboardButton);
+        this.add(menuSaveButton);
+        this.setVisible(true);
+
     }
+    
     
     public MenuOption displayMenu(Ranking rankings, SaveManager loader, HashMap<Team, Player> players) 
     {
-        System.out.println("CHESS MENU                               (X) TO QUIT\n");
-        System.out.println("WHAT YOU WOULD LIKE TO DO?");
-        System.out.println("  <Start a game>          =  'START',");
-        System.out.println("  <Load a game>           =  'LOAD',");
-        System.out.println("  <Check your ranking>    =  'RANK'");
-        System.out.println("  <View the leaderboard>  =  'LEADERBOARD',");
+        this.setVisible(true);
 
-        System.out.print("> ");
-        String userInput = scanner.nextLine().toUpperCase().trim();
+        final MenuOption[] selectedOption = new MenuOption[1]; //chekc this is fine
+                
+        menuStartButton.addActionListener(e -> 
+        {
+            selectedOption[0] = MenuOption.START_GAME;
 
-        if (userInput.equals("START")) 
-        {
-            return MenuOption.START_GAME;
-        } 
-        else if (userInput.equals("RANK")) 
-        {
-            this.displayRankings(rankings);
-        } 
-        else if (userInput.equals("LEADERBOARD")) 
-        {
-            this.displayLeaderboard(rankings);
-        } 
-        else if (userInput.equals("LOAD")) 
-        {
-            if(this.displayLoadGame(loader, players))
-                return MenuOption.LOAD_SAVE;
-        } 
-        else if (userInput.equals("X")) 
-        {
-            return MenuOption.EXIT;
-        } 
-        else
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println("Invalid option. Please try again.");
-            System.out.println("----------------------------------------------------");  
-        }   
+        });
 
-        return displayMenu(rankings, loader, players);
+        menuSaveButton.addActionListener(e -> 
+        {
+            selectedOption[0] = MenuOption.LOAD_SAVE;
+        });
+
+        menuRankButton.addActionListener(e -> 
+        {
+            displayRankings(rankings);
+        });
+
+        menuLeaderboardButton.addActionListener(e -> 
+        {
+            displayLeaderboard(rankings);
+        });
+
+        menuExitButton.addActionListener(e -> 
+        {
+            selectedOption[0] = MenuOption.EXIT;
+        });
+
+        while (selectedOption == null) //waits for input (decreases cpu usage?)
+        {
+            try 
+            {
+                Thread.sleep(100);
+            } 
+            catch (InterruptedException e) 
+            {
+                Thread.currentThread().interrupt();
+            }
+        }
+        
+        //this.setVisible(false);
+
+        return selectedOption[0];
     }
     
     private boolean displayLoadGame(SaveManager loader, HashMap<Team, Player> players)
