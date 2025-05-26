@@ -6,6 +6,7 @@ package pdc_chessgame;
 
 import java.awt.Color;
 import javax.swing.*;
+import java.awt.*;
 
 /**
  *
@@ -13,7 +14,41 @@ import javax.swing.*;
  */
 public final class Display extends JFrame {
     
-    private final InputHandler inputHandler = new InputHandler();
+    JPanel chessBoard = new JPanel();
+    JPanel sideBar = new JPanel();
+    JPanel masterPanel = new JPanel(new GridBagLayout())
+        {
+        @Override
+            public void doLayout() 
+            {// ratio scaling my belloved (this took way too long but now it looks good)
+                int frameWidth = getWidth();
+                int frameHeight = getHeight();
+                
+                int availableHeight = frameHeight - 60; // margins
+                int boardAvailableWidth = frameWidth - 60; // temporary calculation
+                int boardSize = Math.min(boardAvailableWidth, availableHeight);
+                
+                int sideBarWidth = (int)(boardSize * 0.40); // sidebar is a ratio of chessboard
+                
+                int availableWidth = frameWidth - sideBarWidth - 60; // 60 for spacing/margins
+                
+                boardSize = Math.min(availableWidth, availableHeight); // board size
+                
+                int totalContentWidth = boardSize + sideBarWidth + 20; // 20 for spacing
+                
+                int startX = (frameWidth - totalContentWidth) / 2; //centering all horizontaly
+                
+                int boardY = (frameHeight - boardSize) / 2;
+                int sideBarHeight = (int)(boardSize * 0.75); // sidebar height is half of board height
+                int sideBarY = (frameHeight - sideBarHeight) / 2;
+                
+                
+                chessBoard.setBounds(startX, boardY, boardSize, boardSize);
+                sideBar.setBounds(startX + boardSize + 20, sideBarY, sideBarWidth, sideBarHeight);
+            }
+        };
+    
+    private final InputHandler inputHandler = new InputHandler(this.chessBoard);
     
     public final GameMenu gameMenu = new GameMenu();
     
@@ -21,29 +56,49 @@ public final class Display extends JFrame {
     {
         this.setTitle("Chess Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(800,800);
+        this.setSize(900,600);
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
         this.getContentPane().setBackground(new Color(50, 50, 50)); //dark grey
         
-        this.setLayout(null);
+        this.setLayout(new BorderLayout());
         
         //ImageIcon image new ImageIcon("logo.png");
         //frame.setIconImage(image.getImage());
         
-        JPanel SideBar = new JPanel();
-        SideBar.setLayout(null);
-        SideBar.setBackground(new Color(40, 40, 40));
-        SideBar.setBorder(BorderFactory.createLineBorder(Color.white));
-        SideBar.setBounds(450, 0, 200, 450);
-        this.add(SideBar);
         
-        JPanel chessBoard = new JPanel();
-        chessBoard.setBackground(new Color(40, 40, 40));
-        chessBoard.setBorder(BorderFactory.createLineBorder(Color.white));
-        chessBoard.setBounds(0, 0, 450, 450);
-        this.add(chessBoard);
-        System.out.println("GameMenu constructed");
-        SideBar.add(gameMenu);
+        this.sideBar.setBackground(new Color(40, 40, 40));
+        this.sideBar.setBorder(BorderFactory.createLineBorder(Color.white));
+        
+        this.sideBar.setLayout(new BorderLayout());
+        
+        //sideBar.setMinimumSize(new Dimension(200, 200));
+        //sideBar.setPreferredSize(new Dimension(200, 200));
+        
+        JPanel logger = new JPanel();
+        logger.setBackground(new Color(60, 60, 60));
+        logger.setLayout(null);
+        logger.setBorder(BorderFactory.createLineBorder(Color.white));
+        //logger.setBounds(0, 0, 200, 220);
+        //sideBar.add(logger);
+        
+        
+        this.chessBoard.setBackground(new Color(40, 40, 40));
+        this.chessBoard.setBorder(BorderFactory.createLineBorder(Color.white));
+        
+        
+        
+        
+        this.masterPanel.setLayout(null);
+        this.masterPanel.setBackground(new Color(50, 50, 50));
+        
+        this.masterPanel.add(this.chessBoard);
+        this.masterPanel.add(this.sideBar);
+        
+        this.setLayout(new BorderLayout());
+        this.add(this.masterPanel, BorderLayout.CENTER);
+        
+        this.sideBar.add(gameMenu, BorderLayout.CENTER);
         //this.add(gameMenu);
         
     }
@@ -115,7 +170,7 @@ public final class Display extends JFrame {
         System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
         System.out.println("Remaining time: " + clock.toString());
         
-        return inputHandler.getStringInput(player.getName() + "> ");
+        return inputHandler.getStringInput(player.getTeam().toString()+"'S MOVE", "Input a move", "Remaining time: " + clock.toString());
     }
     
     public void displayInvalidMove(String message) 
@@ -133,7 +188,7 @@ public final class Display extends JFrame {
         System.out.println("   <BISHOP>  =  R,   <ROOK>   =  B, ");
         System.out.println("   <KNIGHT>  =  N,   <QUEEN>  =  Q ");
       
-        String userInput = inputHandler.getStringInput(player.getName() + ">");
+        String userInput = inputHandler.getStringInput(player.getName() + "PAWN PROMOTION!","INPUT WHAT YOU WOULD LIKE TO PROMOTE YOUR PAWN TOO: \n   <BISHOP>  =  R,   <ROOK>   =  B, \n   <KNIGHT>  =  N,   <QUEEN>  =  Q ", "");
 
         if (userInput.equals("X")) 
         {
@@ -204,10 +259,10 @@ public final class Display extends JFrame {
     public String displayPlayerLogin(Team team, String defaultName) 
     {
         System.out.println("----------------------------------------------------");
-        System.out.println("PLAYER " + (team == Team.WHITE ? "1" : "2") + " LOGIN                           (X) TO QUIT");
+        System.out.println();
         System.out.println("Please enter your username or 'Guest' to skip \n(Case sensitive)");
         
-        return inputHandler.getStringInput("> ");
+        return inputHandler.getStringInput("PLAYER " + (team == Team.WHITE ? "1" : "2") + " LOGIN", "Please enter your username or 'Guest' to skip", "(Case sensitive)");
     }
     
     public String displayPlayerMove(Player player, Clock clock) 
@@ -216,7 +271,7 @@ public final class Display extends JFrame {
         System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
         System.out.println("Remaining time: " + clock.toString());
         
-        return inputHandler.getStringInput(player.getName() + "> ");
+        return inputHandler.getStringInput(player.getTeam().toString()+"'S MOVE", player.getTeam().toString()+"'S MOVE", "USE (H) FOR HELP");
     }
    
     public int getClockTimeLimit() 
@@ -224,7 +279,7 @@ public final class Display extends JFrame {
         System.out.println("CLOCK SETTING                           (X) TO QUIT\n");
         System.out.print("Please enter the time limit for every\nplayer (in minutes, will be rounded)\n");
         
-        String userInput = inputHandler.getStringInput("> ").trim(); 
+        String userInput = inputHandler.getStringInput("CLOCK SETTING", "Please enter the time limit for each player", "(in minutes, will be rounded)").trim(); 
         
         if(userInput.trim().toUpperCase().equals("X"))
         {
@@ -258,9 +313,9 @@ public final class Display extends JFrame {
     public String getSaveFileName() 
     {
         System.out.println("----------------------------------------------------");
-        System.out.println("Please enter the name of the new save file\n(Do not include a file extension):");
+        System.out.println("\n(Do not include a file extension):");
         
-        return inputHandler.getStringInput("> ");
+        return inputHandler.getStringInput("SAVE FILE", "Please enter the name of the new save file", "(Do not include a file extension)");
     }
     
     public void displaySaveResult(boolean success, String fileName) 
