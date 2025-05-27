@@ -59,13 +59,7 @@ public class GameMenu extends JPanel
         setupButton(menuRankButton, normalBg, hoverBg, textColor);
         setupButton(menuLeaderboardButton, normalBg, hoverBg, textColor);
         setupButton(menuExitButton, normalBg, hoverBg, textColor);
-        
-        menuStartButton.setMargin(new Insets(2, 2, 2, 2));
-        menuSaveButton.setMargin(new Insets(2, 2, 2, 2));
-        menuRankButton.setMargin(new Insets(2, 2, 2, 2));
-        menuLeaderboardButton.setMargin(new Insets(2, 2, 2, 2));
-        menuExitButton.setMargin(new Insets(2, 2, 2, 2));
-        
+
         rowButtonGrid.add(dualButtonGrid);
         
         dualButtonGrid.add(menuStartButton);
@@ -73,7 +67,6 @@ public class GameMenu extends JPanel
         rowButtonGrid.add(menuRankButton);
         rowButtonGrid.add(menuLeaderboardButton);
         rowButtonGrid.add(menuExitButton);
-
         
         add(rowButtonGrid, BorderLayout.NORTH);
         
@@ -88,6 +81,7 @@ public class GameMenu extends JPanel
         button.setContentAreaFilled(true);
         button.setOpaque(true);
         //button.setBorder(null);
+        button.setMargin(new Insets(2, 2, 2, 2));
         button.setFont(new Font("HelveticaNeue", Font.PLAIN, 16));
 
         button.addMouseListener(new MouseAdapter() { //hovering effects
