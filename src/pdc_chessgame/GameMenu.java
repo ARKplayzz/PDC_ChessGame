@@ -38,13 +38,17 @@ public class GameMenu extends JPanel
     private JButton menuExitButton = new JButton("Exit");
 
 
-    public GameMenu() {
+    public GameMenu() 
+    {
         setBackground(new Color(60, 60, 60));
         setBorder(BorderFactory.createLineBorder(Color.white));
         setLayout(new BorderLayout(10, 10));
 
-        JPanel buttonGrid = new JPanel(new GridLayout(2, 2, 1, 1));
-        buttonGrid.setOpaque(false); // transparent background
+        JPanel dualButtonGrid = new JPanel(new GridLayout(1, 2, 1, 1));
+        dualButtonGrid.setOpaque(false); // transparent background
+        
+        JPanel rowButtonGrid = new JPanel(new GridLayout(4, 1, 1, 1)); //4 rows
+        rowButtonGrid.setOpaque(false); // transparent background
 
         Color normalBg = new Color(40, 40, 40);
         Color hoverBg = new Color(50, 50, 50);
@@ -54,18 +58,25 @@ public class GameMenu extends JPanel
         setupButton(menuSaveButton, normalBg, hoverBg, textColor);
         setupButton(menuRankButton, normalBg, hoverBg, textColor);
         setupButton(menuLeaderboardButton, normalBg, hoverBg, textColor);
+        setupButton(menuExitButton, normalBg, hoverBg, textColor);
         
-        menuStartButton.setMargin(new Insets(10, 20, 10, 20));
-        menuSaveButton.setMargin(new Insets(10, 20, 10, 20));
-        menuRankButton.setMargin(new Insets(10, 20, 10, 20));
-        menuLeaderboardButton.setMargin(new Insets(10, 20, 10, 20));
+        menuStartButton.setMargin(new Insets(2, 2, 2, 2));
+        menuSaveButton.setMargin(new Insets(2, 2, 2, 2));
+        menuRankButton.setMargin(new Insets(2, 2, 2, 2));
+        menuLeaderboardButton.setMargin(new Insets(2, 2, 2, 2));
+        menuExitButton.setMargin(new Insets(2, 2, 2, 2));
+        
+        rowButtonGrid.add(dualButtonGrid);
+        
+        dualButtonGrid.add(menuStartButton);
+        dualButtonGrid.add(menuSaveButton);
+        rowButtonGrid.add(menuRankButton);
+        rowButtonGrid.add(menuLeaderboardButton);
+        rowButtonGrid.add(menuExitButton);
 
-        buttonGrid.add(menuStartButton);
-        buttonGrid.add(menuSaveButton);
-        buttonGrid.add(menuRankButton);
-        buttonGrid.add(menuLeaderboardButton);
-
-        add(buttonGrid, BorderLayout.NORTH);
+        
+        add(rowButtonGrid, BorderLayout.NORTH);
+        
         setVisible(true);
     }
 
@@ -76,7 +87,8 @@ public class GameMenu extends JPanel
         button.setBorderPainted(false);
         button.setContentAreaFilled(true);
         button.setOpaque(true);
-        button.setBorder(null);
+        //button.setBorder(null);
+        button.setFont(new Font("HelveticaNeue", Font.PLAIN, 16));
 
         button.addMouseListener(new MouseAdapter() { //hovering effects
             @Override
