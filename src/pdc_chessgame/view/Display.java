@@ -16,37 +16,6 @@ public final class Display extends JFrame {
     
     JPanel chessBoard = new JPanel();
     JPanel sideBar = new JPanel();
-    JPanel masterPanel = new JPanel(new GridBagLayout())
-        {
-        @Override
-            public void doLayout() 
-            {// ratio scaling my belloved (this took way too long but now it looks good)
-                int frameWidth = getWidth();
-                int frameHeight = getHeight();
-                
-                int availableHeight = frameHeight - 60; // margins
-                int boardAvailableWidth = frameWidth - 60; // temporary calculation
-                int boardSize = Math.min(boardAvailableWidth, availableHeight);
-                
-                int sideBarWidth = (int)(boardSize * 0.40); // sidebar is a ratio of chessboard
-                
-                int availableWidth = frameWidth - sideBarWidth - 60; // 60 for spacing/margins
-                
-                boardSize = Math.min(availableWidth, availableHeight); // board size
-                
-                int totalContentWidth = boardSize + sideBarWidth + 20; // 20 for spacing
-                
-                int startX = (frameWidth - totalContentWidth) / 2; //centering all horizontaly
-                
-                int boardY = (frameHeight - boardSize) / 2;
-                int sideBarHeight = (int)(boardSize * 0.75); // sidebar height is half of board height
-                int sideBarY = (frameHeight - sideBarHeight) / 2;
-                
-                
-                chessBoard.setBounds(startX, boardY, boardSize, boardSize);
-                sideBar.setBounds(startX + boardSize + 20, sideBarY, sideBarWidth, sideBarHeight);
-            }
-        };
     
     private final InputHandler inputHandler = new InputHandler(this.chessBoard);
     
@@ -67,10 +36,7 @@ public final class Display extends JFrame {
         //frame.setIconImage(image.getImage());
         
         
-        this.sideBar.setBackground(new Color(40, 40, 40));
-        this.sideBar.setBorder(BorderFactory.createLineBorder(Color.white));
         
-        this.sideBar.setLayout(new BorderLayout());
         
         //sideBar.setMinimumSize(new Dimension(200, 200));
         //sideBar.setPreferredSize(new Dimension(200, 200));
@@ -89,15 +55,9 @@ public final class Display extends JFrame {
         
         
         
-        this.masterPanel.setLayout(null);
-        this.masterPanel.setBackground(new Color(50, 50, 50));
+      
         
-        this.masterPanel.add(this.chessBoard);
-        this.masterPanel.add(this.sideBar);
-        
-        this.setLayout(new BorderLayout());
-        this.add(this.masterPanel, BorderLayout.CENTER);
-        
+        this.setLayout(new BorderLayout());    
         this.sideBar.add(gameMenu, BorderLayout.CENTER);
         //this.add(gameMenu);
         
