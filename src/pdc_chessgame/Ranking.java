@@ -98,11 +98,15 @@ public class Ranking
         }
     }
     
-    public boolean isLeaderboardEmpty() // self explanatory
-    {
-        if(this.leaderboard.size() < 1)
-            return true;
-        return false;
+    public String getLeaderboardString()
+    { // unordered, add order later
+        String leaderboardString = "";
+        for(Map.Entry<String, Integer> entry : this.leaderboard.entrySet())
+        {
+            // loop through the items in the leaderboard and print their names + scores
+            leaderboardString += (String)entry.getKey() + " " + entry.getValue() + "\n";
+        }
+        return leaderboardString;
     }
     
     // loads the leaderboard from the specified leaderboard file

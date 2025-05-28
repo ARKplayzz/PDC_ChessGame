@@ -18,6 +18,8 @@ import pdc_chessgame.view.SideBar;
  */
 public class ChessGame {
     
+    private GameManager game;
+    
     private ChessBoardView boardView = new ChessBoardView(this); //could use interfaces instead of the whole chessgame
     private MenuView menuView = new MenuView(this);
     private ManagerView managerView = new ManagerView();
@@ -35,8 +37,37 @@ public class ChessGame {
         this.display.visible(true);
         
         
-        GameManager game = new GameManager();
-        game.start();
+        createGame("player1", "player2", 20);
 
+    }
+    
+    public void createGame(String p1, String p2, int time)
+    {
+        //players.put(Team.WHITE, new Player("Guest 1", Team.WHITE));
+        //players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));
+        
+        Player currentP1 = new Player(p1, Team.WHITE);
+        Player currentP2 = new Player(p2, Team.BLACK);
+        
+        Clock gameClock = new Clock(time, 2);
+        
+        GameManager game = new GameManager(currentP1, currentP2, gameClock);
+        
+    }
+    
+    public void runGame()
+    {
+        game.start();
+        //need to get winner and handle ranking updates here
+        
+        //game.getPlayers()
+        //game.getWinner()
+
+        //double[] eloChanges = this.leaderboard.changeElo(winner.getName(), loser.getName()); // change the elos of the players
+        
+        //int[] newElos = {this.leaderboard.getElo(winner.getName()), this.leaderboard.getElo(loser.getName())};
+                
+        //saving scores to the file just before the program exits
+        //this.leaderboard.saveScores();
     }
 }
