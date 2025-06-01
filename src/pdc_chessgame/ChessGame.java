@@ -76,7 +76,9 @@ public class ChessGame {
     public MoveResult passMove(Move move) 
     {
         MoveResult result = game.makeMove(move);
+        
         boardView.updateBoard();
+        managerView.updateMoveHistory(game.board.getHistoryString());
         return result;
     }
     

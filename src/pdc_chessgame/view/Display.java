@@ -19,7 +19,7 @@ public final class Display extends JFrame {
     
     private final InputHandler inputHandler = new InputHandler(this.chessBoard);
     
-    public final GameMenu gameMenu = new GameMenu();
+    
     
     public Display() 
     {
@@ -58,7 +58,6 @@ public final class Display extends JFrame {
       
         
         this.setLayout(new BorderLayout());    
-        this.sideBar.add(gameMenu, BorderLayout.CENTER);
         //this.add(gameMenu);
         
     }

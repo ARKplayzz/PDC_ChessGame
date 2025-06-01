@@ -20,6 +20,7 @@ import java.util.List;
 import pdc_chessgame.Move;
 import static pdc_chessgame.MoveResult.CHECKMATE;
 import static pdc_chessgame.MoveResult.INVALID;
+import pdc_chessgame.Pawn;
 
 /**
  *
@@ -82,7 +83,7 @@ public class ChessBoardView extends JPanel {
                     @Override
                     public void mousePressed(MouseEvent e) 
                     {
-                        handleSquareClick(finalX, finalY);
+                        handleButtonClick(finalX, finalY);
                     }
                 });
                 
@@ -92,7 +93,7 @@ public class ChessBoardView extends JPanel {
         }
     }
     
-    private void handleSquareClick(int x, int y) 
+    private void handleButtonClick(int x, int y) 
     {
         Tile newSelectedTile = this.controller.getBoard().getTile(x, y);
         
@@ -161,7 +162,7 @@ public class ChessBoardView extends JPanel {
             return; //move not possible: go to jain (dont pass Go)
         }
         
-        MoveResult result = controller.passMove(moveInput);
+        MoveResult result = this.controller.passMove(moveInput);
         
         switch (result) //TEMPP MOVE THIS TO SIDEBAR LATER
         {
@@ -177,7 +178,13 @@ public class ChessBoardView extends JPanel {
             case PROMOTION:
                 PawnOption[] optionList = {PawnOption.QUEEN, PawnOption.ROOK, PawnOption.BISHOP, PawnOption.KNIGHT};
                 PawnOption newPiece = (PawnOption) JOptionPane.showInputDialog(this, "promote to:", "pawn promotion", JOptionPane.QUESTION_MESSAGE, null, optionList, PawnOption.QUEEN);
-                //need more logic here please and thankyou (:
+                
+                if (newPiece != null) 
+                {
+                    controller.getBoard().promotePawn(newPiece, (Pawn) fromTile.getPiece());
+                    controller.passMove(moveInput);
+                    updateBoard();
+                }
                 break;                
             case RESIGNATION:
                 JOptionPane.showMessageDialog(this, "player gave up", "end of match", JOptionPane.INFORMATION_MESSAGE);

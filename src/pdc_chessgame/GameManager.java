@@ -35,7 +35,7 @@ public class GameManager
         this.clock = clock;
         
         this.players = new HashMap<>(); // player count flexabuility for future addition
-        this.players.put(Team.WHITE, p2);
+        this.players.put(Team.WHITE, p1);
         this.players.put(Team.BLACK, p2);
     }
     
@@ -84,76 +84,20 @@ public class GameManager
 
         if (board.isInCheck(enemyTeam)) 
         {
+            board.getNextTurn();
+            clock.swapClock();
             return MoveResult.CHECK;
         }
 
         if (board.isPawnPromotable()) 
         {
+            board.undoMove();
             return MoveResult.PROMOTION;
         }
 
         board.getNextTurn();
         clock.swapClock();
         return MoveResult.SUCCESS;
-    }
-    
-    private Move getPlayerTurn(Player player)
-    {
-        String playerInput = display.displayPlayerMove(player, this.clock);
- 
-        if (playerInput.toUpperCase().trim().equals("X"))
-        {
-            return null;  //end
-        }
-        
-        if(playerInput.toUpperCase().trim().equals("T"))
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println("Remaining time: " +clock.toString());
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if (playerInput.toUpperCase().equals("H"))
-        {
-            display.displayHelp();
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if(playerInput.toUpperCase().equals("S"))
-        { // save the game
-            this.saveGame();
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if(playerInput.toUpperCase().equals("MH"))
-        { // show move history
-            display.printHistory(this.board);
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if(playerInput.toUpperCase().equals("B"))
-        {
-            this.board.displayBoard();
-            return getPlayerTurn(player);  //try again
-        }
-        
-        Move moveSet = MoveInput.getMoveInput(playerInput.trim().toUpperCase());
-        
-        if (moveSet == null)
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println("'"+playerInput+ "' Is not a valid chess Input, Eg 'A1 B2'");
-            
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if (!isValidMove(moveSet, player.getTeam(), playerInput)) 
-        {
-            return getPlayerTurn(player);
-        }
-        
-        System.out.println("----------------------------------------------------");        
-        return moveSet;
     }
 
     private void saveGame() // will prompt the user to save the game
