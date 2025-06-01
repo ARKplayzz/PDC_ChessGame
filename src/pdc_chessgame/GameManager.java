@@ -11,10 +11,11 @@ import java.util.HashMap;
  *
  * @author Andrew & Finlay
  */
+
 public class GameManager 
-{
+{       
     // Do not make the board final please
-    private ChessBoard board;
+    public ChessBoard board;
     // hashmap of the players and teams
     private final HashMap<Team, Player> players;
     
@@ -108,8 +109,56 @@ public class GameManager
             } 
         }    
         
-        this.clock.terminate(); // end the clock
-            
+        this.clock.terminate(); // end the clock  
+    }
+    
+    public MoveResult makeMove(Move move) 
+    {
+        Team currentTeam = board.getCurrentTeam();
+        Player currentPlayer = getPlayerInTeam(currentTeam);
+
+        if (move == null) 
+        {
+            return MoveResult.RESIGNATION;
+        }
+
+        if (clock.getTime() < 1) 
+        {
+            return MoveResult.TIMER_END;
+        }
+
+        boolean moved = board.moveTile(move);
+        if (!moved) 
+        {
+            return MoveResult.INVALID;
+        }
+
+        if (board.isInCheck(currentTeam)) 
+        {
+            board.undoMove();
+            return MoveResult.CHECK;
+        }
+
+        Team enemyTeam = currentTeam.getOppositeTeam();
+        
+        if (board.isCheckmate(enemyTeam)) 
+        {
+            return MoveResult.CHECKMATE;
+        }
+
+        if (board.isInCheck(enemyTeam)) 
+        {
+            return MoveResult.CHECK;
+        }
+
+        if (board.isPawnPromotable()) 
+        {
+            return MoveResult.PROMOTION;
+        }
+
+        board.getNextTurn();
+        clock.swapClock();
+        return MoveResult.SUCCESS;
     }
     
     private Move getPlayerTurn(Player player)

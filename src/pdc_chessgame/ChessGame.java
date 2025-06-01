@@ -18,7 +18,7 @@ import pdc_chessgame.view.SideBar;
  */
 public class ChessGame {
     
-    private GameManager game;
+    private GameManager game = new GameManager(new Player("player1", Team.WHITE), new Player("player1", Team.BLACK), new Clock(20, 2));
     
     private ChessBoardView boardView = new ChessBoardView(this); //could use interfaces instead of the whole chessgame
     private MenuView menuView = new MenuView(this);
@@ -58,6 +58,8 @@ public class ChessGame {
     public void runGame()
     {
         game.start();
+        
+        
         //need to get winner and handle ranking updates here
         
         //game.getPlayers()
@@ -69,5 +71,17 @@ public class ChessGame {
                 
         //saving scores to the file just before the program exits
         //this.leaderboard.saveScores();
+    }
+    
+    public MoveResult passMove(Move move) 
+    {
+        MoveResult result = game.makeMove(move);
+        boardView.updateBoard();
+        return result;
+    }
+    
+    public ChessBoard getBoard()//must be removed later
+    {
+        return game.board;
     }
 }
