@@ -79,20 +79,31 @@ public class Pawn extends Piece {
 
                 if (targetPawn instanceof Pawn && // if target is a pawn
                     targetPawn.getPieceTeam() != getPieceTeam() && // if target is an enemy
-                    board.turnsSinceLastMoved(targetPawn) == 0 && // if target just moved
-                    board.getPieceLastMove(targetPawn).getDistanceMoved() == 2)  // if last move was a double jump
+                    board.turnsSinceLastMoved(targetPawn) == 0) // if target just moved
                 {
-                    possibleMoves.add(targetTile); // en passant capture
+                    MoveState lastMove = board.getPieceLastMove(targetPawn); //handling if last move is non existant/null
+                    
+                    if (lastMove != null && lastMove.getDistanceMoved() == 2)  // if last move was a double jump
+                    {
+                        possibleMoves.add(targetTile); // en passant capture
+                    }
                 }
             }
-        }
+        }    
         return possibleMoves;
     }
     
     // is true if pawn can be promoted (has made it to the oppiste end of the board
     public boolean canPromotion(ChessBoard board) 
     {
-        return getY() + ((getPieceTeam() == Team.BLACK) ? (board.getHeight() - 1) : 2) == board.getHeight();
+        if (getPieceTeam() == Team.WHITE) 
+        {
+            return getY() == board.getHeight() - 1;
+        } 
+        else 
+        {
+            return getY() == 0;
+        }
     }
 
     @Override

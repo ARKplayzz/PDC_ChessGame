@@ -197,14 +197,14 @@ public class ChessBoard implements BoardState
         return false;
     }
     
-    public void promotePawn(PawnOption promotionPiece)
+    public void promotePawn(PawnOption promotionPiece, Pawn pawn)
     { // promoting a pawn
         Tile toTile = this.turnCounter.getPriorMove(0).getToTile();
         Piece newPiece = null;
         
-        int x = toTile.getX();
-        int y = toTile.getY();
-        Team team = toTile.getPiece().getPieceTeam();
+        int x = pawn.getX();
+        int y = pawn.getY();
+        Team team = pawn.getPieceTeam();
 
         switch (promotionPiece) {
             case ROOK:
@@ -281,46 +281,17 @@ public class ChessBoard implements BoardState
     {
         return (n % 2 == 0);
     }
-    
-    public void displayBoard()
-    { //update this to use tile.white so we don't have to run isOdd 4 times every time we print
-        // again changed from i,j to x,y to clear up confusion
-        for(int y = 0; y < this.height; y++)
-        {
-            for(int k = 1; k < 4; k++)
-            { // three rows
-                if(k == 2)
-                    System.out.print(" "+(y+1)+"  "); // new row labels based on y
-                else
-                    System.out.print("    ");
 
-                for(int x = 0; x < this.width; x++) // inner loop over what were rows (now columns)
-                {
-                    if(k == 2 && this.board[x][y].getPiece() != null)
-                    {
-                        if(isOdd(x+1) == isOdd(y+1))
-                            System.out.print(" # "+ this.board[x][y].getPiece().getPieceUnicode() +" #");
-                        else
-                            System.out.print("   "+ this.board[x][y].getPiece().getPieceUnicode() +"  ");
-                    }
-                    else
-                    {
-                        if(isOdd(x+1) == isOdd(y+1))
-                            System.out.print(" # # #");
-                        else
-                            System.out.print("      ");
-                    }
-                }
-                System.out.print("\n");
-            }
-        }
+    public String getHistoryString() 
+    {
+        StringBuilder sb = new StringBuilder();
+        Turn history = this.getHistory();
         
-        System.out.print("\n    ");
-        for(int i = 0; i < this.width; i++)
+        for (int i = 0; i < history.getMoveCount(); i++) 
         {
-            System.out.print("   "+(char)(i+65)+"  ");
+            sb.append((i + 1) + ". " + history.toString(i) + "\n");
         }
-        System.out.print("\n");
+        return sb.toString();
     }
     
     private List<Tile> getPiecePath(Tile tileFrom, Tile tileTo) 
