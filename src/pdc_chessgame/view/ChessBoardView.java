@@ -77,9 +77,11 @@ public class ChessBoardView extends JPanel {
                 // Add mouse listener for piece selection and movement
                 final int finalX = x;
                 final int finalY = y;
-                tileButton.addMouseListener(new MouseAdapter() {
+                tileButton.addMouseListener(new MouseAdapter() 
+                {
                     @Override
-                    public void mouseClicked(MouseEvent e) {
+                    public void mousePressed(MouseEvent e) 
+                    {
                         handleSquareClick(finalX, finalY);
                     }
                 });
@@ -150,6 +152,15 @@ public class ChessBoardView extends JPanel {
     private void attemptMove(Tile fromTile, Tile toTile) 
     {
         Move moveInput = new Move(fromTile.getX(), fromTile.getY(), toTile.getX(), toTile.getY());
+       
+        if (possibleMoves == null || !possibleMoves.contains(toTile)) 
+        {
+            JOptionPane.showMessageDialog(this, "move is not valid for that piece.", "invalid move", JOptionPane.WARNING_MESSAGE);
+            deselectTile();
+            updateBoard();
+            return; //move not possible: go to jain (dont pass Go)
+        }
+        
         MoveResult result = controller.passMove(moveInput);
         
         switch (result) //TEMPP MOVE THIS TO SIDEBAR LATER
