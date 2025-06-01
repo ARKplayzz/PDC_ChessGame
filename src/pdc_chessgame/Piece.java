@@ -94,6 +94,10 @@ public abstract class Piece
                         possibleMoves.add(targetTile); 
                         break;
                     }
+                    else
+                    {
+                        break;
+                    }
                 }
                 x += xDirection;
                 y += yDirection;
