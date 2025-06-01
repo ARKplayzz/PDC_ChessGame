@@ -23,6 +23,7 @@ public class SideBar extends JPanel {
         this.setBorder(BorderFactory.createLineBorder(Color.white));
         this.setLayout(new BorderLayout());
         
-        this.add(menuPanel);
+        this.add(menuPanel, BorderLayout.NORTH);
+        this.add(managerPanel, BorderLayout.CENTER);
     }
 }
