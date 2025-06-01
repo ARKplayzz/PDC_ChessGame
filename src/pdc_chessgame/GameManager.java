@@ -45,71 +45,7 @@ public class GameManager
         this.board = new ChessBoard(8, 8);
         this.board.getHistory().deleteMoveHistory();
         
-        // runs the main gameloop
-        gameLoop();
-    }
-    
-    private void gameLoop() // This is the actaul main loop of the program
-    {
-        board.displayBoard();
-        this.clock.start(); // start the clock
-        
-        while (true) 
-        {           
-            Team currentTeam = board.getCurrentTeam();
-            Team enemyTeam = currentTeam.getOppositeTeam();
-
-            Player currentPlayer = getPlayerInTeam(currentTeam);
-
-            Move moveSet = getPlayerTurn(currentPlayer); //gets player move
-
-            if (moveSet == null)  //if player exits game (RESIGNATION)
-            {
-                display.displayResignation(currentTeam);
-                break;
-            }
-            
-            if(clock.getTime() < 1) // after the player enters his commmand check to see if he ran out of time during the wait
-            {
-                display.displayTimeOver(currentTeam);
-                break;
-            }
-
-            board.moveTile(moveSet); // Player move
-
-            if (board.isInCheck(currentTeam)) // is Player move in check
-            {
-                board.undoMove();
-                display.displayInCheckWarning(); 
-            }
-            else 
-            {
-                if (board.isCheckmate(enemyTeam)) { // ends game (CHECKMATE)
-                    display.displayGameOver(currentTeam);
-                    break;
-                }
-                else if (board.isInCheck(enemyTeam)) { // warns player of invalid move due to check
-                    display.displayInCheckNotification(enemyTeam);
-                }
-                if (board.isPawnPromotable()) { // Gets user input for PawnPromotion
-                    PawnOption promotionPiece = display.getPromotionPiece(currentTeam, currentPlayer);
-                    if (promotionPiece == PawnOption.EXIT_GAME) 
-                    {
-                        display.displayResignation(currentTeam);
-                        break;
-                    }
-                    else
-                    {
-                        board.promotePawn(promotionPiece);
-                    }
-                }
-                board.getNextTurn(); //next turn
-                this.clock.swapClock();
-                board.displayBoard();
-            } 
-        }    
-        
-        this.clock.terminate(); // end the clock  
+        // NO LONGER runs the main gameloop
     }
     
     public MoveResult makeMove(Move move) 
