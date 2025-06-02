@@ -281,7 +281,7 @@ public class ChessBoard implements BoardState
     {
         return (n % 2 == 0);
     }
-
+    
     public String getHistoryString() 
     {
         StringBuilder sb = new StringBuilder();

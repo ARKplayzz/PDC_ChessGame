@@ -23,14 +23,13 @@ public class GameManager
     private SaveManager savemanager;
     private Clock clock;
         
-    //private final GameMenu menu = new GameMenu();
     private final InputHandler inputHandler = new InputHandler(null);
 
-    public GameManager(Player p1, Player p2, Clock clock) 
+    public GameManager(Player p1, Player p2, int time) 
     {
         this.board = new ChessBoard(8, 8);
         this.savemanager = new SaveManager();
-        this.clock = clock;
+        this.clock = new Clock(time, 2);
         
         this.players = new HashMap<>(); // player count flexabuility for future addition
         this.players.put(Team.WHITE, p1);
@@ -42,8 +41,8 @@ public class GameManager
         // establish new Board
         this.board = new ChessBoard(8, 8);
         this.board.getHistory().deleteMoveHistory();
-        
-        // NO LONGER runs the main gameloop
+        this.clock.start();
+
     }
     
     public MoveResult makeMove(Move move) 
@@ -56,68 +55,87 @@ public class GameManager
             return MoveResult.RESIGNATION;
         }
 
-        if (clock.getTime() < 1) 
+        if (this.clock.getTime() < 1) 
         {
             return MoveResult.TIMER_END;
         }
 
-        boolean moved = board.moveTile(move);
+        boolean moved = this.board.moveTile(move);
         if (!moved) 
         {
             return MoveResult.INVALID;
         }
 
-        if (board.isInCheck(currentTeam)) 
+        if (this.board.isInCheck(currentTeam)) 
         {
-            board.undoMove();
+            this.board.undoMove();
             return MoveResult.CHECK;
         }
 
         Team enemyTeam = currentTeam.getOppositeTeam();
         
-        if (board.isCheckmate(enemyTeam)) 
+        if (this.board.isCheckmate(enemyTeam)) 
         {
             return MoveResult.CHECKMATE;
         }
 
-        if (board.isInCheck(enemyTeam)) 
+        if (this.board.isInCheck(enemyTeam)) 
         {
-            board.getNextTurn();
-            clock.swapClock();
+            this.board.getNextTurn();
+            this.clock.swapClock();
             return MoveResult.CHECK;
         }
 
-        if (board.isPawnPromotable()) 
+        if (this.board.isPawnPromotable()) 
         {
-            board.undoMove();
+            this.board.undoMove();
             return MoveResult.PROMOTION;
         }
 
-        board.getNextTurn();
-        clock.swapClock();
+        this.board.getNextTurn();
+        this.clock.swapClock();
         return MoveResult.SUCCESS;
     }
-
-    private void saveGame() // will prompt the user to save the game
+    
+    public void undoMove()
     {
-        String fileName = display.getSaveFileName();
-        boolean success = this.savemanager.SaveGameToFile(fileName, this.board.getHistory(), this.players);
-        display.displaySaveResult(success, fileName);
+        this.board.undoMove();
+        this.board.getNextTurn();
     }
     
     // get the player for this team
     private Player getPlayerInTeam(Team team) 
     { 
-        return players.get(team);
+        return this.players.get(team);
     } 
+    
+    public String getBoardHistoryString()
+    {
+        return this.board.getHistoryString();
+    }
+    
+    public Turn getBoardHistory() 
+    {
+        return this.board.getHistory();
+    }
+    
+    public Team getBoardCurrentTeam() 
+    {
+        return this.board.getCurrentTeam();
+    }
+    
+    public int getCurrentplayerTime() 
+    {
+        return this.clock.getTime();
+    }
     
     public HashMap<Team, Player> getPlayers() 
     {
-        return players;
+        return this.players;
     }   
     
     public Player getWinner() 
     {
         return null;
-    }   
+    }     
 }

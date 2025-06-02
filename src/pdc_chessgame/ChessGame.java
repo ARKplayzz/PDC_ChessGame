@@ -3,11 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package pdc_chessgame;
-import pdc_chessgame.view.MenuView;
-
+import pdc_chessgame.view.menu.MenuView;
+import pdc_chessgame.SaveManager;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 import pdc_chessgame.view.ChessBoardView;
+import pdc_chessgame.view.ControllerManagerActions;
 import pdc_chessgame.view.ManagerView;
 import pdc_chessgame.view.MasterFrame;
 import pdc_chessgame.view.SideBar;
@@ -16,17 +17,19 @@ import pdc_chessgame.view.SideBar;
  *
  * @author Andrew & Finlay
  */
-public class ChessGame {
+public class ChessGame implements ControllerManagerActions {
     
     private GameManager game;
+    private SaveManager store = new SaveManager();
+    
     
     private ChessBoardView boardView;//could use interfaces instead of the whole chessgame
     private MenuView menuView = new MenuView(this);
-    private ManagerView managerView = new ManagerView();
+    private ManagerView managerView = new ManagerView(this);
     private SideBar sideBar = new SideBar(menuView, managerView);
     
     private MasterFrame display = new MasterFrame(sideBar);
-    
+
     public ChessGame()
     {
         System.out.println("yoinker sploinker");
@@ -35,7 +38,7 @@ public class ChessGame {
     public void start()
     {
         this.display.visible(true);
-
+        this.sideBar.displayMenu();
     }
     
     public void createGame(String p1, String p2, int time)
@@ -45,12 +48,15 @@ public class ChessGame {
         
         Player currentP1 = new Player(p1, Team.WHITE);
         Player currentP2 = new Player(p2, Team.BLACK);
-        Clock gameClock = new Clock(time, 2);
         
-        this.game = new GameManager(currentP1, currentP2, gameClock);
+        
+        
+        this.game = new GameManager(currentP1, currentP2, time);
         
         this.boardView = new ChessBoardView(this);
         this.display.addChessBoard(boardView);
+        
+        this.sideBar.displayManager();
        
     }
     
@@ -72,12 +78,45 @@ public class ChessGame {
         //this.leaderboard.saveScores();
     }
     
+    
+    public void currentGameUndo()
+    {
+        this.game.undoMove();
+        this.boardView.updateBoard();
+        this.managerView.updateMoveHistory(this.game.getBoardHistoryString());
+        this.managerView.updateCurrentTeam(game.getBoardCurrentTeam().toString());
+        this.managerView.updateClock(this.game.getCurrentplayerTime());
+    }
+    
+    public void currentGameResignation()
+    {
+        this.endGame();
+    }
+    
+    public void currentGameSaveAndQuit()
+    {
+
+        this.store.SaveGameToUser(game.getPlayers(), game.getBoardHistory());
+        this.endGame();
+       
+    }
+    
+    private void endGame() //(infinity war was better)
+    {
+        this.display.addChessBoard(null);
+        this.sideBar.displayMenu();
+    }
+    
     public MoveResult passMove(Move move) 
     {
         MoveResult result = game.makeMove(move);
         
-        boardView.updateBoard();
-        managerView.updateMoveHistory(game.board.getHistoryString());
+        this.boardView.updateBoard();
+
+        this.managerView.updateMoveHistory(this.game.getBoardHistoryString());
+        this.managerView.updateCurrentTeam(game.getBoardCurrentTeam().toString());
+        this.managerView.updateClock(this.game.getCurrentplayerTime());
+
         return result;
     }
     
