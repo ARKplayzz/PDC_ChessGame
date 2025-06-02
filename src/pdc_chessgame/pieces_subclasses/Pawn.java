@@ -30,28 +30,34 @@ public class Pawn extends Piece {
     public List<Tile> canMove(BoardState board)  //returns a list of all tiles that the piece can move to
     {        
         List<Tile> possibleMoves = new ArrayList<>();
+        Tile targetTile;
+        Piece targetPiece;
 
         int y = getY() + getDirection()[0][1]; // calculates one step forward
         
-        Tile targetTile = board.getTile(getX(), y);
-        Piece targetPiece = targetTile.getPiece(); 
-        
-        // checks if the tile directly in front is empty and within board
-        if (board.isWithinBoard(getX(), y) && targetPiece == null)  
+        // checks if the tile directly in front is empty
+        if (board.isWithinBoard(getX(), y)) 
         {
-            possibleMoves.add(targetTile);
-            
-            // If the pawn hasnt moved before, check if a 'double jump' is possible
-            if (!board.hasPieceMoved(this))
+            targetTile = board.getTile(getX(), y);
+            targetPiece = targetTile.getPiece(); 
+
+            // checks if the tile directly in front is within board
+            if (targetPiece == null)  
             {
-                y = getY() + (2 * getDirection()[0][1]); 
-                // checks if the double jump tile is empty and valid
-                if (board.isWithinBoard(getX(), y) && targetPiece == null && board.getTile(getX(), y).getPiece() == null)  //within for dupdated double jump size
+                possibleMoves.add(targetTile);
+
+                // If the pawn hasnt moved before, check if a 'double jump' is possible
+                if (!board.hasPieceMoved(this))
                 {
-                    targetTile = board.getTile(getX(), y);
-                    targetPiece = targetTile.getPiece(); 
-                
-                    possibleMoves.add(targetTile);
+                    y = getY() + (2 * getDirection()[0][1]); 
+                    // checks if the double jump tile is empty and valid
+                    if (board.isWithinBoard(getX(), y) && targetPiece == null && board.getTile(getX(), y).getPiece() == null)  //within for dupdated double jump size
+                    {
+                        targetTile = board.getTile(getX(), y);
+                        targetPiece = targetTile.getPiece(); 
+
+                        possibleMoves.add(targetTile);
+                    }
                 }
             }
         }
