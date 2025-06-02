@@ -19,11 +19,27 @@ public class SideBar extends JPanel {
     
     public SideBar(JPanel menuPanel, JPanel managerPanel)
     {
-        this.setBackground(new Color(80, 80, 80));
-        this.setBorder(BorderFactory.createLineBorder(Color.white));
+        this.setBackground(new Color(30, 30, 30));
+        this.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30, 2)));
         this.setLayout(new BorderLayout());
         
-        this.add(menuPanel, BorderLayout.NORTH);
+        this.menuPanel = menuPanel;
+        this.managerPanel = managerPanel;
+    }
+    
+    public void displayMenu() 
+    {
+        this.removeAll();
+        this.add(menuPanel, BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void displayManager() 
+    {
+        this.removeAll();
         this.add(managerPanel, BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
     }
 }

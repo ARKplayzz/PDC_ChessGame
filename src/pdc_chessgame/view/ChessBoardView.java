@@ -12,15 +12,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import pdc_chessgame.King;
-import pdc_chessgame.Team;
 import pdc_chessgame.Tile;
 import java.util.List;
-import javax.imageio.ImageIO;
 import pdc_chessgame.Move;
 import static pdc_chessgame.MoveResult.CHECKMATE;
 import static pdc_chessgame.MoveResult.INVALID;
@@ -48,10 +44,9 @@ public class ChessBoardView extends JPanel {
         this.controller = controller;
         this.selectedTile = null;
         
-        this.setBackground(new Color(100, 100, 100));
-        this.setBorder(BorderFactory.createLineBorder(Color.white));
+        this.setBackground(new Color(30, 30, 30)); 
         this.setLayout(new GridLayout(8, 8));
-        
+
         initializeBoard();
         updateBoard();
         
@@ -216,7 +211,6 @@ public class ChessBoardView extends JPanel {
         updateBoard();
     }
  
-    
     public void updateBoard() 
     {
         for (int x = 0; x < 8; x++) 
@@ -283,14 +277,13 @@ public class ChessBoardView extends JPanel {
     private ImageIcon getPieceIcon(String team, String pieceName, int width, int height) 
     {
         String resourcePath = "/pdc_chessgame/resources/pieces/" + team + "_" + pieceName.toUpperCase() + ".png";
-        URL imgUrl = getClass().getResource(resourcePath);
-        ImageIcon icon = new ImageIcon(imgUrl);
-        // Optionally scale the icon:
+        URL imagePath = getClass().getResource(resourcePath);
+        ImageIcon icon = new ImageIcon(imagePath);
         Image scaled = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
     
-    //have to blend colours as there isnt an easy opacity modification in Jbutton
+    //have to blend colours as there isnt an easy opacity modification in Jbutton (also I think it looks betetr)
     private Color blendColours(Color base, Color overlay) 
     {
         int alpha = overlay.getAlpha();

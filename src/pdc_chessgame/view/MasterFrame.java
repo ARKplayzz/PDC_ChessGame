@@ -7,6 +7,7 @@ package pdc_chessgame.view;
 import java.awt.Color;
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 /**
  *
@@ -50,18 +51,34 @@ public class MasterFrame extends JFrame {
     
     public MasterFrame(JPanel sideBarPanel)
     {
-        this.boardHolderPanel = new JPanel(new BorderLayout());
+        this.boardHolderPanel = new JPanel(new BorderLayout()) 
+        {
+            private Image backgroundImage = new ImageIcon(getClass().getResource("/pdc_chessgame/resources/welcome_logo.png")).getImage();
+
+            @Override
+            protected void paintComponent(Graphics g) 
+            {
+                super.paintComponent(g);
+                if (backgroundImage != null) 
+                {
+                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
         this.sideBarPanel = sideBarPanel;
         
         this.setTitle("PDC ChessGame | by Andrew & Finlay");
-        this.setSize(900,600);
+        this.setSize(1200,800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(50, 50, 50)); //dark grey
+        this.getContentPane().setBackground(new Color(30, 30, 30)); //dark grey
         this.setLayout(new BorderLayout());
         
-        //ImageIcon image new ImageIcon("logo.png");
-        //frame.setIconImage(image.getImage());
+        String resourcePath = "/pdc_chessgame/resources/pieces/BLACK_R.png";
+        URL imagePath = getClass().getResource(resourcePath);
+        ImageIcon chessLogo = new ImageIcon(imagePath);
+        
+        this.setIconImage(chessLogo.getImage());
         
         this.masterPanel.setBackground(new Color(50, 50, 50));
         this.masterPanel.add(this.boardHolderPanel);
