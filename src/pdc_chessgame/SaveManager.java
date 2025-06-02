@@ -10,6 +10,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +60,49 @@ public class SaveManager
         }
     }
     
+    public void SaveGameToUser(HashMap<Team, Player> players, Turn history)
+    {
+        PrintWriter pw;
+        
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm"); //format may be modified if format is to hard to sort
+        
+        // add the actaul file extension, this is so the .gitignore will work and the markers won't end up with our saves in their copy
+        String saveFile = currentDateTime.format(dateFormat).concat(".sav");
+        
+        try {
+            pw = new PrintWriter(new FileOutputStream(saveFile));
+        } 
+        catch (FileNotFoundException ex) 
+        {
+            System.out.println("Failed to create file, game has not been saved");
+            return;
+        }
+        //save the game
+        
+        // Print all the players names onto the first line of the save file
+        for(Map.Entry<Team, Player> entry : players.entrySet())
+        {
+            // the $ is to denote that this line should be interpreted as a player
+            pw.println("$"+(String)entry.getValue().getName() + " " +(String)entry.getKey().teamName());
+        }
+        
+        for(int i = 0; i < history.getMoveCount(); i++)
+        { // print all of the players commands into the terminal
+            pw.println(history.getHistoryEntry(i).getStringInput());
+        }
+        
+        //exit & save
+        pw.close();
+        
+        /*
+        NEED TO ADD TO DATABASE UNDER BOTH PLAYERS USERNAMES
+        
+        SO THAT WE CAN LOAD THE FILE FROM A USERNAME
+        */
+    }
+    
+    //legacy game saver
     public boolean SaveGameToFile(String file, Turn history, HashMap<Team, Player> players)
     {
         PrintWriter pw;
