@@ -18,14 +18,14 @@ import pdc_chessgame.view.SideBar;
  */
 public class ChessGame {
     
-    private GameManager game = new GameManager(new Player("player1", Team.WHITE), new Player("player1", Team.BLACK), new Clock(20, 2));
+    private GameManager game;
     
-    private ChessBoardView boardView = new ChessBoardView(this); //could use interfaces instead of the whole chessgame
+    private ChessBoardView boardView;//could use interfaces instead of the whole chessgame
     private MenuView menuView = new MenuView(this);
     private ManagerView managerView = new ManagerView();
     private SideBar sideBar = new SideBar(menuView, managerView);
     
-    private MasterFrame display = new MasterFrame(boardView, sideBar);
+    private MasterFrame display = new MasterFrame(sideBar);
     
     public ChessGame()
     {
@@ -35,9 +35,6 @@ public class ChessGame {
     public void start()
     {
         this.display.visible(true);
-        
-        
-        createGame("player1", "player2", 20);
 
     }
     
@@ -48,16 +45,18 @@ public class ChessGame {
         
         Player currentP1 = new Player(p1, Team.WHITE);
         Player currentP2 = new Player(p2, Team.BLACK);
-        
         Clock gameClock = new Clock(time, 2);
         
-        GameManager game = new GameManager(currentP1, currentP2, gameClock);
+        this.game = new GameManager(currentP1, currentP2, gameClock);
         
+        this.boardView = new ChessBoardView(this);
+        this.display.addChessBoard(boardView);
+       
     }
     
     public void runGame()
     {
-        game.start();
+        this.game.start();
         
         
         //need to get winner and handle ranking updates here

@@ -14,7 +14,7 @@ import java.awt.*;
  */
 public class MasterFrame extends JFrame {
     
-    private JPanel chessBoardPanel;
+    private JPanel boardHolderPanel;
     private JPanel sideBarPanel;
     
     JPanel masterPanel = new JPanel(new GridBagLayout())
@@ -43,14 +43,14 @@ public class MasterFrame extends JFrame {
                 int sideBarHeight = (int)(boardSize * 0.75); // sidebar height is half of board height
                 int sideBarY = (frameHeight - sideBarHeight) / 2;
 
-                chessBoardPanel.setBounds(startX, boardY, boardSize, boardSize);
+                boardHolderPanel.setBounds(startX, boardY, boardSize, boardSize);
                 sideBarPanel.setBounds(startX + boardSize + 20, sideBarY, sideBarWidth, sideBarHeight);
             }
         };
     
-    public MasterFrame(JPanel chessBoardPanel, JPanel sideBarPanel)
+    public MasterFrame(JPanel sideBarPanel)
     {
-        this.chessBoardPanel = chessBoardPanel;
+        this.boardHolderPanel = new JPanel(new BorderLayout());
         this.sideBarPanel = sideBarPanel;
         
         this.setTitle("PDC ChessGame | by Andrew & Finlay");
@@ -64,10 +64,21 @@ public class MasterFrame extends JFrame {
         //frame.setIconImage(image.getImage());
         
         this.masterPanel.setBackground(new Color(50, 50, 50));
-        this.masterPanel.add(this.chessBoardPanel);
+        this.masterPanel.add(this.boardHolderPanel);
         this.masterPanel.add(this.sideBarPanel);
         
         this.add(this.masterPanel, BorderLayout.CENTER);
+    }
+    
+    public void addChessBoard(JPanel board) 
+    {
+        this.boardHolderPanel.removeAll();
+        if (board != null) 
+        {
+            this.boardHolderPanel.add(board, BorderLayout.CENTER);
+        }
+        this.boardHolderPanel.revalidate();
+        this.boardHolderPanel.repaint();
     }
     
     public void visible(Boolean state)

@@ -22,9 +22,7 @@ public class GameManager
     // the savemanager and clock
     private SaveManager savemanager;
     private Clock clock;
-    
-    public final Display display = new Display();
-    
+        
     //private final GameMenu menu = new GameMenu();
     private final InputHandler inputHandler = new InputHandler(null);
 

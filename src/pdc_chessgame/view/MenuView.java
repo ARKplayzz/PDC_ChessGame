@@ -17,12 +17,13 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import pdc_chessgame.Clock;
-import pdc_chessgame.Display;
 import pdc_chessgame.GameManager;
 import pdc_chessgame.Player;
 import pdc_chessgame.Ranking;
@@ -36,6 +37,7 @@ import pdc_chessgame.Team;
  */
 public class MenuView extends JPanel {
     
+    private ChessGame controller;
     private Ranking rankings = new Ranking();
     
     JPanel leaderBoardPanel = new JPanel(new BorderLayout());
@@ -44,7 +46,6 @@ public class MenuView extends JPanel {
     JPanel dualButtonGrid = new JPanel(new GridLayout(1, 2, 1, 1));
     JPanel rowButtonGrid = new JPanel(new GridLayout(4, 1, 1, 1)); //4 rows
     
-    
     private JButton menuStartButton = new JButton("New Game");
     private JButton menuSaveButton = new JButton("Load Game");
     private JButton menuRankButton = new JButton("View Ranking");
@@ -52,9 +53,17 @@ public class MenuView extends JPanel {
     private JButton menuExitButton = new JButton("Exit");
     private JButton escapeButton = new JButton("Back");
 
+    private JPanel newGamePanel = null;
+    private JTextField username1Field = null;
+    private JTextField username2Field = null;
+    private JLabel username1Status = null;
+    private JLabel username2Status = null;
+    
 
     public MenuView(ChessGame controller) 
     {
+        this.controller = controller;
+        
         setBackground(new Color(60, 60, 60));
         setLayout(new BorderLayout(10, 10));
         
@@ -74,12 +83,13 @@ public class MenuView extends JPanel {
         setupButton(menuExitButton, normalBg, hoverBg, textColor);
         setupButton(escapeButton, normalBg, hoverBg, textColor);
         
+        menuStartButton.addActionListener(e -> getNewGamePanel());
+
         //menuSaveButton.addActionListener(e -> displayLoadGame(loader, players));
         menuRankButton.addActionListener(e -> displayRankings(rankings));
         menuLeaderboardButton.addActionListener(e -> displayLeaderboard(rankings));
         
         menuExitButton.addActionListener(e -> System.exit(0));
-        
                 
         escapeButton.addActionListener(e -> openMenu());
 
@@ -131,7 +141,97 @@ public class MenuView extends JPanel {
         });
     }
     
-    
+    private void getNewGamePanel() 
+    {
+        if (newGamePanel != null) 
+        {
+            // there is already a current game
+            return;
+        }
+        newGamePanel = new JPanel();
+        newGamePanel.setLayout(new GridLayout(0, 1, 5, 5));
+        newGamePanel.setBackground(new Color(50, 50, 50));
+
+        username1Field = new JTextField();
+        username2Field = new JTextField();
+        username1Status = new JLabel(" ");
+        username2Status = new JLabel(" ");
+
+        username1Status.setForeground(new Color(189, 229, 225));
+        username2Status.setForeground(new Color(189, 229, 225));
+
+        username1Field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
+        {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(username1Field, username1Status); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(username1Field, username1Status); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(username1Field, username1Status); }
+        });
+        username2Field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
+        {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(username2Field, username2Status); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(username2Field, username2Status); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(username2Field, username2Status); }
+        });
+
+        newGamePanel.add(new JLabel("Player 1"));
+        newGamePanel.add(username1Field);
+        newGamePanel.add(username1Status);
+        newGamePanel.add(new JLabel("Player 2"));
+        newGamePanel.add(username2Field);
+        newGamePanel.add(username2Status);
+
+        JButton startButton = new JButton("Start Game");
+        setupButton(startButton, new Color(40, 40, 40), new Color(50, 50, 50), new Color(189, 229, 225));
+        
+        startButton.addActionListener(e -> 
+        {
+            String user1 = username1Field.getText().trim();
+            String user2 = username2Field.getText().trim();
+            
+            if (user1.isEmpty() || user2.isEmpty()) 
+            {
+                showWarning("Two usernames are required.");
+                return;
+            }
+            
+            int time = 200; //slows down call time (should be ms)
+            
+            this.controller.createGame(user1, user2, time); //hmmmm
+            
+            // Hide panel after starting
+            mainMenuPanel.remove(newGamePanel);
+            newGamePanel = null;
+            mainMenuPanel.revalidate();
+            mainMenuPanel.repaint();
+        });
+        newGamePanel.add(startButton);
+
+        // Insert newGamePanel between dualButtonGrid and menuRankButton
+        mainMenuPanel.add(newGamePanel, BorderLayout.CENTER);
+        mainMenuPanel.revalidate();
+        mainMenuPanel.repaint();
+
+        // Initial status update
+        updateUserStatus(username1Field, username1Status);
+        updateUserStatus(username2Field, username2Status);
+    }
+
+    private void updateUserStatus(JTextField field, JLabel statusLabel) {
+        String username = field.getText().trim();
+        if (username.isEmpty()) 
+        {
+            statusLabel.setText(""); //NEED TO ADD TEMP TEXT HERE
+            return;
+        }
+        if (rankings.hasPlayed(username)) 
+        {
+            statusLabel.setText(username +" has: " + rankings.getElo(username) + " Elo");
+        } 
+        else 
+        {
+            statusLabel.setText(username +" has not played before (this will create a new user with 100 Elo)");
+        }
+    }
     private void displayLoadGame(SaveManager loader, HashMap<Team, Player> players) 
     {
         String file = JOptionPane.showInputDialog(

@@ -12,11 +12,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import pdc_chessgame.King;
 import pdc_chessgame.Team;
 import pdc_chessgame.Tile;
 import java.util.List;
+import javax.imageio.ImageIO;
 import pdc_chessgame.Move;
 import static pdc_chessgame.MoveResult.CHECKMATE;
 import static pdc_chessgame.MoveResult.INVALID;
@@ -50,6 +54,16 @@ public class ChessBoardView extends JPanel {
         
         initializeBoard();
         updateBoard();
+        
+        //refreshed board when scaled
+        this.addComponentListener(new java.awt.event.ComponentAdapter() 
+        {
+        @Override
+        public void componentResized(java.awt.event.ComponentEvent e) 
+        {
+            updateBoard();
+        }
+        });
     }
     
     private void initializeBoard() 
@@ -63,7 +77,7 @@ public class ChessBoardView extends JPanel {
             {
                 JButton tileButton = new JButton();
                 tileButton.setFont(new Font("Helvetica", Font.BOLD, 24));
-                tileButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+                tileButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 0));
                 tileButton.setFocusPainted(false);
                 
                 // Set square color
@@ -244,11 +258,19 @@ public class ChessBoardView extends JPanel {
                 // display piece
                 if (tile.getPiece() != null) 
                 {
-                    button.setText(tile.getPiece().getPieceUnicode());
-                    button.setForeground(tile.getPiece().getPieceTeam() == Team.WHITE ? Color.WHITE : Color.BLACK);
+                    String team = tile.getPiece().getPieceTeam().toString();
+                    String pieceName = tile.getPiece().getPieceUnicode();
+                    
+                    int iconWidth = button.getWidth() > 0 ? button.getWidth() : 64;
+                    int iconHeight = button.getHeight() > 0 ? button.getHeight() : 64;
+                    
+                    ImageIcon icon = getPieceIcon(team, pieceName, iconWidth, iconHeight);
+                    button.setIcon(icon);
+                    button.setText(""); // Remove text
                 } 
                 else 
                 {
+                    button.setIcon(null);
                     button.setText("");
                 }
             }
@@ -257,6 +279,16 @@ public class ChessBoardView extends JPanel {
         this.repaint();
     }
     
+    //grabs piece from file and scales it relative to the tile sizing
+    private ImageIcon getPieceIcon(String team, String pieceName, int width, int height) 
+    {
+        String resourcePath = "/pdc_chessgame/resources/pieces/" + team + "_" + pieceName.toUpperCase() + ".png";
+        URL imgUrl = getClass().getResource(resourcePath);
+        ImageIcon icon = new ImageIcon(imgUrl);
+        // Optionally scale the icon:
+        Image scaled = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
+    }
     
     //have to blend colours as there isnt an easy opacity modification in Jbutton
     private Color blendColours(Color base, Color overlay) 
