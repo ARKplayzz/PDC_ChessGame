@@ -3,15 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package pdc_chessgame;
-import pdc_chessgame.view.menu.MenuView;
-import pdc_chessgame.SaveManager;
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
 import pdc_chessgame.view.ChessBoardView;
 import pdc_chessgame.view.ControllerManagerActions;
 import pdc_chessgame.view.ManagerView;
 import pdc_chessgame.view.MasterFrame;
 import pdc_chessgame.view.SideBar;
+import pdc_chessgame.view.menu.MenuView;
 
 /**
  *
@@ -43,54 +40,32 @@ public class ChessGame implements ControllerManagerActions {
     
     public void createGame(String p1, String p2, int time)
     {
-        //players.put(Team.WHITE, new Player("Guest 1", Team.WHITE));
-        //players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));
-        
-        Player currentP1 = new Player(p1, Team.WHITE);
-        Player currentP2 = new Player(p2, Team.BLACK);
-        
-        
-        
-        this.game = new GameManager(currentP1, currentP2, time);
-        
+        this.game = new GameManager(p1, p2, time);
+
         this.boardView = new ChessBoardView(this);
         this.display.addChessBoard(boardView);
         
-        this.sideBar.displayManager();
-       
-    }
-    
-    public void runGame()
-    {
         this.game.start();
-        
-        
-        //need to get winner and handle ranking updates here
-        
-        //game.getPlayers()
-        //game.getWinner()
+        updateGraphics();
+        this.managerView.showGamePanel();
 
-        //double[] eloChanges = this.leaderboard.changeElo(winner.getName(), loser.getName()); // change the elos of the players
-        
-        //int[] newElos = {this.leaderboard.getElo(winner.getName()), this.leaderboard.getElo(loser.getName())};
-                
-        //saving scores to the file just before the program exits
-        //this.leaderboard.saveScores();
+        this.sideBar.displayManager();
     }
+  
     
     
     public void currentGameUndo()
     {
         this.game.undoMove();
         this.boardView.updateBoard();
-        this.managerView.updateMoveHistory(this.game.getBoardHistoryString());
-        this.managerView.updateCurrentTeam(game.getBoardCurrentTeam().toString());
-        this.managerView.updateClock(this.game.getCurrentplayerTime());
+        updateGraphics();
     }
     
     public void currentGameResignation()
     {
-        this.endGame();
+        this.managerView.showGameOverPanel(game.getBoardCurrentTeam().teamName());
+        this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
+        //this.endGame();
     }
     
     public void currentGameSaveAndQuit()
@@ -113,15 +88,23 @@ public class ChessGame implements ControllerManagerActions {
         
         this.boardView.updateBoard();
 
-        this.managerView.updateMoveHistory(this.game.getBoardHistoryString());
-        this.managerView.updateCurrentTeam(game.getBoardCurrentTeam().toString());
-        this.managerView.updateClock(this.game.getCurrentplayerTime());
-
+        updateGraphics();
+        if (result == MoveResult.CHECKMATE)
+        {
+            this.managerView.showGameOverPanel(game.getBoardCurrentTeam().teamName());
+        }
         return result;
     }
     
     public ChessBoard getBoard()//must be removed later
     {
         return game.board;
+    }
+    
+    private void updateGraphics()
+    {
+        this.managerView.updateMoveHistory(this.game.getBoardHistoryString());
+        this.managerView.updateCurrentTeam(game.getBoardCurrentTeam().toString());
+        this.managerView.updateClock(this.game.getCurrentplayerTime());
     }
 }

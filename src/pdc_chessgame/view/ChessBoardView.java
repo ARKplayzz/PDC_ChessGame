@@ -18,8 +18,7 @@ import pdc_chessgame.King;
 import pdc_chessgame.Tile;
 import java.util.List;
 import pdc_chessgame.Move;
-import static pdc_chessgame.MoveResult.CHECKMATE;
-import static pdc_chessgame.MoveResult.INVALID;
+import static pdc_chessgame.MoveResult.CHECK;
 import pdc_chessgame.Pawn;
 
 /**
@@ -32,6 +31,12 @@ public class ChessBoardView extends JPanel {
     private JButton[][] boardTileButtons;
     private Tile selectedTile;
     private List<Tile> possibleMoves = new ArrayList<>();
+    private JLabel gameOverOverlay;
+    private boolean gameEnded = false;
+    
+    // Store original image for quality preservation
+    private ImageIcon originalCheckmateImage;
+    private Boolean gameOver = false;
     
     private final Color LIGHT_SQUARE = new Color(153, 233, 255);
     private final Color DARK_SQUARE = new Color(0, 108, 137);
@@ -45,10 +50,18 @@ public class ChessBoardView extends JPanel {
         this.selectedTile = null;
         
         this.setBackground(new Color(30, 30, 30)); 
-        this.setLayout(new GridLayout(8, 8));
+        this.setLayout(new GridLayout(8, 8)); // Keep original layout for the board
 
         initializeBoard();
         updateBoard();
+        
+        // Create checkmate overlay (invisible)
+        gameOverOverlay = new JLabel();
+        gameOverOverlay.setHorizontalAlignment(JLabel.CENTER);
+        gameOverOverlay.setVerticalAlignment(JLabel.CENTER);
+        gameOverOverlay.setOpaque(false);
+        gameOverOverlay.setVisible(false);
+        gameOverOverlay.setBounds(0, 0, 0, 0); // start with no size
         
         //refreshed board when scaled
         this.addComponentListener(new java.awt.event.ComponentAdapter() 
@@ -57,6 +70,7 @@ public class ChessBoardView extends JPanel {
         public void componentResized(java.awt.event.ComponentEvent e) 
         {
             updateBoard();
+            updateOverlaySize();
         }
         });
     }
@@ -92,7 +106,9 @@ public class ChessBoardView extends JPanel {
                     @Override
                     public void mousePressed(MouseEvent e) 
                     {
-                        handleButtonClick(finalX, finalY);
+                        if (!gameEnded) { // Only handle clicks if game hasn't ended
+                            handleButtonClick(finalX, finalY);
+                        }
                     }
                 });
                 
@@ -173,16 +189,18 @@ public class ChessBoardView extends JPanel {
         
         MoveResult result = this.controller.passMove(moveInput);
         
-        switch (result) //TEMPP MOVE THIS TO SIDEBAR LATER
+        switch (result)
         {
             case INVALID:
-                JOptionPane.showMessageDialog(this, "invalid", "incorrect Move", JOptionPane.WARNING_MESSAGE);
                 break;
             case CHECK:
-                JOptionPane.showMessageDialog(this, "in check", "check", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "check!", "check", JOptionPane.WARNING_MESSAGE);
                 break;
+                
             case CHECKMATE:
-                JOptionPane.showMessageDialog(this, "in checkmate", "checkmate", JOptionPane.WARNING_MESSAGE);
+                String winningTeam = this.controller.getBoard().getCurrentTeam().toString();
+                showGameOverOverlay(winningTeam);
+                gameEnded = true;
                 break;   
             case PROMOTION:
                 PawnOption[] optionList = {PawnOption.QUEEN, PawnOption.ROOK, PawnOption.BISHOP, PawnOption.KNIGHT};
@@ -194,11 +212,14 @@ public class ChessBoardView extends JPanel {
                     controller.passMove(moveInput);
                     updateBoard();
                 }
-                break;                
+                break;
+
             case RESIGNATION:
+                gameEnded = true;
                 JOptionPane.showMessageDialog(this, "player gave up", "end of match", JOptionPane.INFORMATION_MESSAGE);
                 break;
             case TIMER_END:
+                gameEnded = true;
                 JOptionPane.showMessageDialog(this, "ran out of time", "end of match", JOptionPane.INFORMATION_MESSAGE);
                 break;
             case SUCCESS:
@@ -209,6 +230,86 @@ public class ChessBoardView extends JPanel {
 
         deselectTile();
         updateBoard();
+    }
+    
+    public void showGameOverOverlay(String winningTeam) 
+    {
+        String resourcePath = "/pdc_chessgame/resources/" + winningTeam + "_win.png";
+        URL imagePath = getClass().getResource(resourcePath);
+        
+        // Store original image for quality preservation ( if you scale down and scale up it compresses)
+        originalCheckmateImage = new ImageIcon(imagePath);
+
+        //create a custom glass pane that displays victory tile
+        JPanel glassPane = new JPanel() 
+        {
+            @Override
+            protected void paintComponent(Graphics g) 
+            {
+                super.paintComponent(g);
+            }
+        };
+        glassPane.setOpaque(false);
+        glassPane.setLayout(null);
+
+        JLabel overlayLabel = new JLabel();
+        overlayLabel.setHorizontalAlignment(JLabel.CENTER);
+        overlayLabel.setVerticalAlignment(JLabel.CENTER);
+
+        // Get the chess board's position and size relative to the root pane
+        Point boardLocation = SwingUtilities.convertPoint(this, 0, 0, SwingUtilities.getRootPane(this));
+        int boardWidth = this.getWidth() > 0 ? this.getWidth() : 800;
+        int boardHeight = this.getHeight() > 0 ? this.getHeight() : 800;
+
+        // Scale the original image to fit the chess board size
+        Image scaledImage = originalCheckmateImage.getImage().getScaledInstance(boardWidth, boardHeight, Image.SCALE_SMOOTH);
+        overlayLabel.setIcon(new ImageIcon(scaledImage));
+
+        // Position the label to cover only the chess board
+        overlayLabel.setBounds(boardLocation.x, boardLocation.y, boardWidth, boardHeight);
+        glassPane.add(overlayLabel);
+
+        // Store reference for resizing
+        gameOverOverlay = overlayLabel;
+
+        JRootPane rootPane = SwingUtilities.getRootPane(this);
+        if (rootPane != null) {
+            rootPane.setGlassPane(glassPane);
+            glassPane.setVisible(true);
+        }
+
+        this.repaint();
+
+    }
+    
+    private void updateOverlaySize() 
+    {
+        // Update glass pane overlay size when window is resized
+        JRootPane rootPane = SwingUtilities.getRootPane(this);
+        if (rootPane != null && rootPane.getGlassPane().isVisible() && originalCheckmateImage != null) 
+        {
+            Component glassPane = rootPane.getGlassPane();
+            if (glassPane instanceof JPanel) 
+            {
+                JPanel panel = (JPanel) glassPane;
+                Component[] components = panel.getComponents();
+                if (components.length > 0 && components[0] instanceof JLabel) 
+                {
+                    JLabel overlayLabel = (JLabel) components[0];
+                    
+                    // Get the chess board's current position and size relative to the root pane (same logic as pieces)
+                    Point boardLocation = SwingUtilities.convertPoint(this, 0, 0, rootPane);
+                    int boardWidth = this.getWidth() > 0 ? this.getWidth() : 800;
+                    int boardHeight = this.getHeight() > 0 ? this.getHeight() : 800;
+
+                    Image scaledImage = originalCheckmateImage.getImage().getScaledInstance(boardWidth, boardHeight, Image.SCALE_SMOOTH);
+                    overlayLabel.setIcon(new ImageIcon(scaledImage));
+                    
+                    //Reposition the label to cover only the chess board
+                    overlayLabel.setBounds(boardLocation.x, boardLocation.y, boardWidth, boardHeight);
+                }
+            }
+        }
     }
  
     public void updateBoard() 
@@ -260,7 +361,7 @@ public class ChessBoardView extends JPanel {
                     
                     ImageIcon icon = getPieceIcon(team, pieceName, iconWidth, iconHeight);
                     button.setIcon(icon);
-                    button.setText(""); // Remove text
+                    button.setText("");
                 } 
                 else 
                 {
@@ -296,7 +397,8 @@ public class ChessBoardView extends JPanel {
         return new Color(r, g, b);
     }
     
-    public void clearSelection() {
+    public void clearSelection() 
+    {
         deselectTile();
     }
     
@@ -315,5 +417,20 @@ public class ChessBoardView extends JPanel {
         
         this.revalidate();
         this.repaint();
+    }
+    
+    public void resetGame() 
+    {
+        gameEnded = false;
+        gameOverOverlay.setVisible(false);
+        originalCheckmateImage = null;
+        
+        // Hide glass pane overlay if it exists
+        JRootPane rootPane = SwingUtilities.getRootPane(this);
+        if (rootPane != null && rootPane.getGlassPane().isVisible()) {
+            rootPane.getGlassPane().setVisible(false);
+        }
+        
+        clearSelection();
     }
 }
