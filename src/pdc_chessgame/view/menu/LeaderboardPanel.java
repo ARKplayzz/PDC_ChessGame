@@ -54,29 +54,29 @@ public class LeaderboardPanel extends JPanel {
         
         setupButton(backButton);
         
-        add(scrollPane, BorderLayout.CENTER);
-        add(backButton, BorderLayout.SOUTH);
+        add(this.scrollPane, BorderLayout.CENTER);
+        add(this.backButton, BorderLayout.SOUTH);
     }
     
     private void setupLeaderboardText() 
     {
-        leaderboardText.setEditable(false);
-        leaderboardText.setBackground(new Color(30, 30, 30));
-        leaderboardText.setForeground(new Color(153, 233, 255));
-        leaderboardText.setLineWrap(true);
-        leaderboardText.setWrapStyleWord(true);
-        leaderboardText.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        this.leaderboardText.setEditable(false);
+        this.leaderboardText.setBackground(new Color(30, 30, 30));
+        this.leaderboardText.setForeground(new Color(153, 233, 255));
+        this.leaderboardText.setLineWrap(true);
+        this.leaderboardText.setWrapStyleWord(true);
+        this.leaderboardText.setFont(new Font("Helvetica", Font.PLAIN, 16));
     }
     
     private void setupScrollPane() 
     {
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBorder(null);
-        scrollPane.getViewport().setBackground(new Color(30, 30, 30));
+        this.scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        this.scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.scrollPane.setBorder(null);
+        this.scrollPane.getViewport().setBackground(new Color(30, 30, 30));
         
-        scrollPane.getVerticalScrollBar().setBackground(new Color(40, 40, 40));
-        scrollPane.getHorizontalScrollBar().setBackground(new Color(40, 40, 40));
+        this.scrollPane.getVerticalScrollBar().setBackground(new Color(40, 40, 40));
+        this.scrollPane.getHorizontalScrollBar().setBackground(new Color(40, 40, 40));
     }
     
     private void setupButton(JButton button) 
@@ -112,7 +112,7 @@ public class LeaderboardPanel extends JPanel {
     private void setupEventHandlers() 
     {
         // Back button listener
-        backButton.addActionListener(e -> backCallback.run());
+        this.backButton.addActionListener(e -> backCallback.run());
         
         // Dynamic text scaling based on panel size
         addComponentListener(new ComponentAdapter() 
@@ -131,16 +131,16 @@ public class LeaderboardPanel extends JPanel {
         if (panelWidth > 0) 
         {
             int fontSize = Math.max(14, Math.min(20, panelWidth / 15));
-            leaderboardText.setFont(new Font("Helvetica", Font.PLAIN, fontSize));
+            this.leaderboardText.setFont(new Font("Helvetica", Font.PLAIN, fontSize));
         }
     }
     
     public void refreshLeaderboard() 
     {
-        rankings.getLeaderboard();
+        this.rankings.getLeaderboard();
         
         StringBuilder content = new StringBuilder();
-        String leaderboardString = rankings.getLeaderboardString();
+        String leaderboardString = this.rankings.getLeaderboardString();
         
         if (leaderboardString == null || leaderboardString.trim().isEmpty()) 
         {
@@ -152,8 +152,8 @@ public class LeaderboardPanel extends JPanel {
             content.append("\n\nPlay more games to improve your ranking!");
         }
         
-        leaderboardText.setText(content.toString());
-        leaderboardText.setCaretPosition(0); // Scroll to top
+        this.leaderboardText.setText(content.toString());
+        this.leaderboardText.setCaretPosition(0); // Scroll to top
     }
     
     public void updateLeaderboard() 

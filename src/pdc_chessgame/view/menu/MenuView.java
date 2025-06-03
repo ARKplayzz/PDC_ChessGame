@@ -66,46 +66,46 @@ public class MenuView extends JPanel {
         setBackground(new Color(30, 30, 30));
         setLayout(new BorderLayout());
         
-        chessGameTitle.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30), 4));
-        chessGameTitle.setForeground(new Color(153, 233, 255));
-        chessGameTitle.setFont(new Font("Helvetica", Font.BOLD, 20));
-        chessGameTitle.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30), 20));
-        chessGameTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        this.chessGameTitle.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30), 4));
+        this.chessGameTitle.setForeground(new Color(153, 233, 255));
+        this.chessGameTitle.setFont(new Font("Helvetica", Font.BOLD, 20));
+        this.chessGameTitle.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30), 20));
+        this.chessGameTitle.setHorizontalAlignment(SwingConstants.CENTER);
         
-        mainMenuPanel.setOpaque(false);
-        buttonContainer.setOpaque(false);
+        this.mainMenuPanel.setOpaque(false);
+        this.buttonContainer.setOpaque(false);
         
         //setup all buttons
-        setupButton(menuStartButton);
-        setupButton(menuSaveButton);
-        setupButton(menuRankButton);
-        setupButton(menuLeaderboardButton);
-        setupButton(menuExitButton);
+        setupButton(this.menuStartButton);
+        setupButton(this.menuSaveButton);
+        setupButton(this.menuRankButton);
+        setupButton(this.menuLeaderboardButton);
+        setupButton(this.menuExitButton);
         
         //add buttons to containers
         JPanel dualButtonGrid = new JPanel(new GridLayout(1, 2, 1, 1));
         dualButtonGrid.setOpaque(false);
-        dualButtonGrid.add(menuStartButton);
-        dualButtonGrid.add(menuSaveButton);
+        dualButtonGrid.add(this.menuStartButton);
+        dualButtonGrid.add(this.menuSaveButton);
         
-        buttonContainer.add(dualButtonGrid);
-        buttonContainer.add(menuRankButton);
-        buttonContainer.add(menuLeaderboardButton);
-        buttonContainer.add(menuExitButton);
+        this.buttonContainer.add(dualButtonGrid);
+        this.buttonContainer.add(this.menuRankButton);
+        this.buttonContainer.add(this.menuLeaderboardButton);
+        this.buttonContainer.add(this.menuExitButton);
         
-        mainMenuPanel.add(buttonContainer, BorderLayout.NORTH);
-        this.add(chessGameTitle, BorderLayout.NORTH);
-        this.add(mainMenuPanel, BorderLayout.CENTER);
+        this.mainMenuPanel.add(this.buttonContainer, BorderLayout.NORTH);
+        this.add(this.chessGameTitle, BorderLayout.NORTH);
+        this.add(this.mainMenuPanel, BorderLayout.CENTER);
         
         setVisible(true);
     }
     
     private void setupEventHandlers() 
     {
-        menuStartButton.addActionListener(e -> showNewGamePanel());
-        menuRankButton.addActionListener(e -> showRankPanel());
-        menuLeaderboardButton.addActionListener(e -> showLeaderboardPanel());
-        menuExitButton.addActionListener(e -> System.exit(0));
+        this.menuStartButton.addActionListener(e -> showNewGamePanel());
+        this.menuRankButton.addActionListener(e -> showRankPanel());
+        this.menuLeaderboardButton.addActionListener(e -> showLeaderboardPanel());
+        this.menuExitButton.addActionListener(e -> System.exit(0));
     }
     
     private void setupButton(JButton button) 
@@ -140,30 +140,30 @@ public class MenuView extends JPanel {
     
     private void showNewGamePanel() 
     {
-        if (newGamePanel == null) 
+        if (this.newGamePanel == null) 
         {
-            newGamePanel = new NewGamePanel(rankings, controller, this::returnToMainMenu);
+            this.newGamePanel = new NewGamePanel(this.rankings, this.controller, this::returnToMainMenu);
         }
-        switchToPanel(newGamePanel);
+        switchToPanel(this.newGamePanel);
     }
     
     private void showLeaderboardPanel() 
     {
-        if (leaderboardPanel == null) 
+        if (this.leaderboardPanel == null) 
         {
-            leaderboardPanel = new LeaderboardPanel(rankings, this::returnToMainMenu);
+            this.leaderboardPanel = new LeaderboardPanel(this.rankings, this::returnToMainMenu);
         }
-        leaderboardPanel.refreshLeaderboard();
-        switchToPanel(leaderboardPanel);
+        this.leaderboardPanel.refreshLeaderboard();
+        switchToPanel(this.leaderboardPanel);
     }
     
     private void showRankPanel() 
     {
-        if (rankPanel == null) 
+        if (this.rankPanel == null) 
         {
-            rankPanel = new RankPanel(rankings, this::returnToMainMenu);
+            this.rankPanel = new RankPanel(this.rankings, this::returnToMainMenu);
         }
-        switchToPanel(rankPanel);
+        switchToPanel(this.rankPanel);
     }
     
     private void switchToPanel(JPanel panel) 
@@ -177,8 +177,8 @@ public class MenuView extends JPanel {
     public void returnToMainMenu() 
     {
         this.removeAll();
-        this.add(chessGameTitle, BorderLayout.NORTH);
-        this.add(mainMenuPanel, BorderLayout.CENTER);
+        this.add(this.chessGameTitle, BorderLayout.NORTH);
+        this.add(this.mainMenuPanel, BorderLayout.CENTER);
         this.revalidate();
         this.repaint();
     }
