@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package pdc_chessgame.view.menu;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -19,7 +20,7 @@ import pdc_chessgame.Ranking;
 
 /**
  *
- * @author ARKen
+ * @author Andrew
  */
 public class MenuView extends JPanel {
     

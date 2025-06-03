@@ -33,11 +33,11 @@ public class RankPanel extends JPanel {
     private final JLabel instructionLabel;
     private final JButton backButton;
     
-    public RankPanel(Ranking rankings, Runnable backCallback) {
+    public RankPanel(Ranking rankings, Runnable backCallback) 
+    {
         this.rankings = rankings;
         this.backCallback = backCallback;
         
-        // Initialize components
         this.usernameField = new JTextField();
         this.statusLabel = new JLabel();
         this.eloLabel = new JLabel();
@@ -49,7 +49,8 @@ public class RankPanel extends JPanel {
         updateInitialStatus();
     }
     
-    private void initializePanel() {
+    private void initializePanel() 
+    {
         setLayout(new BorderLayout());
         setBackground(new Color(30, 30, 30));
         

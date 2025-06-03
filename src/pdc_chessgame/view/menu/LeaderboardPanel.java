@@ -128,8 +128,9 @@ public class LeaderboardPanel extends JPanel {
     private void updateTextSize() 
     {
         int panelWidth = getWidth();
-        if (panelWidth > 0) {
-            int fontSize = Math.max(12, Math.min(20, panelWidth / 20));
+        if (panelWidth > 0) 
+        {
+            int fontSize = Math.max(14, Math.min(20, panelWidth / 15));
             leaderboardText.setFont(new Font("Helvetica", Font.PLAIN, fontSize));
         }
     }
@@ -147,9 +148,8 @@ public class LeaderboardPanel extends JPanel {
         } 
         else 
         {
-            content.append("ChessGame Leaderboard");
             content.append(leaderboardString);
-            content.append("\n\nKeep playing to improve your ranking!");
+            content.append("\n\nPlay more games to improve your ranking!");
         }
         
         leaderboardText.setText(content.toString());
