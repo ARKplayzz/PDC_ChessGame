@@ -48,9 +48,19 @@ public class NewGamePanel extends JPanel {
         this.controller = controller;
         this.backCallback = backCallback;
         
-        this.timeField = new JTextField("20");
-        this.username1Field = new JTextField();
-        this.username2Field = new JTextField();
+        this.timeField = new JTextField("20", 10); // thinner
+        this.username1Field = new JTextField(10);  // thinner
+        this.username2Field = new JTextField(10);  // thinner
+
+        // Center and bold text in input fields
+        Font boldFont = new Font("Helvetica", Font.BOLD, 16);
+        this.timeField.setHorizontalAlignment(JTextField.CENTER);
+        this.timeField.setFont(boldFont);
+        this.username1Field.setHorizontalAlignment(JTextField.CENTER);
+        this.username1Field.setFont(boldFont);
+        this.username2Field.setHorizontalAlignment(JTextField.CENTER);
+        this.username2Field.setFont(boldFont);
+
         this.username1Status = new JLabel();
         this.username1Status2 = new JLabel();
         this.username2Status = new JLabel();
@@ -78,8 +88,8 @@ public class NewGamePanel extends JPanel {
         setupStatusLabels();
         
         //player labels
-        JLabel playerOneLabel = createPlayerLabel("Player 1:");
-        JLabel playerTwoLabel = createPlayerLabel("Player 2:");
+        JLabel playerOneLabel = createPlayerLabel("Player 1: (White)");
+        JLabel playerTwoLabel = createPlayerLabel("Player 2: (Black)");
         JLabel timeLabel = createPlayerLabel("Time per Player:");
         
         setupButtons();
@@ -102,26 +112,23 @@ public class NewGamePanel extends JPanel {
         contentPanel.add(Box.createVerticalStrut(1));
         contentPanel.add(timeField);
         contentPanel.add(Box.createVerticalStrut(10));
- 
-        contentPanel.add(startButton);
-        
+
         add(contentPanel, BorderLayout.CENTER);
-        add(backButton, BorderLayout.SOUTH);
+
+        // Button grid panel (no border, outside contentPanel)
+        JPanel buttonGrid = new JPanel(new GridLayout(2, 1, 0, 1)); // set vertical gap to 1 for small gap
+        buttonGrid.setBackground(new Color(30, 30, 30));
+        buttonGrid.add(startButton);
+        buttonGrid.add(backButton);
+
+        add(buttonGrid, BorderLayout.SOUTH);
     }
     
     private void setupStatusLabels() 
     {
-        JLabel[] statusLabels = {username1Status, username2Status};
-        JLabel[] statusLabels2 = {username1Status2, username2Status2};
+        JLabel[] statusLabels = {this.username1Status, this.username2Status, this.username1Status2, this.username2Status2, this.timeStatus};
         
         for (JLabel label : statusLabels) 
-        {
-            label.setForeground(new Color(153, 233, 225));
-            label.setFont(new Font("Helvetica", Font.PLAIN, 14));
-            label.setHorizontalAlignment(SwingConstants.CENTER);
-        }
-        
-        for (JLabel label : statusLabels2) 
         {
             label.setForeground(new Color(153, 233, 255));
             label.setFont(new Font("Helvetica", Font.PLAIN, 14));
@@ -311,25 +318,51 @@ public class NewGamePanel extends JPanel {
         String user2 = username2Field.getText().trim();
         String timeText = timeField.getText().trim();
 
-
+        // Username validation
         if (user1.isEmpty() || user2.isEmpty()) {
             showWarning("Two players are required.");
             return;
         }
-
         if (user1.equals(user2)) {
-            showWarning("You cant play against yourself! try using a 'Guest'");
+            showWarning("You can't play against yourself! Try using a 'Guest'.");
+            return;
+        }
+        if (user1.contains(" ")) {
+            showWarning("Player 1 username cannot contain spaces.");
+            return;
+        }
+        if (user2.contains(" ")) {
+            showWarning("Player 2 username cannot contain spaces.");
+            return;
+        }
+        if (user1.length() < 4) {
+            showWarning("Player 1 username must be at least 4 characters.");
+            return;
+        }
+        if (user2.length() < 4) {
+            showWarning("Player 2 username must be at least 4 characters.");
+            return;
+        }
+        if (user1.length() > 16) {
+            showWarning("Player 1 username must be less than 17 characters.");
+            return;
+        }
+        if (user2.length() > 16) {
+            showWarning("Player 2 username must be less than 17 characters.");
+            return;
+        }
+        if (user1.equalsIgnoreCase("guest") && user2.equalsIgnoreCase("guest")) {
+            showWarning("At least one player must use a non-guest username.");
             return;
         }
 
+        // Time validation
         int time;
-        
         if (timeText.isEmpty()) 
         {
             showWarning("Please enter a time limit.");
             return;
         }
-        
         try 
         {
             time = Integer.parseInt(timeText);
@@ -338,14 +371,21 @@ public class NewGamePanel extends JPanel {
                 showWarning("Time must be greater than 0 mins.");
                 return;
             }
+            if (time > 120) 
+            {
+                showWarning("Maximum 2 hours (120 minutes) allowed.");
+                return;
+            }
         } 
         catch (NumberFormatException e) 
         {
             showWarning("Please enter a valid number for time.");
             return;
         }
+
+        // All checks passed, start game
         this.controller.createGame(user1, user2, time);
-        
+        clearInputs(); // Clear input fields after starting a game
         backCallback.run();
     }
     
@@ -354,6 +394,14 @@ public class NewGamePanel extends JPanel {
         updateUserStatus(username1Field, username1Status, username1Status2);
         updateUserStatus(username2Field, username2Status, username2Status2);
         updateTimeStatus();
+    }
+    
+    private void clearInputs() 
+    {
+        username1Field.setText("");
+        username2Field.setText("");
+        timeField.setText("20");
+        updateInitialStatus();
     }
     
     private void showWarning(String msg) 
