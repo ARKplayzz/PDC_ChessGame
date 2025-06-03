@@ -89,6 +89,18 @@ public class ManagerView extends JPanel
         setupButton(resignButton);
         setupButton(saveQuitButton);
 
+        // Add help button action: append detailed help message to moveHistoryArea
+        helpButton.addActionListener(e -> {
+            moveHistoryArea.append(
+                "\nChess Help:\n" +
+                "Click on a piece to select it. Possible moves will be shown as green tiles.\n" +
+                "Click one of these green tiles to move your piece.\n" +
+                "If you make a mistake, you can use the Undo button (as long as your opponent agrees).\n" +
+                "Press Resign to give up, or Save & Quit to save the game (you can continue it later).\n"
+            );
+            moveHistoryArea.setCaretPosition(moveHistoryArea.getDocument().getLength());
+        });
+
         undoButton.addActionListener(e -> controller.currentGameUndo());
         resignButton.addActionListener(e -> controller.currentGameResignation());
         saveQuitButton.addActionListener(e -> controller.currentGameSaveAndQuit());
@@ -139,9 +151,17 @@ public class ManagerView extends JPanel
 
         JButton helpButtonGameOver = new JButton("Help");
         setupButton(helpButtonGameOver);
-        if (helpButton.getActionListeners().length > 0) {
-            helpButtonGameOver.addActionListener(helpButton.getActionListeners()[0]);
-        }
+        // Add help button action: append detailed help message to gameOverArea
+        helpButtonGameOver.addActionListener(e -> {
+            gameOverArea.append(
+                "\nChess Help:\n" +
+                "Click on a piece to select it. Possible moves will be shown as green tiles.\n" +
+                "Click one of these green tiles to move your piece.\n" +
+                "If you make a mistake, you can use the Undo button (as long as your opponent agrees).\n" +
+                "Press Resign to give up, or Save & Quit to save the game (you can continue it later).\n"
+            );
+            gameOverArea.setCaretPosition(gameOverArea.getDocument().getLength());
+        });
 
         gameOverTopPanel.add(gameOverLabel);
         gameOverTopPanel.add(helpButtonGameOver);
@@ -240,7 +260,7 @@ public class ManagerView extends JPanel
     }
 
     // --- Existing methods for updating UI ---
-    public void startClock(int timeInSeconds) 
+    public void startClock(int timeInSeconds, String currentTeam) 
     {
         stopClock();
         this.currentTime = timeInSeconds;
@@ -252,6 +272,14 @@ public class ManagerView extends JPanel
                     updateClockLabel();
                 } else {
                     stopClock();
+                    // Show game over panel when clock runs out
+                    // The losing team is the current team, so winner is the opposite
+                    String winner = currentTeam.equalsIgnoreCase("BLACK") ? "WHITE" : "BLACK";
+                    showGameOverPanel(winner);
+                    // Also show overlay on board
+                    if (controller instanceof pdc_chessgame.ChessGame) {
+                        ((pdc_chessgame.ChessGame)controller).showGameOverOverlayForTeam(winner);
+                    }
                 }
             }
         });
@@ -268,16 +296,24 @@ public class ManagerView extends JPanel
     {
         this.moveHistoryArea.setText(history);
         this.moveHistoryArea.setCaretPosition(moveHistoryArea.getDocument().getLength());
+        // Enable undo only if there is at least one move to undo
+        setUndoEnabled(history != null && !history.trim().isEmpty());
+    }
+
+    public void setUndoEnabled(boolean enabled) 
+    {
+        this.undoButton.setEnabled(enabled);
     }
     public void updateCurrentTeam(String teamName) 
     {
         if(teamName.equals("BLACK")){teamName = "Black";}
         if(teamName.equals("WHITE")){teamName = "White";}
         currentPlayerLabel.setText(teamName + "'s Turn");
+        // No longer store current team internally
     }
-    public void updateClock(int time) 
+    public void updateClock(int time, String currentTeam)
     {
-        startClock(time);
+        startClock(time, currentTeam);
     }
     private void updateClockLabel() 
     {

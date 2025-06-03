@@ -4,10 +4,9 @@
  */
 package pdc_chessgame.view;
 
-import java.awt.Color;
-import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import javax.swing.*;
 
 /**
  *
