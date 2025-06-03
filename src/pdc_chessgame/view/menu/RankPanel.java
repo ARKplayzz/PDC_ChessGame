@@ -7,10 +7,8 @@ package pdc_chessgame.view.menu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,6 +37,8 @@ public class RankPanel extends JPanel {
         this.backCallback = backCallback;
         
         this.usernameField = new JTextField();
+        // Center and bold text in input field
+        
         this.statusLabel = new JLabel();
         this.eloLabel = new JLabel();
         this.instructionLabel = new JLabel();
@@ -53,31 +53,51 @@ public class RankPanel extends JPanel {
     {
         setLayout(new BorderLayout());
         setBackground(new Color(30, 30, 30));
-        
-        JPanel contentPanel = new JPanel(new GridLayout(5, 1, 1, 1));
+
+        // Use BoxLayout for vertical stacking at the top
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new javax.swing.BoxLayout(contentPanel, javax.swing.BoxLayout.Y_AXIS));
         contentPanel.setBackground(new Color(30, 30, 30));
-        contentPanel.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30), 10));
-        
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(18, 38, 8, 38)); // decreased by 2px
+
         setupLabels();
-        
-        setupButton(backButton);
-        
+        setupButton(this.backButton);
+
         JLabel titleLabel = createTitleLabel();
-        
+
+        // Set max sizes to prevent stretching
+        titleLabel.setMaximumSize(new java.awt.Dimension(400, 40));
+        this.instructionLabel.setMaximumSize(new java.awt.Dimension(400, 30));
+        this.usernameField.setMaximumSize(new java.awt.Dimension(400, 30));
+        this.statusLabel.setMaximumSize(new java.awt.Dimension(400, 25));
+        this.eloLabel.setMaximumSize(new java.awt.Dimension(400, 100));
+
+        // Center align all components
+        titleLabel.setAlignmentX(CENTER_ALIGNMENT);
+        this.instructionLabel.setAlignmentX(CENTER_ALIGNMENT);
+        this.usernameField.setAlignmentX(CENTER_ALIGNMENT);
+        this.statusLabel.setAlignmentX(CENTER_ALIGNMENT);
+        this.eloLabel.setAlignmentX(CENTER_ALIGNMENT);
+
+        // Add spacing and components
         contentPanel.add(titleLabel);
-        contentPanel.add(instructionLabel, BorderLayout.NORTH);
-        contentPanel.add(usernameField, BorderLayout.NORTH);
-        contentPanel.add(statusLabel, BorderLayout.NORTH);
-        contentPanel.add(eloLabel, BorderLayout.NORTH);
-        
-        add(backButton, BorderLayout.SOUTH);  
+        contentPanel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+        contentPanel.add(instructionLabel);
+        contentPanel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 5)));
+        contentPanel.add(usernameField);
+        contentPanel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+        contentPanel.add(statusLabel);
+        contentPanel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+        contentPanel.add(eloLabel);
+        contentPanel.add(javax.swing.Box.createVerticalGlue());
+
         add(contentPanel, BorderLayout.NORTH);
-        
+        add(this.backButton, BorderLayout.SOUTH);  
     }
     
     private JLabel createTitleLabel() 
     {
-        JLabel titleLabel = new JLabel("Rank Checker");
+        JLabel titleLabel = new JLabel("Elo Checker");
         titleLabel.setForeground(new Color(153, 233, 255));
         titleLabel.setFont(new Font("Helvetica", Font.BOLD, 24));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -87,24 +107,25 @@ public class RankPanel extends JPanel {
     private void setupLabels() 
     {
         // Instruction label
-        instructionLabel.setText("Enter a username:");
-        instructionLabel.setForeground(new Color(153, 233, 255));
-        instructionLabel.setFont(new Font("Helvetica", Font.PLAIN, 20));
-        instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.instructionLabel.setText("Enter a username:");
+        this.instructionLabel.setForeground(new Color(153, 233, 255));
+        this.instructionLabel.setFont(new Font("Helvetica", Font.PLAIN, 20));
+        this.instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         //status label
-        statusLabel.setForeground(new Color(153, 233, 225));
-        statusLabel.setFont(new Font("Helvetica", Font.PLAIN, 14));
-        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.statusLabel.setForeground(new Color(153, 233, 225));
+        this.statusLabel.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        this.statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         //Elo label
-        eloLabel.setForeground(new Color(255, 255, 255));
-        eloLabel.setFont(new Font("Helvetica", Font.BOLD, 100));
-        eloLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.eloLabel.setForeground(new Color(255, 255, 255));
+        this.eloLabel.setFont(new Font("Helvetica", Font.BOLD, 100));
+        this.eloLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        //buttons
-        usernameField.setFont(new Font("Helvetica", Font.PLAIN, 16));
-        usernameField.setHorizontalAlignment(SwingConstants.CENTER);
+        //user input
+        this.usernameField.setFont(new Font("Helvetica", Font.BOLD, 16));
+        this.usernameField.setHorizontalAlignment(SwingConstants.CENTER);
+        this.usernameField.setHorizontalAlignment(JTextField.CENTER);
     }
     
     private void setupButton(JButton button) 
@@ -140,7 +161,7 @@ public class RankPanel extends JPanel {
     private void setupEventHandlers() 
     {
         // Username listener for dynamicness
-        usernameField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
+        this.usernameField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
         {
             public void insertUpdate(javax.swing.event.DocumentEvent e) 
             { 
@@ -157,43 +178,49 @@ public class RankPanel extends JPanel {
         });
         
         //backkk button
-        backButton.addActionListener(e -> backCallback.run());
+        this.backButton.addActionListener(e -> backCallback.run());
     }
     
     private void updateEloStatus() 
     {
-        String username = usernameField.getText().trim();
+        String username = this.usernameField.getText().trim();
         
         if (username.isEmpty()) 
         {
-            statusLabel.setText("Type a username above");
-            eloLabel.setText("?");
+            this.statusLabel.setText("Type a username above");
+            this.eloLabel.setText("?");
         } 
         else if (username.contains(" ")) 
         {
-            statusLabel.setText("Username cannot contain spaces");
-            eloLabel.setText("?");
+            this.statusLabel.setText("Invalid Username");
+            this.eloLabel.setText("?");
         } 
         else if (username.length() < 3) 
         {
-            statusLabel.setText("Username too short (minimum 3 characters)");
-            eloLabel.setText("?");
+            this.statusLabel.setText("Username too short");
+            this.eloLabel.setText("?");
         } 
         else if (username.length() > 16) 
         {
-            statusLabel.setText("Username too long (maximum 16 characters)");
-            eloLabel.setText("?");
+            this.statusLabel.setText("Username too long");
+            this.eloLabel.setText("?");
         } 
         else if (username.equalsIgnoreCase("guest")) 
         {
-            statusLabel.setText("Guest players dontt have saved Elo ratings");
+            this.statusLabel.setText("Guest's don't save Elo");
+            this.eloLabel.setText("?");
         } 
-        else if (rankings.hasPlayed(username)) 
+        else if (this.rankings.hasPlayed(username)) 
         {
-            statusLabel.setText("User found");
-            int elo = rankings.getElo(username);
-            eloLabel.setText(""+elo);
+            this.statusLabel.setText("User found");
+            int elo = this.rankings.getElo(username);
+            this.eloLabel.setText(""+elo);
         } 
+        else 
+        {
+            this.statusLabel.setText("Player not found");
+            this.eloLabel.setText("?");
+        }
     }
     
     private void updateInitialStatus() 
@@ -203,12 +230,12 @@ public class RankPanel extends JPanel {
     
     public void clearInput() 
     {
-        usernameField.setText("");
+        this.usernameField.setText("");
         updateEloStatus();
     }
     
     public void focusInput() 
     {
-        usernameField.requestFocusInWindow();
+        this.usernameField.requestFocusInWindow();
     }
 }
