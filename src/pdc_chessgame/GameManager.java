@@ -25,15 +25,15 @@ public class GameManager
         
     private final InputHandler inputHandler = new InputHandler(null);
 
-    public GameManager(Player p1, Player p2, int time) 
+    public GameManager(String p1, String p2, int time) 
     {
         this.board = new ChessBoard(8, 8);
         this.savemanager = new SaveManager();
         this.clock = new Clock(time, 2);
         
         this.players = new HashMap<>(); // player count flexabuility for future addition
-        this.players.put(Team.WHITE, p1);
-        this.players.put(Team.BLACK, p2);
+        this.players.put(Team.WHITE, new Player(p1, Team.WHITE));
+        this.players.put(Team.BLACK, new Player(p2, Team.BLACK));
     }
     
     public void start()
@@ -42,7 +42,6 @@ public class GameManager
         this.board = new ChessBoard(8, 8);
         this.board.getHistory().deleteMoveHistory();
         this.clock.start();
-
     }
     
     public MoveResult makeMove(Move move) 
