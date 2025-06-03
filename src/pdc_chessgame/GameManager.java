@@ -30,6 +30,7 @@ public class GameManager
         this.board = new ChessBoard(8, 8);
         this.savemanager = new SaveManager();
         this.clock = new Clock(time, 2);
+        this.clock.start();
         
         this.players = new HashMap<>(); // player count flexabuility for future addition
         this.players.put(Team.WHITE, new Player(p1, Team.WHITE));
@@ -41,7 +42,6 @@ public class GameManager
         // establish new Board
         this.board = new ChessBoard(8, 8);
         this.board.getHistory().deleteMoveHistory();
-        this.clock.start();
     }
     
     public MoveResult makeMove(Move move) 

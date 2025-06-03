@@ -51,8 +51,6 @@ public class ChessGame implements ControllerManagerActions {
 
         this.sideBar.displayManager();
     }
-  
-    
     
     public void currentGameUndo()
     {
@@ -65,7 +63,6 @@ public class ChessGame implements ControllerManagerActions {
     {
         this.managerView.showGameOverPanel(game.getBoardCurrentTeam().teamName());
         this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
-        //this.endGame();
     }
     
     public void currentGameSaveAndQuit()
@@ -105,6 +102,6 @@ public class ChessGame implements ControllerManagerActions {
     {
         this.managerView.updateMoveHistory(this.game.getBoardHistoryString());
         this.managerView.updateCurrentTeam(game.getBoardCurrentTeam().toString());
-        this.managerView.updateClock(this.game.getCurrentplayerTime());
+        this.managerView.updateClock(this.game.getCurrentplayerTime(), game.getBoardCurrentTeam().toString());
     }
 }

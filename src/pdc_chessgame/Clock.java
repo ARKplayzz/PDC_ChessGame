@@ -43,13 +43,14 @@ public class Clock extends Thread
     
     public void swapClock()
     {
-        // add 10 seconds to the current players time
-        this.playerTimes[this.activePlayer] += 10;
-        
+        // switch active player first
         if(this.activePlayer < this.playerTimes.length-1)
             this.activePlayer++;
         else
             this.activePlayer = 0;
+
+        // add 10 seconds to the new active player's time
+        this.playerTimes[this.activePlayer] += 10;
     }
     
     @Override
