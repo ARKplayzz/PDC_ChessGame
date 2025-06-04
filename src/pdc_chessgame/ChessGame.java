@@ -5,6 +5,7 @@
 package pdc_chessgame;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -16,6 +17,7 @@ public class ChessGame
     private ChessBoard board;
     // hashmap of the players and teams
     private final HashMap<Team, Player> players;
+    private DataBase database;
     
     // the leaderboard
     private final Ranking leaderboard;
@@ -34,6 +36,7 @@ public class ChessGame
         this.board = new ChessBoard(8, 8);
         this.leaderboard = new Ranking();
         this.savemanager = new SaveManager();
+        this.database = new DataBase();
         
         this.players = new HashMap<>(); // player count for flexabuility in assignement 2
 
@@ -150,9 +153,9 @@ public class ChessGame
         //saving scores to the file just before the program exits
         this.leaderboard.saveScores();
         
-        players.clear();
+       /* players.clear();
         players.put(Team.WHITE, new Player("Guest 1", Team.WHITE));
-        players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));
+        players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));*/
     }
     
     private void initialisePlayers() //alows for multiple player support for assignment 2...
@@ -288,7 +291,8 @@ public class ChessGame
             return getPlayerTurn(player);  //try again
         }
         
-        if (!isValidMove(moveSet, player.getTeam(), playerInput)) 
+        
+        if (!isValidMove(moveSet, player.getTeam(), playerInput)) // crash here
         {
             return getPlayerTurn(player);
         }
@@ -299,6 +303,14 @@ public class ChessGame
 
     private void saveGame() /// will prompt the user to save the game
     {
+        for(Map.Entry<Team, Player> entry : this.players.entrySet())
+        {
+            if(entry.getValue().getName().equals("GUEST"))
+            {
+                System.out.println("Guest accounts cannot be included in save games");
+                return;
+            }
+        }
         String fileName = display.getSaveFileName();
         boolean success = this.savemanager.SaveGameToFile(fileName, this.board.getHistory(), this.players);
         display.displaySaveResult(success, fileName);

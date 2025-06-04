@@ -139,6 +139,12 @@ public class SaveManager
                     currentLine = currentLine.replace("$", "");
                     String[] parts = currentLine.trim().toUpperCase().split(" ");
                     
+                    if(parts[0].toUpperCase().equals("GUEST"))
+                    {
+                        parts[0] = "GUEST"+parts[1];
+                        parts[1] = parts[2];
+                    }
+                    
                     // actully add the players to the hashmap
                     if(parts[1].equals("BLACK"))
                         players.put(Team.BLACK, new Player(parts[0], Team.BLACK));

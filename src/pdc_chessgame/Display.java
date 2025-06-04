@@ -181,10 +181,16 @@ public final class Display {
     public String displayPlayerMove(Player player, Clock clock) 
     {
         System.out.println("----------------------------------------------------");
-        System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
+        if(player != null)
+            System.out.println(player.getTeam().toString()+"'S MOVE        USE (H) FOR HELP, OR (X) TO QUIT");
+        else
+            System.out.println("PLAYER'S MOVE               USE (H) FOR HELP, OR (X) TO QUIT");
         System.out.println("Remaining time: " + clock.toString());
         
-        return inputHandler.getStringInput(player.getName() + "> ");
+        if(player != null)
+            return inputHandler.getStringInput(player.getName() + "> ");
+        else
+            return inputHandler.getStringInput("PLAYER> ");
     }
    
     public int getClockTimeLimit() 

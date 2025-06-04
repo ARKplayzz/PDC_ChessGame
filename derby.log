@@ -1,0 +1,14 @@
+Thu Jun 05 02:04:08 NZST 2025 : Apache Derby Network Server - 10.14.2.0 - (1828579) started and ready to accept connections on port 1527
+----------------------------------------------------------------
+Thu Jun 05 02:04:09 NZST 2025:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0197-3b41-aa6e-0000169a5d6d 
+on database directory C:\Users\finla\OneDrive\Documents\NetBeansProjects\PDC_ChessGame\ChessDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@70dea4e 
+Loaded from file:/C:/Users/finla/OneDrive/Documents/NetBeansProjects/PDC_ChessGame/lib/db-derby-10.14.2.0-bin/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=22+36-2370
+user.dir=C:\Users\finla\OneDrive\Documents\NetBeansProjects\PDC_ChessGame\lib\db-derby-10.14.2.0-bin
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=C:\Users\finla\OneDrive\Documents\NetBeansProjects\PDC_ChessGame
+Database Class Loader started - derby.database.classpath=''
