@@ -15,11 +15,19 @@ import java.sql.*;
 // STILL DOING THE NETBEANS INTERGRATION
 
 public class DataBase 
-{ // store players, elo, games won, games lost
-    // possibly store games
-    // possibly add names of save files
-    // option: run whole game in a database
-    private final String URL =  "jdbc:derby:ChessDB; create=true";
+{
+    // Ensure Derby embedded driver is loaded
+    static {
+        try {
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("FATAL ERROR: Derby EmbeddedDriver not found. Please ensure Derby is on the classpath.");
+            ex.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    private final String URL =  "jdbc:derby:ChessDB;create=true";
     
     private Connection connection;
     private Statement statement;
@@ -29,7 +37,13 @@ public class DataBase
         try {
             this.connection = DriverManager.getConnection(this.URL);
         } catch (SQLException ex) {
-            System.out.println("FATAL ERROR: could not establish a connection to the database\n"+ex.getMessage());
+            if (ex.getSQLState() != null && ex.getSQLState().equals("XSDB6")) {
+                System.out.println("FATAL ERROR: Derby database is already open in another process or was not shut down cleanly.");
+                System.out.println("Please close all other Java programs using this database, and/or delete db.lck and dbex.lck in the ChessDB folder, then try again.");
+            } else {
+                System.out.println("FATAL ERROR: could not establish a connection to the database\n"+ex.getMessage());
+            }
+            ex.printStackTrace();
             System.exit(0);
         }
         
@@ -41,6 +55,9 @@ public class DataBase
         }
         
         this.createTables();
+
+        // Print tables, columns, and row counts
+        printDatabaseInfo();
     }
     
     // used for adding a new player to the database
@@ -56,7 +73,8 @@ public class DataBase
     // used for altering an existing player
     public boolean alterPlayer(String name, int elo, int gamesWon, int gamesLost)
     {// might have a mistake in it
-        return this.executeSQL("UPDATE PLAYERS SET name = '"+name+"', elo = "+elo+", games_won = '"+gamesWon+"', games_lost = '"+gamesLost+"' WHERE name = '"+name+"'");
+        // Don't update the primary key (name)
+        return this.executeSQLUpdate("UPDATE PLAYERS SET elo = "+elo+", games_won = "+gamesWon+", games_lost = "+gamesLost+" WHERE name = '"+name+"'");
     }
     
     public int getElo(String name)
@@ -64,45 +82,45 @@ public class DataBase
         ResultSet rs = null;
         try {
             rs = this.statement.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
+            if (rs.next()) {
+                return rs.getInt("elo");
+            }
         } catch (SQLException ex) {
             System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-        }
-        try {
-            return rs.getInt("elo");
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to grab value\n"+ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
         }
         return 0;
     }
-    
+
     public int getGamesWon(String name)
     {
         ResultSet rs = null;
         try {
             rs = this.statement.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
+            if (rs.next()) {
+                return rs.getInt("games_won");
+            }
         } catch (SQLException ex) {
             System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-        }
-        try {
-            return rs.getInt("games_won");
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to grab value\n"+ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
         }
         return 0;
     }
-    
+
     public int getGamesLost(String name)
     {
         ResultSet rs = null;
         try {
             rs = this.statement.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
+            if (rs.next()) {
+                return rs.getInt("games_lost");
+            }
         } catch (SQLException ex) {
             System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-        }
-        try {
-            return rs.getInt("games_lost");
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to grab value\n"+ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
         }
         return 0;
     }
@@ -114,10 +132,11 @@ public class DataBase
     }
     
     // insert a new game, NOTE I WILL BE ASSUMING player1 IS WHITE
-    public boolean insertGame(String saveName, String player1, String player2)
+    // Add filePath parameter for directory column
+    public boolean insertGame(String saveName, String player1, String player2, String filePath)
     {
         return this.executeSQL("INSERT INTO GAMES "+
-                "VALUES ('"+saveName+"','"+player1+"','"+player2+"')");
+                "VALUES ('"+saveName+"','"+player1+"','"+player2+"','"+filePath+"')");
     }
     
     // PUT A FUNCTIONS HERE THAT RETURNS A LIST OF ALL SAVED GAMES, maybe an arraylist
@@ -128,12 +147,7 @@ public class DataBase
         ResultSet rs = null;
         try {
             rs = this.statement.executeQuery("SELECT * FROM "+table+" WHERE "+col+" = '"+data+"'");
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-        }
-        
-        try {
-            while(rs.next()) // make this better
+            while(rs.next())
             {
                 if(rs.getString(col).equals(data))
                 {
@@ -141,7 +155,9 @@ public class DataBase
                 }
             }
         } catch (SQLException ex) {
-            System.out.println("ERROR: failed to finalise query\n"+ex.getMessage());
+            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
         }
         return false;
     }
@@ -149,9 +165,26 @@ public class DataBase
     private boolean executeSQL(String sql)
     {
         try {
-            return this.statement.execute(sql);
+            this.statement.executeUpdate(sql);
+            return true;
         } catch (SQLException ex) {
+            // Ignore "table already exists" error for CREATE TABLE
+            if (ex.getSQLState() != null && ex.getSQLState().equals("X0Y32")) {
+                return true;
+            }
             System.out.println("ERROR: failed to execute SQL command: "+sql+"\n"+ex.getMessage());
+            return false;
+        }
+    }
+
+    // For UPDATE/INSERT/DELETE
+    private boolean executeSQLUpdate(String sql)
+    {
+        try {
+            int result = this.statement.executeUpdate(sql);
+            return result > 0;
+        } catch (SQLException ex) {
+            System.out.println("ERROR: failed to execute SQL update: "+sql+"\n"+ex.getMessage());
             return false;
         }
     }
@@ -166,19 +199,64 @@ public class DataBase
         
         this.executeSQL(createPlayers);
         
+        // Drop GAMES table if it exists (for development only)
+        try {
+            this.statement.executeUpdate("DROP TABLE GAMES");
+        } catch (SQLException ex) {
+            // Ignore error if table does not exist
+        }
         String createGames = "CREATE TABLE GAMES" 
             + "  (name           VARCHAR(25) NOT NULL PRIMARY KEY,"
             + "   player_1       VARCHAR(25),"
-            + "   player_2       VARCHAR(25))";
+            + "   player_2       VARCHAR(25),"
+            + "   directory      VARCHAR(35))";
         
         this.executeSQL(createGames);
+    }
+    
+    // Add this method to print tables, columns, and row counts
+    private void printDatabaseInfo() {
+        try {
+            DatabaseMetaData meta = connection.getMetaData();
+            ResultSet tables = meta.getTables(null, null, "%", new String[] {"TABLE"});
+            System.out.println("=== Database Tables Overview ===");
+            while (tables.next()) {
+                String tableName = tables.getString("TABLE_NAME");
+                System.out.println("Table: " + tableName);
+
+                // Print columns
+                ResultSet columns = meta.getColumns(null, null, tableName, "%");
+                System.out.print("  Columns: ");
+                boolean first = true;
+                while (columns.next()) {
+                    if (!first) System.out.print(", ");
+                    System.out.print(columns.getString("COLUMN_NAME"));
+                    first = false;
+                }
+                columns.close();
+
+                // Print row count
+                int rowCount = 0;
+                try (Statement st = connection.createStatement();
+                     ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM " + tableName)) {
+                    if (rs.next()) rowCount = rs.getInt(1);
+                } catch (SQLException e) {
+                    // ignore
+                }
+                System.out.println("\n  Rows: " + rowCount);
+            }
+            tables.close();
+            System.out.println("=== End Database Tables Overview ===");
+        } catch (SQLException e) {
+            System.out.println("ERROR: Could not print database info: " + e.getMessage());
+        }
     }
     
     public void terminate()
     {
         try {
-            this.connection.close();
-            this.statement.close();
+            if (this.statement != null) this.statement.close();
+            if (this.connection != null) this.connection.close();
         } catch (SQLException ex) {
             System.out.println("An error occured while terminating the connection to the database\n"+ex.getMessage());
         }
