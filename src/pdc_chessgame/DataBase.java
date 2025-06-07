@@ -5,6 +5,8 @@
 package pdc_chessgame;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -139,7 +141,48 @@ public class Database
                 "VALUES ('"+saveName+"','"+player1+"','"+player2+"','"+filePath+"')");
     }
     
-    // PUT A FUNCTIONS HERE THAT RETURNS A LIST OF ALL SAVED GAMES, maybe an arraylist
+    // Helper class for save info
+    public static class SaveInfo {
+        public final String saveFile;
+        public final String player1;
+        public final String player2;
+        public final String date;
+        public SaveInfo(String saveFile, String player1, String player2, String date) {
+            this.saveFile = saveFile;
+            this.player1 = player1;
+            this.player2 = player2;
+            this.date = date;
+        }
+    }
+
+    // Returns all saves where username is player1 or player2
+    public List<SaveInfo> getSavesForUser(String username) {
+        List<SaveInfo> saves = new ArrayList<>();
+        // ...get connection...
+        try {
+            var conn = getConnection();
+            var stmt = conn.prepareStatement(
+                "SELECT savefile, player1, player2, date FROM saves WHERE player1 = ? OR player2 = ? ORDER BY date DESC"
+            );
+            stmt.setString(1, username);
+            stmt.setString(2, username);
+            var rs = stmt.executeQuery();
+            while (rs.next()) {
+                saves.add(new SaveInfo(
+                    rs.getString("savefile"),
+                    rs.getString("player1"),
+                    rs.getString("player2"),
+                    rs.getString("date")
+                ));
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (Exception e) {
+            // handle/log error
+        }
+        return saves;
+    }
     
     // need to test this some more
     private boolean checkExists(String table, String col, String data)

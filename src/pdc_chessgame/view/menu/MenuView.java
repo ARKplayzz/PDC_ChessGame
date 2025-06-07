@@ -41,6 +41,7 @@ public class MenuView extends JPanel {
     private NewGamePanel newGamePanel;
     private LeaderboardPanel leaderboardPanel;
     private RankPanel rankPanel;
+    private SavePanel savePanel;
     
     public MenuView(ChessGame controller) 
     {
@@ -103,6 +104,7 @@ public class MenuView extends JPanel {
     private void setupEventHandlers() 
     {
         this.menuStartButton.addActionListener(e -> showNewGamePanel());
+        this.menuSaveButton.addActionListener(e -> showSavePanel());
         this.menuRankButton.addActionListener(e -> showRankPanel());
         this.menuLeaderboardButton.addActionListener(e -> showLeaderboardPanel());
         this.menuExitButton.addActionListener(e -> System.exit(0));
@@ -165,6 +167,16 @@ public class MenuView extends JPanel {
             this.rankPanel = new RankPanel(this.database, this::returnToMainMenu);
         }
         switchToPanel(this.rankPanel);
+    }
+    
+    private void showSavePanel()
+    {
+        if (this.savePanel == null)
+        {
+            this.savePanel = new SavePanel(this.database, this.controller, this::returnToMainMenu);
+        }
+        this.savePanel.refreshSaves(); // always refresh on open
+        switchToPanel(this.savePanel);
     }
     
     private void switchToPanel(JPanel panel) 

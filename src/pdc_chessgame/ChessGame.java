@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package pdc_chessgame;
+import java.util.HashMap;
 import pdc_chessgame.view.ChessBoardView;
 import pdc_chessgame.view.ControllerManagerActions;
 import pdc_chessgame.view.ManagerView;
@@ -181,5 +182,31 @@ public class ChessGame implements ControllerManagerActions
     {
         this.game = null;
         this.boardView = null;
+    }
+
+    // loads a game from a save file (filename only no extension)
+    public boolean loadGameFromSaveFile(String saveFile) 
+    {
+        HashMap<Team, Player> players = new HashMap<>();
+        boolean loaded = store.LoadGameFromFile(saveFile, players);
+        if (!loaded) return false;
+        clear();
+        this.game = new GameManager(players);
+        this.boardView = new ChessBoardView(this);
+        this.display.addChessBoard(boardView);
+
+        this.managerView.setPlayersAndMenuView(
+            players.get(Team.WHITE).getName(),
+            players.get(Team.BLACK).getName(),
+            this.menuView
+        );
+
+        // Simulate moves to restore board state
+        store.simulateGame(this.game.board);
+
+        updateDisplay();
+        this.managerView.showGamePanel();
+        this.sideBar.displayManager();
+        return true;
     }
 }
