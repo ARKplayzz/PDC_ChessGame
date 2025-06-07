@@ -14,7 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import pdc_chessgame.Ranking;
+import pdc_chessgame.Database;
 
 /**
  *
@@ -22,16 +22,16 @@ import pdc_chessgame.Ranking;
  */
 public class LeaderboardPanel extends JPanel {
     
-    private final Ranking rankings;
+    private final Database database;
     private final Runnable backCallback;
     
     private final JTextArea leaderboardText;
     private final JScrollPane scrollPane;
     private final JButton backButton;
     
-    public LeaderboardPanel(Ranking rankings, Runnable backCallback) 
+    public LeaderboardPanel(Database database, Runnable backCallback) 
     {
-        this.rankings = rankings;
+        this.database = database;
         this.backCallback = backCallback;
         
         this.leaderboardText = new JTextArea();
@@ -63,9 +63,9 @@ public class LeaderboardPanel extends JPanel {
         this.leaderboardText.setEditable(false);
         this.leaderboardText.setBackground(new Color(30, 30, 30));
         this.leaderboardText.setForeground(new Color(153, 233, 255));
-        this.leaderboardText.setLineWrap(true);
-        this.leaderboardText.setWrapStyleWord(true);
-        this.leaderboardText.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        this.leaderboardText.setLineWrap(false); // Disable line wrap for table formatting
+        this.leaderboardText.setWrapStyleWord(false);
+        this.leaderboardText.setFont(new Font("Monospaced", Font.PLAIN, 16)); // Use monospaced font for alignment
     }
     
     private void setupScrollPane() 
@@ -137,21 +137,35 @@ public class LeaderboardPanel extends JPanel {
     
     public void refreshLeaderboard() 
     {
-        this.rankings.getLeaderboard();
-        
         StringBuilder content = new StringBuilder();
-        String leaderboardString = this.rankings.getLeaderboardString();
-        
-        if (leaderboardString == null || leaderboardString.trim().isEmpty()) 
-        {
-            content.append("The leaderboard appears to be empty.\n Play some games to see rankings here!");
-        } 
-        else 
-        {
-            content.append(leaderboardString);
-            content.append("\n\nPlay more games to improve your ranking!");
+        try {
+            java.sql.ResultSet rs = database.getConnection().createStatement().executeQuery(
+                "SELECT name, elo, games_won, games_lost FROM PLAYERS ORDER BY elo DESC"
+            );
+            int rank = 1;
+            boolean hasRows = false;
+            // Table header
+            content.append(String.format("%-5s %-16s %-6s %-6s %-6s\n", "Rank", "Username", "Elo", "Wins", "Loss"));
+            content.append("---------------------------------------------------\n");
+            while (rs.next()) {
+                hasRows = true;
+                String name = rs.getString("name");
+                int elo = rs.getInt("elo");
+                int won = rs.getInt("games_won");
+                int lost = rs.getInt("games_lost");
+                // Truncate/pad username for consistent width
+                String displayName = name.length() > 16 ? name.substring(0, 16) : name;
+                content.append(String.format("%-5d %-16s %-6d %-6d %-6d\n", rank++, displayName, elo, won, lost));
+            }
+            rs.close();
+            if (!hasRows) {
+                content.append("The leaderboard appears to be empty.\nPlay some games to see rankings here!");
+            } else {
+                content.append("\nPlay more games to improve your ranking!");
+            }
+        } catch (Exception e) {
+            content.append("Error loading leaderboard: ").append(e.getMessage());
         }
-        
         this.leaderboardText.setText(content.toString());
         this.leaderboardText.setCaretPosition(0); // Scroll to top
     }

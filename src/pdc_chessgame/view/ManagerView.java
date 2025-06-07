@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import pdc_chessgame.view.menu.MenuView;
 
 /**
  *
@@ -56,6 +57,15 @@ public class ManagerView extends JPanel
     private CardLayout cardLayout;
     private JPanel mainPanel; // holds both panels
 
+    // Store player names for display in game over panel
+    private String playerWhiteName = "White";
+    private String playerBlackName = "Black";
+    private MenuView menuViewRef; // reference to MenuView for database access
+
+    private JLabel teamLabel; 
+
+    private ActionListener clockActionPerformed;
+    
     public ManagerView(ControllerManagerActions controller)
     {
         setBackground(new Color(30, 30, 30));
@@ -65,9 +75,14 @@ public class ManagerView extends JPanel
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // --- Game Panel ---
         gamePanel = new JPanel(new BorderLayout());
         gamePanel.setBackground(new Color(30, 30, 30));
+
+        teamLabel = new JLabel("WHITE");
+        teamLabel.setForeground(new Color(255, 255, 255)); // white for WHITE by default
+        teamLabel.setOpaque(false);
+        teamLabel.setFont(new Font("Helvetica", Font.BOLD, 20)); // font size 20
+        teamLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         currentPlayerLabel = new JLabel("White's Move");
         currentPlayerLabel.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30), 4));
@@ -89,7 +104,7 @@ public class ManagerView extends JPanel
         setupButton(resignButton);
         setupButton(saveQuitButton);
 
-        // Add help button action: append detailed help message to moveHistoryArea
+        // append help message to moveHistoryArea
         helpButton.addActionListener(e -> {
             moveHistoryArea.append(
                 "\nChess Help:\n" +
@@ -104,6 +119,26 @@ public class ManagerView extends JPanel
         undoButton.addActionListener(e -> controller.currentGameUndo());
         resignButton.addActionListener(e -> controller.currentGameResignation());
         saveQuitButton.addActionListener(e -> controller.currentGameSaveAndQuit());
+        
+
+        // ActionListener for the clock (this will end game using ChessGame)
+        clockActionPerformed = new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                if (currentTime > 0) 
+                {
+                    currentTime--;
+                    updateClockLabel();
+                } 
+                else 
+                {
+                    stopClock();
+                    controller.currentGameClockEnd();
+                }
+            }
+        };
 
         moveHistoryArea = new JTextArea();
         moveHistoryArea.setEditable(false);
@@ -118,9 +153,10 @@ public class ManagerView extends JPanel
         scrollPane.setBorder(null);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        rowPanelGrid = new JPanel(new GridLayout(3, 1, 1, 1));
+        rowPanelGrid = new JPanel(new GridLayout(4, 1, 1, 1)); // was 3, now 4 rows
         rowPanelGrid.setOpaque(false);
         rowPanelGrid.setBackground(new Color(30, 30, 30));
+        rowPanelGrid.add(teamLabel); // Add team label at the top
         rowPanelGrid.add(currentPlayerLabel);
         rowPanelGrid.add(currentPlayerClockLabel);
         rowPanelGrid.add(helpButton);
@@ -135,11 +171,9 @@ public class ManagerView extends JPanel
         gamePanel.add(scrollPane, BorderLayout.CENTER);
         gamePanel.add(rowButtonGrid, BorderLayout.SOUTH);
 
-        // --- Game Over Panel ---
         gameOverPanel = new JPanel(new BorderLayout());
         gameOverPanel.setBackground(new Color(30, 30, 30));
 
-        // Top: Title above help button (vertical grid)
         JPanel gameOverTopPanel = new JPanel(new GridLayout(2, 1, 1, 1));
         gameOverTopPanel.setOpaque(false);
 
@@ -151,7 +185,7 @@ public class ManagerView extends JPanel
 
         JButton helpButtonGameOver = new JButton("Help");
         setupButton(helpButtonGameOver);
-        // Add help button action: append detailed help message to gameOverArea
+        // Add help message to gameOverArea
         helpButtonGameOver.addActionListener(e -> {
             gameOverArea.append(
                 "\nChess Help:\n" +
@@ -166,7 +200,6 @@ public class ManagerView extends JPanel
         gameOverTopPanel.add(gameOverLabel);
         gameOverTopPanel.add(helpButtonGameOver);
 
-        // Bottom: Exit button centered (single cell grid)
         JPanel exitPanel = new JPanel(new GridLayout(1, 1, 1, 1));
         exitPanel.setOpaque(false);
         exitButton = new JButton("Exit");
@@ -198,7 +231,6 @@ public class ManagerView extends JPanel
         gameOverPanel.add(gameOverScroll, BorderLayout.CENTER);
         gameOverPanel.add(exitPanel, BorderLayout.SOUTH);
 
-        // --- Add panels to mainPanel ---
         mainPanel.add(gamePanel, "GAME");
         mainPanel.add(gameOverPanel, "GAME_OVER");
 
@@ -232,62 +264,47 @@ public class ManagerView extends JPanel
         showGamePanel();
     }
 
-    // --- Panel switching methods ---
     public void showGamePanel() 
     {
         cardLayout.show(mainPanel, "GAME");
     }
 
-    public void showGameOverPanel(String winner) {
-        String winnerText = (winner != null && winner.equalsIgnoreCase("BLACK")) ? "Black Wins!" : "White Wins!";
+    public void showGameOverPanel(String winnerTeam, String whiteName, int whiteElo, String blackName, int blackElo) 
+    {
+        String winnerText;
+        if (winnerTeam != null && winnerTeam.equalsIgnoreCase("BLACK")) 
+        {
+            winnerText = blackName + " wins!";
+        } 
+        else 
+        {
+            winnerText = whiteName + " wins!";
+        }
         gameOverLabel.setText(winnerText);
-
-        // Example: get player names and their current Elo (replace with your actual player name variables)
-        String player1 = "Player1";
-        String player2 = "Player2";
-        int player1Elo = 1200; // replace with actual Elo lookup
-        int player2Elo = 1200; // replace with actual Elo lookup
 
         gameOverArea.setText(
             moveHistoryArea.getText() + "\n" +
-            winnerText + ", Thanks for playing!\n" +
-            player1 + " Elo = " + player1Elo + "\n" +
-            player2 + " Elo = " + player2Elo
+            winnerText + " Thanks for playing!\n" +
+            whiteName + " Elo = " + whiteElo + "\n" +
+            blackName + " Elo = " + blackElo
         );
 
         gameOverArea.setCaretPosition(gameOverArea.getDocument().getLength());
         cardLayout.show(mainPanel, "GAME_OVER");
     }
 
-    // --- Existing methods for updating UI ---
     public void startClock(int timeInSeconds, String currentTeam) 
     {
         stopClock();
         this.currentTime = timeInSeconds;
         updateClockLabel();
-        countdownTimer = new Timer(1000, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (currentTime > 0) {
-                    currentTime--;
-                    updateClockLabel();
-                } else {
-                    stopClock();
-                    // Show game over panel when clock runs out
-                    // The losing team is the current team, so winner is the opposite
-                    String winner = currentTeam.equalsIgnoreCase("BLACK") ? "WHITE" : "BLACK";
-                    showGameOverPanel(winner);
-                    // Also show overlay on board
-                    if (controller instanceof pdc_chessgame.ChessGame) {
-                        ((pdc_chessgame.ChessGame)controller).showGameOverOverlayForTeam(winner);
-                    }
-                }
-            }
-        });
+        countdownTimer = new Timer(1000, clockActionPerformed); // Use the field
         countdownTimer.start();
     }
     public void stopClock() 
     {
-        if (countdownTimer != null) {
+        if (countdownTimer != null) 
+        {
             countdownTimer.stop();
             countdownTimer = null;
         }
@@ -296,7 +313,7 @@ public class ManagerView extends JPanel
     {
         this.moveHistoryArea.setText(history);
         this.moveHistoryArea.setCaretPosition(moveHistoryArea.getDocument().getLength());
-        // Enable undo only if there is at least one move to undo
+        //Enable undo only if there is at least one move to undo
         setUndoEnabled(history != null && !history.trim().isEmpty());
     }
 
@@ -304,12 +321,25 @@ public class ManagerView extends JPanel
     {
         this.undoButton.setEnabled(enabled);
     }
+    
     public void updateCurrentTeam(String teamName) 
     {
-        if(teamName.equals("BLACK")){teamName = "Black";}
-        if(teamName.equals("WHITE")){teamName = "White";}
-        currentPlayerLabel.setText(teamName + "'s Turn");
-        // No longer store current team internally
+        String displayName = teamName;
+        if(teamName.equals("BLACK")){displayName = "Black";}
+        if(teamName.equals("WHITE")){displayName = "White";}
+
+        String playerName = displayName.equals("White") ? playerWhiteName : playerBlackName;
+        currentPlayerLabel.setText(playerName + "'s Turn");
+        teamLabel.setText(teamName.toUpperCase());
+        
+        if (teamName.equalsIgnoreCase("BLACK")) 
+        {
+            teamLabel.setForeground(new Color(160, 160, 160)); 
+        } 
+        else 
+        {
+            teamLabel.setForeground(new Color(255, 255, 255)); 
+        }
     }
     public void updateClock(int time, String currentTeam)
     {
@@ -348,6 +378,13 @@ public class ManagerView extends JPanel
         int mins = totalSeconds / 60;
         int secs = totalSeconds % 60;
         return String.format("%02d:%02d", mins, secs);
+    }
+
+    // Add a setter to provide player names and MenuView reference
+    public void setPlayersAndMenuView(String white, String black, MenuView menuView) {
+        this.playerWhiteName = white;
+        this.playerBlackName = black;
+        this.menuViewRef = menuView;
     }
 }
 

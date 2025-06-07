@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import pdc_chessgame.ChessGame;
-import pdc_chessgame.Ranking;
+import pdc_chessgame.Database;
         
 /**
  *
@@ -25,11 +25,10 @@ import pdc_chessgame.Ranking;
  */
 public class NewGamePanel extends JPanel {
     
-    private final Ranking rankings;
+    private final Database database;
     private final ChessGame controller;
     private final Runnable backCallback;
     
-    // UI Components
     private final JTextField timeField;
     private final JTextField username1Field;
     private final JTextField username2Field;
@@ -42,9 +41,9 @@ public class NewGamePanel extends JPanel {
     private final JButton startButton;
     private final JButton backButton;
     
-    public NewGamePanel(Ranking rankings, ChessGame controller, Runnable backCallback) 
+    public NewGamePanel(Database database, ChessGame controller, Runnable backCallback) 
     {
-        this.rankings = rankings;
+        this.database = database;
         this.controller = controller;
         this.backCallback = backCallback;
         
@@ -88,8 +87,8 @@ public class NewGamePanel extends JPanel {
         setupStatusLabels();
         
         //player labels
-        JLabel playerOneLabel = createPlayerLabel("Player 1: (White)");
-        JLabel playerTwoLabel = createPlayerLabel("Player 2: (Black)");
+        JLabel playerOneLabel = createPlayerLabel("Player 1:");
+        JLabel playerTwoLabel = createPlayerLabel("Player 2:");
         JLabel timeLabel = createPlayerLabel("Time per Player:");
         
         setupButtons();
@@ -266,10 +265,10 @@ public class NewGamePanel extends JPanel {
             statusLabel.setText("Playing as a Guest");
             statusLabel2.setText("(Game Scores will not be Saved)");
         } 
-        else if (rankings.hasPlayed(username)) 
+        else if (database.playerExists(username)) 
         {
             statusLabel.setText("Welcome back, " + username + "!");
-            statusLabel2.setText("You currently have " + rankings.getElo(username) + " Elo");
+            statusLabel2.setText("You currently have " + database.getElo(username) + " Elo");
         } 
         else 
         {
@@ -380,6 +379,20 @@ public class NewGamePanel extends JPanel {
         catch (NumberFormatException e) 
         {
             showWarning("Please enter a valid number for time.");
+            return;
+        }
+
+        // Ensure users exist in database (except guest)
+        if (!user1.equalsIgnoreCase("guest") && !database.playerExists(user1)) {
+            database.addPlayer(user1, Database.START_ELO);
+        }
+        if (!user2.equalsIgnoreCase("guest") && !database.playerExists(user2)) {
+            database.addPlayer(user2, Database.START_ELO);
+        }
+
+        // Defensive: check controller is not null before calling createGame
+        if (this.controller == null) {
+            showWarning("Internal error: ChessGame controller is not set.");
             return;
         }
 

@@ -14,7 +14,7 @@ import java.sql.*;
 // ONLY WORKS UNDER CERTAIN CIRCUMSTANCES RN 
 // STILL DOING THE NETBEANS INTERGRATION
 
-public class DataBase 
+public class Database 
 {
     // Ensure Derby embedded driver is loaded
     static {
@@ -32,7 +32,7 @@ public class DataBase
     private Connection connection;
     private Statement statement;
     
-    public DataBase()
+    public Database()
     {
         try {
             this.connection = DriverManager.getConnection(this.URL);
@@ -260,5 +260,64 @@ public class DataBase
         } catch (SQLException ex) {
             System.out.println("An error occured while terminating the connection to the database\n"+ex.getMessage());
         }
+    }
+
+    public Connection getConnection() {
+        return this.connection;
+    }
+
+    // Use 1 as the starting Elo minimum
+    public static final int START_ELO = 1;
+
+    // Returns the new Elo values for winner and loser after a game, but does not update the DB
+    public int[] calculateEloChange(String winner, String loser) {
+        if (winner == null || loser == null) return new int[]{0, 0};
+        if (winner.equalsIgnoreCase("guest") || loser.equalsIgnoreCase("guest")) return new int[]{0, 0};
+        if (!playerExists(winner) || !playerExists(loser)) return new int[]{0, 0};
+
+        int winnerElo = getElo(winner);
+        int loserElo = getElo(loser);
+
+        // Use the same formulas as Ranking.java
+        double expectedWinner = 1.0 / (1 + Math.pow(10, (winnerElo - loserElo) / 400.0));
+        double expectedLoser = 1.0 / (1 + Math.pow(10, (loserElo - winnerElo) / 400.0));
+
+        int newWinnerElo = (int)Math.round(winnerElo + 25 * (1 - expectedWinner));
+        int newLoserElo = (int)Math.round(loserElo + 25 * (0 - expectedLoser));
+
+        // Prevent Elo from dropping below a minimum (e.g., 1)
+        newWinnerElo = Math.max(START_ELO, newWinnerElo);
+        newLoserElo = Math.max(START_ELO, newLoserElo);
+
+        return new int[]{newWinnerElo, newLoserElo};
+    }
+
+
+    public void updateEloAfterGame(String winner, String loser) 
+    {
+        if (winner == null || loser == null) return;
+        if (winner.equalsIgnoreCase("guest") || loser.equalsIgnoreCase("guest")) return;
+        if (!playerExists(winner) || !playerExists(loser)) return;
+
+        int winnerEloBefore = getElo(winner);
+        int loserEloBefore = getElo(loser);
+
+        int[] newElos = calculateEloChange(winner, loser);
+        int newWinnerElo = newElos[0];
+        int newLoserElo = newElos[1];
+
+        // Get current stats
+        int winnerGamesWon = getGamesWon(winner);
+        int winnerGamesLost = getGamesLost(winner);
+        int loserGamesWon = getGamesWon(loser);
+        int loserGamesLost = getGamesLost(loser);
+
+        // Increment stats
+        winnerGamesWon += 1;
+        loserGamesLost += 1;
+
+        boolean winnerUpdated = alterPlayer(winner, newWinnerElo, winnerGamesWon, winnerGamesLost);
+        boolean loserUpdated = alterPlayer(loser, newLoserElo, loserGamesWon, loserGamesLost);
+
     }
 }

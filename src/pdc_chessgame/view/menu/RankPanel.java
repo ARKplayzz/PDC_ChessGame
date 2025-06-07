@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import pdc_chessgame.Ranking;
+import pdc_chessgame.Database;
 
 /**
  *
@@ -22,7 +22,7 @@ import pdc_chessgame.Ranking;
  */
 public class RankPanel extends JPanel {
     
-    private final Ranking rankings;
+    private final Database database;
     private final Runnable backCallback;
 
     private final JTextField usernameField;
@@ -31,9 +31,9 @@ public class RankPanel extends JPanel {
     private final JLabel instructionLabel;
     private final JButton backButton;
     
-    public RankPanel(Ranking rankings, Runnable backCallback) 
+    public RankPanel(Database database, Runnable backCallback) 
     {
-        this.rankings = rankings;
+        this.database = database;
         this.backCallback = backCallback;
         
         this.usernameField = new JTextField();
@@ -119,7 +119,7 @@ public class RankPanel extends JPanel {
         
         //Elo label
         this.eloLabel.setForeground(new Color(255, 255, 255));
-        this.eloLabel.setFont(new Font("Helvetica", Font.BOLD, 100));
+        this.eloLabel.setFont(new Font("Helvetica", Font.BOLD, 98)); // was 100, now 98 (2px lower)
         this.eloLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         //user input
@@ -192,7 +192,7 @@ public class RankPanel extends JPanel {
         } 
         else if (username.contains(" ")) 
         {
-            this.statusLabel.setText("Invalid Username");
+            this.statusLabel.setText("Invalid Username (no spaces)");
             this.eloLabel.setText("?");
         } 
         else if (username.length() < 3) 
@@ -210,11 +210,11 @@ public class RankPanel extends JPanel {
             this.statusLabel.setText("Guest's don't save Elo");
             this.eloLabel.setText("?");
         } 
-        else if (this.rankings.hasPlayed(username)) 
+        else if (this.database.playerExists(username)) 
         {
-            this.statusLabel.setText("User found");
-            int elo = this.rankings.getElo(username);
-            this.eloLabel.setText(""+elo);
+            int elo = this.database.getElo(username);
+            this.statusLabel.setText("User found: " + username);
+            this.eloLabel.setText(String.valueOf(elo));
         } 
         else 
         {

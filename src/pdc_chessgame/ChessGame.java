@@ -14,94 +14,172 @@ import pdc_chessgame.view.menu.MenuView;
  *
  * @author Andrew & Finlay
  */
-public class ChessGame implements ControllerManagerActions {
-    
-    private GameManager game;
-    private SaveManager store = new SaveManager();
-    
-    
-    private ChessBoardView boardView;//could use interfaces instead of the whole chessgame
-    private MenuView menuView = new MenuView(this);
-    private ManagerView managerView = new ManagerView(this);
-    private SideBar sideBar = new SideBar(menuView, managerView);
-    
-    private MasterFrame display = new MasterFrame(sideBar);
+public class ChessGame implements ControllerManagerActions 
+{
+    GameManager game;
+    SaveManager store = new SaveManager();
+
+    // views/GUI inits
+    private ChessBoardView boardView;
+    private final MenuView menuView;
+    private final ManagerView managerView;
+    private final SideBar sideBar;
+    private final MasterFrame display;
 
     public ChessGame()
     {
-        System.out.println("yoinker sploinker");
-    }
-    
+        System.out.println("=== Initializing Chess Database... ===");
+        this.menuView = new MenuView(this);
+        this.managerView = new ManagerView(this);
+        this.sideBar = new SideBar(this.menuView, this.managerView);
+        this.display = new MasterFrame(this.sideBar);
+        System.out.println("=== Chess Database initialized. ===");
+    } 
+
+    //Starts the application and shows the menu
     public void start()
     {
         this.display.visible(true);
         this.sideBar.displayMenu();
     }
-    
+
+    // Creates a new game with given player names and time
     public void createGame(String p1, String p2, int time)
     {
+        clear();
         this.game = new GameManager(p1, p2, time);
-
         this.boardView = new ChessBoardView(this);
         this.display.addChessBoard(boardView);
-        
-        this.game.start();
-        updateGraphics();
-        this.managerView.showGamePanel();
 
+        this.managerView.setPlayersAndMenuView(p1, p2, this.menuView);
+
+        this.game.start();
+        updateDisplay();
+        this.managerView.showGamePanel();
         this.sideBar.displayManager();
     }
-    
+
+    // undo the last move in the current game
     public void currentGameUndo()
     {
         this.game.undoMove();
         this.boardView.updateBoard();
-        updateGraphics();
+        updateDisplay();
     }
-    
+
+    // Handles resignation
     public void currentGameResignation()
     {
-        this.managerView.showGameOverPanel(game.getBoardCurrentTeam().teamName());
         this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
+        handleGameOver();
     }
     
+    // Handles running out of time loss
+    @Override
+    public void currentGameClockEnd()
+    {
+        this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
+        handleGameOver();
+    }
+
+    // Saves the current game and returns to menu
     public void currentGameSaveAndQuit()
     {
-
         this.store.SaveGameToUser(game.getPlayers(), game.getBoardHistory());
         this.endGame();
-       
     }
-    
-    private void endGame() //(infinity war was better)
+
+    // ends the current game and returns to menu
+    private void endGame()
     {
         this.display.addChessBoard(null);
         this.sideBar.displayMenu();
+        clear();
     }
-    
+
+    //Passes a move to the game, updates board, and calls checkmate if needed
     public MoveResult passMove(Move move) 
     {
         MoveResult result = game.makeMove(move);
-        
         this.boardView.updateBoard();
+        updateDisplay();
 
-        updateGraphics();
         if (result == MoveResult.CHECKMATE)
         {
-            this.managerView.showGameOverPanel(game.getBoardCurrentTeam().teamName());
+            handleGameOver();
         }
         return result;
     }
-    
-    public ChessBoard getBoard()//must be removed later
-    {
-        return game.board;
-    }
-    
-    private void updateGraphics()
+
+    //Updates move history, current team, and clock in the manager view
+    private void updateDisplay()
     {
         this.managerView.updateMoveHistory(this.game.getBoardHistoryString());
-        this.managerView.updateCurrentTeam(game.getBoardCurrentTeam().toString());
-        this.managerView.updateClock(this.game.getCurrentplayerTime(), game.getBoardCurrentTeam().toString());
+        this.managerView.updateCurrentTeam(this.game.getBoardCurrentTeam().toString());
+        this.managerView.updateClock(this.game.getCurrentplayerTime(), this.game.getBoardCurrentTeam().toString());
+    }
+
+    // handles Elo, database, and game over panel logic for both resignation and checkmate
+    private void handleGameOver()
+    {
+        String loserTeam = this.game.getBoardCurrentTeam().toString();
+        String winner, loser, winnerTeam;
+        if (loserTeam.equalsIgnoreCase("WHITE")) 
+        {
+            loser = this.game.getPlayers().get(Team.WHITE).getName();
+            winner = this.game.getPlayers().get(Team.BLACK).getName();
+            winnerTeam = "BLACK";
+        } 
+        else 
+        {
+            loser = this.game.getPlayers().get(Team.BLACK).getName();
+            winner = this.game.getPlayers().get(Team.WHITE).getName();
+            winnerTeam = "WHITE";
+        }
+
+        Database db = this.menuView.getDatabase();
+
+        // ensure both winner and loser exist in the database (add if missing, not guest)
+        if (!winner.equalsIgnoreCase("guest") && !db.playerExists(winner)) 
+        {
+            db.addPlayer(winner, Database.START_ELO);
+        }
+        if (!loser.equalsIgnoreCase("guest") && !db.playerExists(loser)) 
+        {
+            db.addPlayer(loser, Database.START_ELO);
+        }
+
+        // update Elo if both are not guest
+        if (!winner.equalsIgnoreCase("guest") && !loser.equalsIgnoreCase("guest")) 
+        {
+            db.updateEloAfterGame(winner, loser);
+        }
+
+        managerView.setPlayersAndMenuView(
+            this.game.getPlayers().get(Team.WHITE).getName(),
+            this.game.getPlayers().get(Team.BLACK).getName(),
+            this.menuView
+        );
+        
+        int whiteElo = db.getElo(game.getPlayers().get(Team.WHITE).getName());
+        int blackElo = db.getElo(game.getPlayers().get(Team.BLACK).getName());
+        
+        this.managerView.showGameOverPanel(winnerTeam, 
+            this.game.getPlayers().get(Team.WHITE).getName(), whiteElo,
+            this.game.getPlayers().get(Team.BLACK).getName(), blackElo);
+    }
+
+    public ChessBoard getBoard() 
+    {
+        if (this.game != null) {
+            return this.game.board;
+        }
+        return null;
+    }
+
+    private void clear()
+    {
+        this.game = null;
+        this.boardView = null;
     }
 }

@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import pdc_chessgame.ChessGame;
-import pdc_chessgame.Ranking;
+import pdc_chessgame.Database;
 
 
 /**
@@ -25,7 +25,7 @@ import pdc_chessgame.Ranking;
 public class MenuView extends JPanel {
     
     private final ChessGame controller;
-    private final Ranking rankings;
+    private final Database database;
     
     // Main menu components
     private final JLabel chessGameTitle;
@@ -37,7 +37,7 @@ public class MenuView extends JPanel {
     private final JButton menuLeaderboardButton;
     private final JButton menuExitButton;
     
-    // Sub-panels
+    // sub-panels
     private NewGamePanel newGamePanel;
     private LeaderboardPanel leaderboardPanel;
     private RankPanel rankPanel;
@@ -45,7 +45,7 @@ public class MenuView extends JPanel {
     public MenuView(ChessGame controller) 
     {
         this.controller = controller;
-        this.rankings = new Ranking();
+        this.database = new Database();
         
         //main menu panels
         this.chessGameTitle = new JLabel("Welcome to Chess");
@@ -142,7 +142,8 @@ public class MenuView extends JPanel {
     {
         if (this.newGamePanel == null) 
         {
-            this.newGamePanel = new NewGamePanel(this.rankings, this.controller, this::returnToMainMenu);
+            // Always pass the controller reference, never null
+            this.newGamePanel = new NewGamePanel(this.database, this.controller, this::returnToMainMenu);
         }
         switchToPanel(this.newGamePanel);
     }
@@ -151,7 +152,7 @@ public class MenuView extends JPanel {
     {
         if (this.leaderboardPanel == null) 
         {
-            this.leaderboardPanel = new LeaderboardPanel(this.rankings, this::returnToMainMenu);
+            this.leaderboardPanel = new LeaderboardPanel(this.database, this::returnToMainMenu);
         }
         this.leaderboardPanel.refreshLeaderboard();
         switchToPanel(this.leaderboardPanel);
@@ -161,7 +162,7 @@ public class MenuView extends JPanel {
     {
         if (this.rankPanel == null) 
         {
-            this.rankPanel = new RankPanel(this.rankings, this::returnToMainMenu);
+            this.rankPanel = new RankPanel(this.database, this::returnToMainMenu);
         }
         switchToPanel(this.rankPanel);
     }
@@ -181,5 +182,9 @@ public class MenuView extends JPanel {
         this.add(this.mainMenuPanel, BorderLayout.CENTER);
         this.revalidate();
         this.repaint();
+    }
+
+    public Database getDatabase() {
+        return this.database;
     }
 }
