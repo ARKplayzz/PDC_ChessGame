@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Sun Jun 08 19:25:19 NZST 2025:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0197-4e6d-f7b9-0000075851e0 
-on database directory C:\Users\Andrew\Documents\GitHub\PDC_ChessGame\ChessDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3f99bd52 
-Loaded from file:/C:/Users/Andrew/Documents/GitHub/PDC_ChessGame/lib/derby.jar
+Sun Jun 08 20:44:51 NZST 2025:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0197-4eb6-ca61-00001f3836e0 
+on database directory C:\Users\ARKen\Documents\Github\PDC_ChessGame\ChessDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3f99bd52 
+Loaded from file:/C:/Users/ARKen/Documents/Github/PDC_ChessGame/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=22.0.2+9-70
-user.dir=C:\Users\Andrew\Documents\GitHub\PDC_ChessGame
+user.dir=C:\Users\ARKen\Documents\Github\PDC_ChessGame
 os.name=Windows 11
 os.arch=amd64
 os.version=10.0
