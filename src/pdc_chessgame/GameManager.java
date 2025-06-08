@@ -17,10 +17,8 @@ public class GameManager
     // Do not make the board final please
     public ChessBoard board;
     // hashmap of the players and teams
-    private final HashMap<Team, Player> players;
+    private HashMap<Team, Player> players;
     
-    // the savemanager and clock
-    private SaveManager savemanager;
     private Clock clock;
         
     private final InputHandler inputHandler = new InputHandler(null);
@@ -28,20 +26,26 @@ public class GameManager
     public GameManager(String p1, String p2, int time) 
     {
         this.board = new ChessBoard(8, 8);
-        this.savemanager = new SaveManager();
         this.clock = new Clock(time, 2);
-        this.clock.start();
         
         this.players = new HashMap<>(); // player count flexabuility for future addition
         this.players.put(Team.WHITE, new Player(p1, Team.WHITE));
         this.players.put(Team.BLACK, new Player(p2, Team.BLACK));
     }
     
+    // Add this constructor for loading from save
+    public GameManager(HashMap<Team, Player> players) 
+    {
+        this.players = players;
+        this.board = new ChessBoard(8, 8);
+
+        // Initialize clock with a default time (you might want to save/load the clock state too)
+        this.clock = new Clock(20, 2);
+    }
+    
     public void start()
     {
-        // establish new Board
-        this.board = new ChessBoard(8, 8);
-        this.board.getHistory().deleteMoveHistory();
+        this.clock.start();
     }
     
     public MoveResult makeMove(Move move) 

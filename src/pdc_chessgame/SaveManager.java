@@ -94,11 +94,27 @@ public class SaveManager
         //exit & save
         pw.close();
         
-        /*
-        NEED TO ADD TO DATABASE UNDER BOTH PLAYERS USERNAMES
-        
-        SO THAT WE CAN LOAD THE FILE FROM A USERNAME
-        */
+        // Add to database under both players' usernames
+        try {
+            // Only add to DB if both players are not guests
+            String player1 = players.get(Team.WHITE) != null ? players.get(Team.WHITE).getName() : null;
+            String player2 = players.get(Team.BLACK) != null ? players.get(Team.BLACK).getName() : null;
+            if (player1 != null && player2 != null) {
+                if (!player1.equalsIgnoreCase("guest") || !player2.equalsIgnoreCase("guest")) {
+                    // Save name for DB is the filename without extension
+                    String saveName = saveFile.replace(".sav", "");
+                    // File path is just the filename here (could be a directory if needed)
+                    Database db = new Database();
+                    // Only insert if not already present
+                    if (!db.checkExists("GAMES", "name", saveName)) {
+                        db.insertGame(saveName, player1, player2, saveFile);
+                    }
+                    db.terminate();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Warning: Could not add save to database: " + e.getMessage());
+        }
     }
     
     //legacy game saver
@@ -147,19 +163,22 @@ public class SaveManager
     
     public boolean LoadGameFromFile(String file, HashMap<Team, Player> players)
     {
-        // check for a users file extension
-        if(file.contains("."))
-        {
-            System.out.println("Please do not enter anything that could be\ninterpreted a a file extension");
-            return false;
-        }
+        // Remove this check, as saves from DB will have .sav extension
+        // if(file.contains("."))
+        // {
+        //     System.out.println("Please do not enter anything that could be\ninterpreted a a file extension");
+        //     return false;
+        // }
         if(file.contains(" "))
         {
             System.out.println("Please no whitespace");
             return false;
         }
         FileReader f = null;
-        file = file.concat(".sav");
+        // Only add .sav if not already present
+        if (!file.endsWith(".sav")) {
+            file = file.concat(".sav");
+        }
         // create the buffered reader
         try {
             f = new FileReader(file);
@@ -173,6 +192,8 @@ public class SaveManager
         String currentLine = null;
         // clear any existing players from previous games
         players.clear();
+        // clear loadedGame to avoid accumulating moves from previous loads
+        this.loadedGame.clear();
         // actully load the history while checking for errors
         try 
         {
@@ -182,21 +203,37 @@ public class SaveManager
                 if(currentLine.startsWith("$"))
                 { // if the current line contains player info
                     currentLine = currentLine.replace("$", "");
-                    String[] parts = currentLine.trim().toUpperCase().split(" ");
+                    String[] parts = currentLine.trim().split(" ");
                     
-                    if(parts[0].toUpperCase().equals("GUEST"))
+                    // Defensive: skip malformed lines
+                    if (parts.length < 2) {
+                        System.out.println("Malformed player line in save file: " + currentLine);
+                        continue;
+                    }
+
+                    // Accept both "guest WHITE" and "GUEST WHITE"
+                    if(parts[0].equalsIgnoreCase("guest"))
                     {
-                        parts[0] = "GUEST"+parts[1];
-                        parts[1] = parts[2];
+                        // Defensive: check length before accessing
+                        if (parts.length < 2) {
+                            System.out.println("Malformed guest player line in save file: " + currentLine);
+                            continue;
+                        }
+                        parts[0] = "GUEST";
+                        // parts[1] is already the team
+                    }
+                    // Accept "GUESTWHITE BLACK" as well (legacy)
+                    if(parts[0].toUpperCase().startsWith("GUEST") && parts.length == 2) {
+                        // e.g. "GUESTWHITE BLACK"
+                        // leave as is
                     }
                     
-                    // actully add the players to the hashmap
+                    // Only add valid teams
                     if(parts[1].equals("BLACK"))
                         players.put(Team.BLACK, new Player(parts[0], Team.BLACK));
                     else if(parts[1].equals("WHITE"))
                         players.put(Team.WHITE, new Player(parts[0], Team.WHITE));
-                    
-                    
+                    // else skip invalid team
                 }
                 else
                 { // if the current line contains move info
@@ -214,6 +251,11 @@ public class SaveManager
         } catch (IOException ex) {
            Logger.getLogger(Ranking.class.getName()).log(Level.SEVERE, null, ex);
            return false;
+        }
+        // Defensive: require both players to be present
+        if (!players.containsKey(Team.WHITE) || !players.containsKey(Team.BLACK)) {
+            System.out.println("Save file missing player(s), cannot load.");
+            return false;
         }
         return true;
     }

@@ -75,6 +75,13 @@ public class ChessGame implements ControllerManagerActions
         handleGameOver();
     }
     
+    // Handles game loss
+    @Override
+    public void currentGameExit()
+    {
+        endGame();
+    }
+    
     // Handles running out of time loss
     @Override
     public void currentGameClockEnd()
@@ -86,6 +93,7 @@ public class ChessGame implements ControllerManagerActions
     // Saves the current game and returns to menu
     public void currentGameSaveAndQuit()
     {
+        // Only this method should ever call SaveGameToUser!
         this.store.SaveGameToUser(game.getPlayers(), game.getBoardHistory());
         this.endGame();
     }
@@ -189,7 +197,38 @@ public class ChessGame implements ControllerManagerActions
     {
         HashMap<Team, Player> players = new HashMap<>();
         boolean loaded = store.LoadGameFromFile(saveFile, players);
-        if (!loaded) return false;
+        // Defensive: require both players to be present
+        if (!loaded || !players.containsKey(Team.WHITE) || !players.containsKey(Team.BLACK)) {
+            System.out.println("Error: Save file missing player(s), cannot load.");
+            return false;
+        }
+
+        // Remove the save from the database after loading
+        try {
+            Database db = this.menuView.getDatabase();
+            String saveName = saveFile;
+            // Remove .sav extension if present
+            if (saveName.endsWith(".sav")) {
+                saveName = saveName.substring(0, saveName.length() - 4);
+            }
+            db.executeSQLUpdate("DELETE FROM GAMES WHERE name = '" + saveName + "'");
+        } catch (Exception e) {
+            System.out.println("Warning: Could not remove save from database: " + e.getMessage());
+        }
+
+        // Remove the .sav file from disk if it exists
+        try {
+            String filePath = saveFile.endsWith(".sav") ? saveFile : saveFile + ".sav";
+            java.io.File file = new java.io.File(filePath);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    System.out.println("Warning: Could not delete save file: " + filePath);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Warning: Could not delete save file: " + e.getMessage());
+        }
+
         clear();
         this.game = new GameManager(players);
         this.boardView = new ChessBoardView(this);

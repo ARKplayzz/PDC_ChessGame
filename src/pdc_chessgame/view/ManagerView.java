@@ -210,7 +210,8 @@ public class ManagerView extends JPanel
             if (root != null && root.getGlassPane() != null) {
                 root.getGlassPane().setVisible(false);
             }
-            controller.currentGameSaveAndQuit();
+            // Do NOT save on exit. Just end the game.
+            controller.currentGameExit();
         });
         exitPanel.add(exitButton);
 

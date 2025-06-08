@@ -14,4 +14,5 @@ public interface ControllerManagerActions
     void currentGameResignation();
     void currentGameSaveAndQuit();
     void currentGameClockEnd();
+    void currentGameExit();
 }

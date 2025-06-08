@@ -137,6 +137,7 @@ public class Database
     // Add filePath parameter for directory column
     public boolean insertGame(String saveName, String player1, String player2, String filePath)
     {
+        // name = saveName, player_1 = player1, player_2 = player2, directory = filePath
         return this.executeSQL("INSERT INTO GAMES "+
                 "VALUES ('"+saveName+"','"+player1+"','"+player2+"','"+filePath+"')");
     }
@@ -146,38 +147,37 @@ public class Database
         public final String saveFile;
         public final String player1;
         public final String player2;
-        public final String date;
-        public SaveInfo(String saveFile, String player1, String player2, String date) {
+        public final String directory;
+        public SaveInfo(String saveFile, String player1, String player2, String directory) {
             this.saveFile = saveFile;
             this.player1 = player1;
             this.player2 = player2;
-            this.date = date;
+            this.directory = directory;
         }
     }
 
-    // Returns all saves where username is player1 or player2
+    // Returns all saves where username is player_1 or player_2
     public List<SaveInfo> getSavesForUser(String username) {
         List<SaveInfo> saves = new ArrayList<>();
-        // ...get connection...
         try {
             var conn = getConnection();
             var stmt = conn.prepareStatement(
-                "SELECT savefile, player1, player2, date FROM saves WHERE player1 = ? OR player2 = ? ORDER BY date DESC"
+                "SELECT name, player_1, player_2, directory FROM GAMES WHERE player_1 = ? OR player_2 = ? ORDER BY name DESC"
             );
             stmt.setString(1, username);
             stmt.setString(2, username);
             var rs = stmt.executeQuery();
             while (rs.next()) {
                 saves.add(new SaveInfo(
-                    rs.getString("savefile"),
-                    rs.getString("player1"),
-                    rs.getString("player2"),
-                    rs.getString("date")
+                    rs.getString("name"),
+                    rs.getString("player_1"),
+                    rs.getString("player_2"),
+                    rs.getString("directory")
                 ));
             }
             rs.close();
             stmt.close();
-            conn.close();
+            // Do not close conn here, as it's the main connection
         } catch (Exception e) {
             // handle/log error
         }
@@ -185,7 +185,7 @@ public class Database
     }
     
     // need to test this some more
-    private boolean checkExists(String table, String col, String data)
+    public boolean checkExists(String table, String col, String data)
     {
         ResultSet rs = null;
         try {
@@ -221,7 +221,7 @@ public class Database
     }
 
     // For UPDATE/INSERT/DELETE
-    private boolean executeSQLUpdate(String sql)
+    public boolean executeSQLUpdate(String sql)
     {
         try {
             int result = this.statement.executeUpdate(sql);
@@ -242,12 +242,6 @@ public class Database
         
         this.executeSQL(createPlayers);
         
-        // Drop GAMES table if it exists (for development only)
-        try {
-            this.statement.executeUpdate("DROP TABLE GAMES");
-        } catch (SQLException ex) {
-            // Ignore error if table does not exist
-        }
         String createGames = "CREATE TABLE GAMES" 
             + "  (name           VARCHAR(25) NOT NULL PRIMARY KEY,"
             + "   player_1       VARCHAR(25),"

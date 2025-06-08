@@ -101,7 +101,7 @@ public class SavePanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(savesPanel);
         scrollPane.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(new Color(153, 233, 255), 2),
-            "Your Saves",
+            "Your Saves ",
             0, 0, null, new Color(153, 233, 255)
         ));
         scrollPane.setOpaque(false);
@@ -248,12 +248,12 @@ public class SavePanel extends JPanel {
                 for (Database.SaveInfo save : saves) 
                 {
                     JButton saveBtn = new JButton(
-                        String.format("%s vs %s | Date: %s", save.player1, save.player2, save.date)
+                        String.format("%s vs %s | Date: %s", save.player1, save.player2, save.saveFile)
                     );
                     setupButton(saveBtn);
                     saveBtn.setFont(new Font("Helvetica", Font.PLAIN, 14));
                     saveBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    saveBtn.addActionListener(e -> handleLoadSave(save.saveFile));
+                    saveBtn.addActionListener(e -> handleLoadSave(save.directory));
                     savesPanel.add(saveBtn);
                     savesPanel.add(Box.createVerticalStrut(5));
                 }
@@ -273,6 +273,7 @@ public class SavePanel extends JPanel {
         } 
         else 
         {
+            refreshSaves(); // Refresh saves list after loading/removing a save
             backCallback.run();
         }
     }

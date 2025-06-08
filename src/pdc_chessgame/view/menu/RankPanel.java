@@ -37,7 +37,6 @@ public class RankPanel extends JPanel {
         this.backCallback = backCallback;
         
         this.usernameField = new JTextField();
-        // Center and bold text in input field
         
         this.statusLabel = new JLabel();
         this.eloLabel = new JLabel();
@@ -54,7 +53,7 @@ public class RankPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(new Color(30, 30, 30));
 
-        // Use BoxLayout for vertical stacking at the top
+        // use BoxLayout for vertical stacking at the top
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new javax.swing.BoxLayout(contentPanel, javax.swing.BoxLayout.Y_AXIS));
         contentPanel.setBackground(new Color(30, 30, 30));
@@ -65,21 +64,21 @@ public class RankPanel extends JPanel {
 
         JLabel titleLabel = createTitleLabel();
 
-        // Set max sizes to prevent stretching
+        // set max sizes to prevent stretching
         titleLabel.setMaximumSize(new java.awt.Dimension(400, 40));
         this.instructionLabel.setMaximumSize(new java.awt.Dimension(400, 30));
         this.usernameField.setMaximumSize(new java.awt.Dimension(400, 30));
         this.statusLabel.setMaximumSize(new java.awt.Dimension(400, 25));
         this.eloLabel.setMaximumSize(new java.awt.Dimension(400, 100));
 
-        // Center align all components
+        // Center alignment for all
         titleLabel.setAlignmentX(CENTER_ALIGNMENT);
         this.instructionLabel.setAlignmentX(CENTER_ALIGNMENT);
         this.usernameField.setAlignmentX(CENTER_ALIGNMENT);
         this.statusLabel.setAlignmentX(CENTER_ALIGNMENT);
         this.eloLabel.setAlignmentX(CENTER_ALIGNMENT);
 
-        // Add spacing and components
+        // Place boxes
         contentPanel.add(titleLabel);
         contentPanel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
         contentPanel.add(instructionLabel);
@@ -119,10 +118,10 @@ public class RankPanel extends JPanel {
         
         //Elo label
         this.eloLabel.setForeground(new Color(255, 255, 255));
-        this.eloLabel.setFont(new Font("Helvetica", Font.BOLD, 98)); // was 100, now 98 (2px lower)
+        this.eloLabel.setFont(new Font("Helvetica", Font.BOLD, 90));
         this.eloLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        //user input
+        // user input
         this.usernameField.setFont(new Font("Helvetica", Font.BOLD, 16));
         this.usernameField.setHorizontalAlignment(SwingConstants.CENTER);
         this.usernameField.setHorizontalAlignment(JTextField.CENTER);
