@@ -211,7 +211,7 @@ public class ChessGame implements ControllerManagerActions
             if (saveName.endsWith(".sav")) {
                 saveName = saveName.substring(0, saveName.length() - 4);
             }
-            db.executeSQLUpdate("DELETE FROM GAMES WHERE name = '" + saveName + "'");
+            db.deleteGames(saveName);
         } catch (Exception e) {
             System.out.println("Warning: Could not remove save from database: " + e.getMessage());
         }

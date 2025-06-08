@@ -106,7 +106,7 @@ public class SaveManager
                     // File path is just the filename here (could be a directory if needed)
                     Database db = new Database();
                     // Only insert if not already present
-                    if (!db.checkExists("GAMES", "name", saveName)) {
+                    if (!db.gameExists(saveName)) {
                         db.insertGame(saveName, player1, player2, saveFile);
                     }
                     db.terminate();
@@ -249,7 +249,7 @@ public class SaveManager
         try {
            fp.close();
         } catch (IOException ex) {
-           Logger.getLogger(Ranking.class.getName()).log(Level.SEVERE, null, ex);
+           System.out.println("Error closing fp "+ex.getMessage());
            return false;
         }
         // Defensive: require both players to be present

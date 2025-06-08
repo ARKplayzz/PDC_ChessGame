@@ -139,9 +139,7 @@ public class LeaderboardPanel extends JPanel {
     {
         StringBuilder content = new StringBuilder();
         try {
-            java.sql.ResultSet rs = database.getConnection().createStatement().executeQuery(
-                "SELECT name, elo, games_won, games_lost FROM PLAYERS ORDER BY elo DESC"
-            );
+            java.sql.ResultSet rs = database.getLeaderboard();
             int rank = 1;
             boolean hasRows = false;
             // Table header
