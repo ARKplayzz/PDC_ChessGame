@@ -169,13 +169,12 @@ public class MenuView extends JPanel {
         switchToPanel(this.rankPanel);
     }
     
-    private void showSavePanel()
+    private void showSavePanel() 
     {
-        if (this.savePanel == null)
+        if (this.savePanel == null) 
         {
             this.savePanel = new SavePanel(this.database, this.controller, this::returnToMainMenu);
         }
-        this.savePanel.refreshSaves(); // always refresh on open
         switchToPanel(this.savePanel);
     }
     

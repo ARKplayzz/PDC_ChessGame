@@ -196,41 +196,17 @@ public class ChessGame implements ControllerManagerActions
     public boolean loadGameFromSaveFile(String saveFile) 
     {
         HashMap<Team, Player> players = new HashMap<>();
-        boolean loaded = store.LoadGameFromFile(saveFile, players);
-        // Defensive: require both players to be present
-        if (!loaded || !players.containsKey(Team.WHITE) || !players.containsKey(Team.BLACK)) {
-            System.out.println("Error: Save file missing player(s), cannot load.");
+        GameManager tempGame = new GameManager(players);
+        boolean loadedSuccessfully = store.loadAndRemoveSaveFile(saveFile, players, tempGame.board);
+        if (!loadedSuccessfully) 
+        {
             return false;
-        }
-
-        // Remove the save from the database after loading
-        try {
-            Database db = this.menuView.getDatabase();
-            String saveName = saveFile;
-            // Remove .sav extension if present
-            if (saveName.endsWith(".sav")) {
-                saveName = saveName.substring(0, saveName.length() - 4);
-            }
-            db.executeSQLUpdate("DELETE FROM GAMES WHERE name = '" + saveName + "'");
-        } catch (Exception e) {
-            System.out.println("Warning: Could not remove save from database: " + e.getMessage());
-        }
-
-        // Remove the .sav file from disk if it exists
-        try {
-            String filePath = saveFile.endsWith(".sav") ? saveFile : saveFile + ".sav";
-            java.io.File file = new java.io.File(filePath);
-            if (file.exists()) {
-                if (!file.delete()) {
-                    System.out.println("Warning: Could not delete save file: " + filePath);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Warning: Could not delete save file: " + e.getMessage());
         }
 
         clear();
         this.game = new GameManager(players);
+        this.game.board = tempGame.board;
+
         this.boardView = new ChessBoardView(this);
         this.display.addChessBoard(boardView);
 
@@ -239,9 +215,6 @@ public class ChessGame implements ControllerManagerActions
             players.get(Team.BLACK).getName(),
             this.menuView
         );
-
-        // Simulate moves to restore board state
-        store.simulateGame(this.game.board);
 
         updateDisplay();
         this.managerView.showGamePanel();

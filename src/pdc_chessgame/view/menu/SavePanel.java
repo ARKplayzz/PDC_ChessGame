@@ -248,7 +248,7 @@ public class SavePanel extends JPanel {
                 for (Database.SaveInfo save : saves) 
                 {
                     JButton saveBtn = new JButton(
-                        String.format("%s vs %s | Date: %s", save.player1, save.player2, save.saveFile)
+                        String.format("%s vs %s | %s", save.player1, save.player2, save.saveFile)
                     );
                     setupButton(saveBtn);
                     saveBtn.setFont(new Font("Helvetica", Font.PLAIN, 14));
@@ -269,7 +269,7 @@ public class SavePanel extends JPanel {
         boolean loaded = controller.loadGameFromSaveFile(saveFile);
         if (!loaded) 
         {
-            JOptionPane.showMessageDialog(this, "Save file no longer supported!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "This Game Save is not present on your computer", "Error", JOptionPane.ERROR_MESSAGE);
         } 
         else 
         {

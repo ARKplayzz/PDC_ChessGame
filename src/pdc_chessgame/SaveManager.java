@@ -163,23 +163,16 @@ public class SaveManager
     
     public boolean LoadGameFromFile(String file, HashMap<Team, Player> players)
     {
-        // Remove this check, as saves from DB will have .sav extension
-        // if(file.contains("."))
-        // {
-        //     System.out.println("Please do not enter anything that could be\ninterpreted a a file extension");
-        //     return false;
-        // }
         if(file.contains(" "))
         {
             System.out.println("Please no whitespace");
             return false;
         }
-        FileReader f = null;
         // Only add .sav if not already present
         if (!file.endsWith(".sav")) {
             file = file.concat(".sav");
         }
-        // create the buffered reader
+        FileReader f;
         try {
             f = new FileReader(file);
         } catch (FileNotFoundException ex) {
@@ -187,56 +180,31 @@ public class SaveManager
             return false;
         }
         BufferedReader fp = new BufferedReader(f);
-        //load the game
-        
-        String currentLine = null;
-        // clear any existing players from previous games
+
         players.clear();
-        // clear loadedGame to avoid accumulating moves from previous loads
         this.loadedGame.clear();
-        // actully load the history while checking for errors
+
         try 
         {
-            // loop through the whole save file
-            while((currentLine=fp.readLine())!= null)
+            String currentLine;
+            while((currentLine = fp.readLine()) != null)
             {
                 if(currentLine.startsWith("$"))
-                { // if the current line contains player info
-                    currentLine = currentLine.replace("$", "");
-                    String[] parts = currentLine.trim().split(" ");
-                    
-                    // Defensive: skip malformed lines
+                {
+                    String[] parts = currentLine.replace("$", "").trim().split(" ");
                     if (parts.length < 2) {
                         System.out.println("Malformed player line in save file: " + currentLine);
                         continue;
                     }
-
-                    // Accept both "guest WHITE" and "GUEST WHITE"
                     if(parts[0].equalsIgnoreCase("guest"))
-                    {
-                        // Defensive: check length before accessing
-                        if (parts.length < 2) {
-                            System.out.println("Malformed guest player line in save file: " + currentLine);
-                            continue;
-                        }
                         parts[0] = "GUEST";
-                        // parts[1] is already the team
-                    }
-                    // Accept "GUESTWHITE BLACK" as well (legacy)
-                    if(parts[0].toUpperCase().startsWith("GUEST") && parts.length == 2) {
-                        // e.g. "GUESTWHITE BLACK"
-                        // leave as is
-                    }
-                    
-                    // Only add valid teams
                     if(parts[1].equals("BLACK"))
                         players.put(Team.BLACK, new Player(parts[0], Team.BLACK));
                     else if(parts[1].equals("WHITE"))
                         players.put(Team.WHITE, new Player(parts[0], Team.WHITE));
-                    // else skip invalid team
                 }
                 else
-                { // if the current line contains move info
+                {
                     this.loadedGame.add(currentLine);
                 }
             }
@@ -244,19 +212,58 @@ public class SaveManager
             System.out.println("Program failed to load a line");
             return false;
         }
-        
-        //exit
         try {
            fp.close();
         } catch (IOException ex) {
-           Logger.getLogger(Ranking.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(SaveManager.class.getName()).log(Level.SEVERE, null, ex);
            return false;
         }
-        // Defensive: require both players to be present
-        if (!players.containsKey(Team.WHITE) || !players.containsKey(Team.BLACK)) {
-            System.out.println("Save file missing player(s), cannot load.");
+        return true;
+    }
+    
+    /**
+     * Loads a game from a save file, removes the save from the database and disk, and simulates the moves.
+     * Returns true if successful, false otherwise.
+     * players will be filled with the loaded players.
+     */
+    public boolean loadAndRemoveSaveFile(String saveFile, HashMap<Team, Player> players, ChessBoard boardToSimulate) {
+        boolean loaded = this.LoadGameFromFile(saveFile, players);
+        if (!loaded || !players.containsKey(Team.WHITE) || !players.containsKey(Team.BLACK)) {
+            System.out.println("Error: Save file missing player(s), cannot load.");
             return false;
         }
+
+        // Remove the save from the database after loading
+        try {
+            Database db = new Database();
+            String saveName = saveFile;
+            if (saveName.endsWith(".sav")) {
+                saveName = saveName.substring(0, saveName.length() - 4);
+            }
+            db.executeSQLUpdate("DELETE FROM GAMES WHERE name = '" + saveName + "'");
+            db.terminate();
+        } catch (Exception e) {
+            System.out.println("Warning: Could not remove save from database: " + e.getMessage());
+        }
+
+        // Remove the .sav file from disk if it exists
+        try {
+            String filePath = saveFile.endsWith(".sav") ? saveFile : saveFile + ".sav";
+            java.io.File file = new java.io.File(filePath);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    System.out.println("Warning: Could not delete save file: " + filePath);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Warning: Could not delete save file: " + e.getMessage());
+        }
+
+        // Simulate moves to restore board state
+        if (boardToSimulate != null) {
+            this.simulateGame(boardToSimulate);
+        }
+
         return true;
     }
 }
