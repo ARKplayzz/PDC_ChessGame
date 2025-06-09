@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,135 +26,67 @@ public class DatabaseTest {
     public DatabaseTest() {
     }
     
-    /*@BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }*/
     
     @Before
     public void setUp() 
     {
         instance = new Database();
+        instance.addPlayer("TEST__USER_9@3467%4321", 7);
     }
     
     @After
-    public void tearDown() {
+    public void tearDown()
+    {
+        instance.deletePlayers("TEST__USER_9@3467%4321");
+        instance.deleteGames("TEST_SAVE_191930506432");
+        instance.terminate();
     }
 
     /**
      * Test of addPlayer method, of class Database.
      */
     @Test
-    public void testAddPlayer() {
-
+    public void testAddPlayer() 
+    {
+        System.out.println("Adding a player");
+        boolean expected = instance.playerExists("TEST__USER_9@3467%4321"); // the random gibberish is to make sure no one accidently makes a user with this name
+        boolean result = instance.addPlayer("TEST__USER_9@3467%4321", 7);
+        assertNotEquals(expected, result);
     }
     
-
-    /**
-     * Test of alterPlayer method, of class Database.
-     */
     @Test
-    public void testAlterPlayer() {
-        
-    }
-
-    /**
-     * Test of getElo method, of class Database.
-     */
-    @Test
-    public void testGetElo() {
-        
-    }
-
-    /**
-     * Test of getGamesWon method, of class Database.
-     */
-    @Test
-    public void testGetGamesWon() {
-        
-    }
-
-    /**
-     * Test of getGamesLost method, of class Database.
-     */
-    @Test
-    public void testGetGamesLost() {
-       
-    }
-
-    /**
-     * Test of playerExists method, of class Database.
-     */
-    @Test
-    public void testPlayerExists() {
-        
-    }
-
-    /**
-     * Test of gameExists method, of class Database.
-     */
-    @Test
-    public void testGameExists() {
-        
-    }
-
-    /**
-     * Test of insertGame method, of class Database.
-     */
-    @Test
-    public void testInsertGame() {
-        
-    }
-
-    /**
-     * Test of getSavesForUser method, of class Database.
-     */
-    @Test
-    public void testGetSavesForUser() {
-        
-    }
-
-    /**
-     * Test of executeSQLUpdate method, of class Database.
-     */
-    @Test
-    public void testExecuteSQLUpdate() {
-        
-    }
-
-    /**
-     * Test of terminate method, of class Database.
-     */
-    @Test
-    public void testTerminate() {
-        
-    }
-
-    /**
-     * Test of getConnection method, of class Database.
-     */
-    @Test
-    public void testGetConnection() {
-       
-    }
-
-    /**
-     * Test of calculateEloChange method, of class Database.
-     */
-    @Test
-    public void testCalculateEloChange() {
-        
-    }
-
-    /**
-     * Test of updateEloAfterGame method, of class Database.
-     */
-    @Test
-    public void testUpdateEloAfterGame() {
-        
+    public void testPlayerExists()
+    {
+        System.out.println("Player exists");
+        boolean expected = true;
+        boolean actual = instance.playerExists("TEST__USER_9@3467%4321");
+        assertEquals(expected, actual);
     }
     
+    @Test
+    public void testGetElo()
+    {
+        System.out.println("Getting elo");
+        int expected = 7;
+        int actual = instance.getElo("TEST__USER_9@3467%4321");
+        assertEquals(expected, actual, 0.0);
+    }
+    
+    @Test
+    public void testInsertGame()
+    {
+        System.out.println("Inserting game");
+        boolean expected = true;
+        boolean actual = instance.insertGame("TEST_SAVE_191930506432", "John smith", "Moe lester", "Fake path");
+        assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void testDeletePlayer()
+    {
+        System.out.println("Deleting player");
+        boolean expected = true;
+        boolean actual = instance.deletePlayers("TEST__USER_9@3467%4321");
+        assertEquals(expected, actual);
+    }
 }

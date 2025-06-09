@@ -79,13 +79,6 @@ public class SaveManager
         }
         //save the game
         
-        // Print all the players names onto the first line of the save file
-        for(Map.Entry<Team, Player> entry : players.entrySet())
-        {
-            // the $ is to denote that this line should be interpreted as a player
-            pw.println("$"+(String)entry.getValue().getName() + " " +(String)entry.getKey().teamName());
-        }
-        
         for(int i = 0; i < history.getMoveCount(); i++)
         { // print all of the players commands into the terminal
             pw.println(history.getHistoryEntry(i).getStringInput());
@@ -106,7 +99,7 @@ public class SaveManager
                     // File path is just the filename here (could be a directory if needed)
                     Database db = new Database();
                     // Only insert if not already present
-                    if (!db.checkExists("GAMES", "name", saveName)) {
+                    if (!db.gameExists(saveName)) {
                         db.insertGame(saveName, player1, player2, saveFile);
                     }
                     db.terminate();
@@ -144,13 +137,6 @@ public class SaveManager
         }
         //save the game
         
-        // Print all the players names onto the first line of the save file
-        for(Map.Entry<Team, Player> entry : players.entrySet())
-        {
-            // the $ is to denote that this line should be interpreted as a player
-            pw.println("$"+(String)entry.getValue().getName() + " " +(String)entry.getKey().teamName());
-        }
-        
         for(int i = 0; i < history.getMoveCount(); i++)
         { // print all of the players commands into the terminal
             pw.println(history.getHistoryEntry(i).getStringInput());
@@ -183,27 +169,20 @@ public class SaveManager
 
         players.clear();
         this.loadedGame.clear();
+        
+        Database db = new Database();
+        
+        players.put(Team.WHITE, new Player(db.getPlayer1(file.replace(".sav", "")), Team.WHITE));
+        players.put(Team.BLACK, new Player(db.getPlayer2(file.replace(".sav", "")), Team.BLACK));
+        
+        db.terminate();
 
         try 
         {
             String currentLine;
             while((currentLine = fp.readLine()) != null)
             {
-                if(currentLine.startsWith("$"))
-                {
-                    String[] parts = currentLine.replace("$", "").trim().split(" ");
-                    if (parts.length < 2) {
-                        System.out.println("Malformed player line in save file: " + currentLine);
-                        continue;
-                    }
-                    if(parts[0].equalsIgnoreCase("guest"))
-                        parts[0] = "GUEST";
-                    if(parts[1].equals("BLACK"))
-                        players.put(Team.BLACK, new Player(parts[0], Team.BLACK));
-                    else if(parts[1].equals("WHITE"))
-                        players.put(Team.WHITE, new Player(parts[0], Team.WHITE));
-                }
-                else
+                if(!currentLine.startsWith("$"))
                 {
                     this.loadedGame.add(currentLine);
                 }
@@ -240,7 +219,7 @@ public class SaveManager
             if (saveName.endsWith(".sav")) {
                 saveName = saveName.substring(0, saveName.length() - 4);
             }
-            db.executeSQLUpdate("DELETE FROM GAMES WHERE name = '" + saveName + "'");
+            db.deleteGames(saveName);
             db.terminate();
         } catch (Exception e) {
             System.out.println("Warning: Could not remove save from database: " + e.getMessage());

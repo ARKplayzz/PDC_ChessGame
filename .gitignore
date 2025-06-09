@@ -1,6 +1,6 @@
 /nbproject/private/
 /build/
-/dist/
+#/dist/
 
 #This is for ignoring the rankings file
 *.txt

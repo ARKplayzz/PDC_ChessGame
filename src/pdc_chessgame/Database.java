@@ -7,7 +7,6 @@ package pdc_chessgame;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  *
  * @author Finlay & Andrew
@@ -145,6 +144,11 @@ public class Database
         return this.executeSQL("DELETE FROM GAMES WHERE name = '" + name + "'");
     }
     
+    public boolean deletePlayers(String name)
+    {
+        return this.executeSQL("DELETE FROM PLAYERS WHERE name = '" + name + "'");
+    }
+    
     // insert a new game, NOTE I WILL BE ASSUMING player1 IS WHITE
     // Add filePath parameter for directory column
     public boolean insertGame(String saveName, String player1, String player2, String filePath)
@@ -154,13 +158,47 @@ public class Database
                 "VALUES ('"+saveName+"','"+player1+"','"+player2+"','"+filePath+"')");
     }
     
+    public String getPlayer1(String save)
+    {
+        ResultSet rs = this.executeQuery("SELECT player_1 FROM GAMES WHERE name = '"+save+"'");
+        
+        try {
+            if(rs.next())
+            {
+                return rs.getString("player_1");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error with player query "+ex.getMessage());
+        }
+        
+        return "null";
+    }
+    
+    public String getPlayer2(String save)
+    {
+        ResultSet rs = this.executeQuery("SELECT player_2 FROM GAMES WHERE name = '"+save+"'");
+        
+        try {
+            if(rs.next())
+            {
+                return rs.getString("player_2");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error with player query "+ex.getMessage());
+        }
+        
+        return "null";
+    }
+    
     // Helper class for save info
-    public static class SaveInfo {
+    public static class SaveInfo 
+    {
         public final String saveFile;
         public final String player1;
         public final String player2;
         public final String directory;
-        public SaveInfo(String saveFile, String player1, String player2, String directory) {
+        public SaveInfo(String saveFile, String player1, String player2, String directory) 
+        {
             this.saveFile = saveFile;
             this.player1 = player1;
             this.player2 = player2;
@@ -175,23 +213,22 @@ public class Database
         List<SaveInfo> saves = new ArrayList<>();
         try {
             var conn = getConnection();
-            var stmt = conn.prepareStatement(
-                "SELECT name, player_1, player_2, directory FROM GAMES WHERE player_1 = ? OR player_2 = ? ORDER BY name DESC"
-            );
-            stmt.setString(1, username);
-            stmt.setString(2, username);
-            var rs = stmt.executeQuery();
-            while (rs.next()) {
-                saves.add(new SaveInfo(
-                    rs.getString("name"),
-                    rs.getString("player_1"),
-                    rs.getString("player_2"),
-                    rs.getString("directory")
-                ));
+            try (java.sql.PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT name, player_1, player_2, directory FROM GAMES WHERE player_1 = ? OR player_2 = ? ORDER BY name DESC"
+            )) {
+                stmt.setString(1, username);
+                stmt.setString(2, username);
+                var rs = stmt.executeQuery();
+                while (rs.next()) {
+                    saves.add(new SaveInfo(
+                            rs.getString("name"),
+                            rs.getString("player_1"),
+                            rs.getString("player_2"),
+                            rs.getString("directory")
+                    ));
+                }   rs.close();
+                // Do not close conn here, as it's the main connection
             }
-            rs.close();
-            stmt.close();
-            // Do not close conn here, as it's the main connection
         } catch (Exception e) {
             System.out.println("error in getSavesForUser(): "+e.getMessage());
         }
