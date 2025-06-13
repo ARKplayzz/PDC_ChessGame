@@ -93,10 +93,8 @@ public class ChessGameplayTest {
         // F2F3 E7E5
         gameManager.makeMove(new Move(5, 1, 5, 2));
         gameManager.makeMove(new Move(4, 6, 4, 4));
-        
-        // G2G4 D8H4
-        gameManager.makeMove(new Move(6, 1, 6, 3));
-        MoveResult result = gameManager.makeMove(new Move(3, 7, 7, 3));
+      
+        MoveResult result = gameManager.makeMove(new Move(4, 0, 7, 3));
         assertEquals(MoveResult.CHECKMATE, result);
     }
 }
