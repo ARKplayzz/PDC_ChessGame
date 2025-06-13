@@ -13,6 +13,6 @@ import java.util.HashMap;
 
 public interface SaveGameInterface 
 {
-    void SaveGameToUser(HashMap<Team, Player> players, Turn history);
-    boolean loadAndRemoveSaveFile(String saveFile, HashMap<Team, Player> players, ChessBoard board);
+    void SaveGameToUser(HashMap<Team, Player> players, Turn history, Clock clock);
+    boolean loadAndRemoveSaveFile(String saveFile, HashMap<Team, Player> players, ChessBoard board, Clock clock);
 }
