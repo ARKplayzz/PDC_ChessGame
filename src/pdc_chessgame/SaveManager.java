@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  */
 
 // this class manages saving and loading the game
-public class SaveManager 
+public class SaveManager implements SaveGameInterface
 {
     // the commands from movehistory are loaded into here in order
     // DO NOT MAKE THIS FINAL

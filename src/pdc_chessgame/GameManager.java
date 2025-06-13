@@ -18,19 +18,19 @@ public class GameManager
     public ChessBoard board;
     // hashmap of the players and teams
     private HashMap<Team, Player> players;
-    
+
     private Clock clock;
         
     public GameManager(String p1, String p2, int time) 
     {
         this.board = new ChessBoard(8, 8);
         this.clock = new Clock(time, 2);
-        
-        this.players = new HashMap<>(); // player count flexabuility for future addition
+
+        this.players = new HashMap<>();
         this.players.put(Team.WHITE, new Player(p1, Team.WHITE));
         this.players.put(Team.BLACK, new Player(p2, Team.BLACK));
     }
-    
+
     // Add this constructor for loading from save
     public GameManager(HashMap<Team, Player> players) 
     {
@@ -102,7 +102,6 @@ public class GameManager
     {
         this.board.undoMove();
         this.board.getNextTurn();
-        this.clock.swapClock(); // Flip the clock when undoing a move
     }
     
     // get the player for this team

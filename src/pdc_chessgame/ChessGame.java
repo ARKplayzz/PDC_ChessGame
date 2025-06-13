@@ -18,7 +18,7 @@ import pdc_chessgame.view.menu.MenuView;
 public class ChessGame implements ControllerManagerActions 
 {
     GameManager game;
-    SaveManager store = new SaveManager();
+    SaveGameInterface store = new SaveManager();
 
     // views/GUI inits
     private ChessBoardView boardView;
