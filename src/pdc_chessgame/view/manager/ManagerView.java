@@ -8,18 +8,13 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import pdc_chessgame.view.ControllerManagerActions;
 import pdc_chessgame.view.menu.MenuView;
@@ -40,12 +35,6 @@ public class ManagerView extends JPanel
     private String playerWhiteName = "White";
     private String playerBlackName = "Black";
     private pdc_chessgame.view.menu.MenuView menuViewRef;
-
-    // Game over panel components
-    private JLabel gameOverLabel;
-    private JTextArea gameOverArea;
-    private JScrollPane gameOverScroll;
-    private JButton exitButton;
 
     private Timer countdownTimer;
     private int currentTime;
@@ -126,7 +115,7 @@ public class ManagerView extends JPanel
         cardLayout.show(mainPanel, "GAME");
     }
 
-    public void showGameOverPanel(String winnerTeam, String whiteName, int whiteElo, String blackName, int blackElo) 
+    public void showGameOverPanel(String winnerTeam, String whiteName, String whiteElo, String blackName, String blackElo) 
     {
         String winnerText;
         if (winnerTeam != null && winnerTeam.equalsIgnoreCase("BLACK")) 

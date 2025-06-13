@@ -76,9 +76,15 @@ public class Database
     
     // used for altering an existing player
     public boolean alterPlayer(String name, int elo, int gamesWon, int gamesLost)
-    {// might have a mistake in it
+    {
         // Don't update the primary key (name)
-        return this.executeSQL("UPDATE PLAYERS SET elo = "+elo+", games_won = "+gamesWon+", games_lost = "+gamesLost+" WHERE name = '"+name+"'");
+        boolean result = this.executeSQL("UPDATE PLAYERS SET elo = "+elo+", games_won = "+gamesWon+", games_lost = "+gamesLost+" WHERE name = '"+name+"'");
+        if (result) {
+            System.out.println("Updated player: " + name + " Elo=" + elo + " Won=" + gamesWon + " Lost=" + gamesLost);
+        } else {
+            System.out.println("Failed to update player: " + name);
+        }
+        return result;
     }
     
     public int getElo(String name)
@@ -412,32 +418,48 @@ public class Database
 
     public void updateEloAfterGame(String winner, String loser) 
     {
-        if (winner == null || loser == null) 
-            return;
-        if (winner.equalsIgnoreCase("guest") || loser.equalsIgnoreCase("guest")) 
-            return;
-        if (!playerExists(winner) || !playerExists(loser)) 
+        // If both are guests, do nothing
+        if ((winner == null || winner.equalsIgnoreCase("guest")) && (loser == null || loser.equalsIgnoreCase("guest"))) 
             return;
 
-        //int winnerEloBefore = this.getElo(winner);
-        //int loserEloBefore = this.getElo(loser);
+        // If winner is not guest, update their stats
+        if (winner != null && !winner.equalsIgnoreCase("guest") && playerExists(winner)) {
+            int winnerElo = getElo(winner);
+            int newWinnerElo = winnerElo + 25; // Flat Elo gain vs guest
+            int winnerGamesWon = getGamesWon(winner) + 1;
+            int winnerGamesLost = getGamesLost(winner);
+            alterPlayer(winner, newWinnerElo, winnerGamesWon, winnerGamesLost);
+            System.out.println("Elo update after game: " + winner + " -> " + newWinnerElo);
+        }
 
-        int[] newElos = calculateEloChange(winner, loser);
-        int newWinnerElo = newElos[0];
-        int newLoserElo = newElos[1];
+        // If loser is not guest, update their stats
+        if (loser != null && !loser.equalsIgnoreCase("guest") && playerExists(loser)) {
+            int loserElo = getElo(loser);
+            int newLoserElo = Math.max(START_ELO, loserElo - 25); // Flat Elo loss vs guest
+            int loserGamesWon = getGamesWon(loser);
+            int loserGamesLost = getGamesLost(loser) + 1;
+            alterPlayer(loser, newLoserElo, loserGamesWon, loserGamesLost);
+            System.out.println("Elo update after game: " + loser + " -> " + newLoserElo);
+        }
 
-        // Get current stats
-        int winnerGamesWon = getGamesWon(winner);
-        int winnerGamesLost = getGamesLost(winner);
-        int loserGamesWon = getGamesWon(loser);
-        int loserGamesLost = getGamesLost(loser);
+        // If both are real players, use normal Elo calculation (already handled above, but for clarity)
+        if (winner != null && loser != null &&
+            !winner.equalsIgnoreCase("guest") && !loser.equalsIgnoreCase("guest") &&
+            playerExists(winner) && playerExists(loser)) 
+        {
+            int[] newElos = calculateEloChange(winner, loser);
+            int newWinnerElo = newElos[0];
+            int newLoserElo = newElos[1];
 
-        // Increment stats
-        winnerGamesWon += 1;
-        loserGamesLost += 1;
+            int winnerGamesWon = getGamesWon(winner) + 1;
+            int winnerGamesLost = getGamesLost(winner);
+            int loserGamesWon = getGamesWon(loser);
+            int loserGamesLost = getGamesLost(loser) + 1;
 
-        boolean winnerUpdated = alterPlayer(winner, newWinnerElo, winnerGamesWon, winnerGamesLost);
-        boolean loserUpdated = alterPlayer(loser, newLoserElo, loserGamesWon, loserGamesLost);
+            alterPlayer(winner, newWinnerElo, winnerGamesWon, winnerGamesLost);
+            alterPlayer(loser, newLoserElo, loserGamesWon, loserGamesLost);
 
+            System.out.println("Elo update after game: " + winner + " -> " + newWinnerElo + ", " + loser + " -> " + newLoserElo);
+        }
     }
 }

@@ -6,9 +6,9 @@ package pdc_chessgame;
 import java.util.HashMap;
 import pdc_chessgame.view.ChessBoardView;
 import pdc_chessgame.view.ControllerManagerActions;
-import pdc_chessgame.view.manager.ManagerView;
 import pdc_chessgame.view.MasterFrame;
 import pdc_chessgame.view.SideBarPanel;
+import pdc_chessgame.view.manager.ManagerView;
 import pdc_chessgame.view.menu.MenuView;
 
 /**
@@ -162,8 +162,8 @@ public class ChessGame implements ControllerManagerActions
             db.addPlayer(loser, Database.START_ELO);
         }
 
-        // update Elo if both are not guest
-        if (!winner.equalsIgnoreCase("guest") && !loser.equalsIgnoreCase("guest")) 
+        // Elo update logic: update Elo for any non-guest player
+        if (!winner.equalsIgnoreCase("guest") || !loser.equalsIgnoreCase("guest")) 
         {
             db.updateEloAfterGame(winner, loser);
         }
@@ -175,12 +175,15 @@ public class ChessGame implements ControllerManagerActions
             this.menuView
         );
         
-        int whiteElo = db.getElo(game.getPlayers().get(Team.WHITE).getName());
-        int blackElo = db.getElo(game.getPlayers().get(Team.BLACK).getName());
+        // Show "-" for guest Elo, otherwise show the actual Elo
+        String whiteName = this.game.getPlayers().get(Team.WHITE).getName();
+        String blackName = this.game.getPlayers().get(Team.BLACK).getName();
+        String whiteEloStr = whiteName.equalsIgnoreCase("guest") ? "-" : String.valueOf(db.getElo(whiteName));
+        String blackEloStr = blackName.equalsIgnoreCase("guest") ? "-" : String.valueOf(db.getElo(blackName));
         
         this.managerView.showGameOverPanel(winnerTeam, 
-            this.game.getPlayers().get(Team.WHITE).getName(), whiteElo,
-            this.game.getPlayers().get(Team.BLACK).getName(), blackElo);
+            whiteName, whiteEloStr,
+            blackName, blackEloStr);
     }
 
     public ChessBoard getBoard() 

@@ -105,14 +105,28 @@ public class GameOverPanel extends JPanel
     }
 
     // public methods for ManagerView to update gui
-    public void setGameOverText(String winnerText, String moveHistory, String whiteName, int whiteElo, String blackName, int blackElo) 
+    public void setGameOverText(String winnerText, String moveHistory, String whiteName, String whiteElo, String blackName, String blackElo) 
     {
         gameOverLabel.setText(winnerText);
+        // Show guest first, winner second, matching the winnerText order
+        String statsText;
+        if (winnerText.startsWith(whiteName)) {
+            // White wins
+            statsText = whiteName + " Elo = " + whiteElo + "\n" + blackName + " Elo = " + blackElo;
+        } else {
+            // Black wins
+            statsText = whiteName + " Elo = " + whiteElo + "\n" + blackName + " Elo = " + blackElo;
+        }
+        // But for your prompt, guest is always first, so:
+        if (whiteName.equalsIgnoreCase("guest")) {
+            statsText = whiteName + " Elo = " + whiteElo + "\n" + blackName + " Elo = " + blackElo;
+        } else if (blackName.equalsIgnoreCase("guest")) {
+            statsText = blackName + " Elo = " + blackElo + "\n" + whiteName + " Elo = " + whiteElo;
+        }
         gameOverArea.setText(
             moveHistory + "\n" +
             winnerText + " Thanks for playing!\n" +
-            whiteName + " Elo = " + whiteElo + "\n" +
-            blackName + " Elo = " + blackElo
+            statsText
         );
         gameOverArea.setCaretPosition(gameOverArea.getDocument().getLength());
     }

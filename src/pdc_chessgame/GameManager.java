@@ -59,7 +59,6 @@ public class GameManager
     public MoveResult makeMove(Move move) 
     {
         Team currentTeam = board.getCurrentTeam();
-        Player currentPlayer = getPlayerInTeam(currentTeam);
 
         if (move == null) 
         {
@@ -84,7 +83,8 @@ public class GameManager
         }
 
         Team enemyTeam = currentTeam.getOppositeTeam();
-        
+
+        // Check for checkmate before swapping turn
         if (this.board.isCheckmate(enemyTeam)) 
         {
             return MoveResult.CHECKMATE;
@@ -113,12 +113,6 @@ public class GameManager
         this.board.undoMove();
         this.board.getNextTurn();
     }
-    
-    // get the player for this team
-    private Player getPlayerInTeam(Team team) 
-    { 
-        return this.players.get(team);
-    } 
     
     public String getBoardHistoryString()
     {
