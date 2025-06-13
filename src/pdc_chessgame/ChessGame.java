@@ -26,10 +26,12 @@ public class ChessGame implements ControllerManagerActions
     private final ManagerView managerView;
     private final SideBarPanel sideBar;
     private final MasterFrame display;
+    private Database database;
 
     public ChessGame()
     {
-        this.menuView = new MenuView(this);
+        this.database = new Database();
+        this.menuView = new MenuView(this, this.database);
         this.managerView = new ManagerView(this);
         this.sideBar = new SideBarPanel(this.menuView, this.managerView);
         this.display = new MasterFrame(this.sideBar);
@@ -98,7 +100,7 @@ public class ChessGame implements ControllerManagerActions
     public void currentGameSaveAndQuit()
     {
         // Only this method should ever call SaveGameToUser!
-        this.store.SaveGameToUser(game.getPlayers(), game.getBoardHistory(), this.game.getClock());
+        this.store.SaveGameToUser(game.getPlayers(), game.getBoardHistory(), this.game.getClock(), this.database);
         this.endGame();
     }
 
@@ -150,22 +152,20 @@ public class ChessGame implements ControllerManagerActions
             winnerTeam = "WHITE";
         }
 
-        Database db = this.menuView.getDatabase();
-
         // ensure both winner and loser exist in the database (add if missing, not guest)
-        if (!winner.equalsIgnoreCase("guest") && !db.playerExists(winner)) 
+        if (!winner.equalsIgnoreCase("guest") && !this.database.playerExists(winner)) 
         {
-            db.addPlayer(winner, Database.START_ELO);
+            this.database.addPlayer(winner, Database.START_ELO);
         }
-        if (!loser.equalsIgnoreCase("guest") && !db.playerExists(loser)) 
+        if (!loser.equalsIgnoreCase("guest") && !this.database.playerExists(loser)) 
         {
-            db.addPlayer(loser, Database.START_ELO);
+            this.database.addPlayer(loser, Database.START_ELO);
         }
 
         // update Elo if both are not guest
         if (!winner.equalsIgnoreCase("guest") && !loser.equalsIgnoreCase("guest")) 
         {
-            db.updateEloAfterGame(winner, loser);
+            this.database.updateEloAfterGame(winner, loser);
         }
 
         managerView.setPlayersAndMenuView
@@ -175,8 +175,8 @@ public class ChessGame implements ControllerManagerActions
             this.menuView
         );
         
-        int whiteElo = db.getElo(game.getPlayers().get(Team.WHITE).getName());
-        int blackElo = db.getElo(game.getPlayers().get(Team.BLACK).getName());
+        int whiteElo = this.database.getElo(game.getPlayers().get(Team.WHITE).getName());
+        int blackElo = this.database.getElo(game.getPlayers().get(Team.BLACK).getName());
         
         this.managerView.showGameOverPanel(winnerTeam, 
             this.game.getPlayers().get(Team.WHITE).getName(), whiteElo,
@@ -202,7 +202,7 @@ public class ChessGame implements ControllerManagerActions
     {
         HashMap<Team, Player> players = new HashMap<>();
         GameManager tempGame = new GameManager(players);
-        boolean loadedSuccessfully = store.loadAndRemoveSaveFile(saveFile, players, tempGame.board, tempGame.getClock());
+        boolean loadedSuccessfully = store.loadAndRemoveSaveFile(saveFile, players, tempGame.board, tempGame.getClock(), this.database);
         if (!loadedSuccessfully) 
         {
             return false;

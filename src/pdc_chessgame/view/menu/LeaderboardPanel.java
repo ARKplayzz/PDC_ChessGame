@@ -20,20 +20,20 @@ import pdc_chessgame.Database;
  *
  * @author Andrew
  */
-public class LeaderboardPanel extends JPanel {
-    
-    private final Database database;
+public class LeaderboardPanel extends JPanel 
+{
     private final Runnable backCallback;
+    private Database database;
     
     private final JTextArea leaderboardText;
     private final JScrollPane scrollPane;
     private final JButton backButton;
     
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public LeaderboardPanel(Database database, Runnable backCallback) 
     {
-        this.database = database;
         this.backCallback = backCallback;
-        
+        this.database = database;
         this.leaderboardText = new JTextArea();
         this.scrollPane = new JScrollPane(leaderboardText);
         this.backButton = new JButton("Back");
@@ -139,7 +139,7 @@ public class LeaderboardPanel extends JPanel {
     {
         StringBuilder content = new StringBuilder();
         try {
-            java.sql.ResultSet rs = database.getLeaderboard();
+            java.sql.ResultSet rs = this.database.getLeaderboard();
             int rank = 1;
             boolean hasRows = false;
             // Table header

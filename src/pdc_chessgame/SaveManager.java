@@ -60,7 +60,7 @@ public class SaveManager implements SaveGameInterface
     }
     
     @Override
-    public void SaveGameToUser(HashMap<Team, Player> players, Turn history, Clock clock)
+    public void SaveGameToUser(HashMap<Team, Player> players, Turn history, Clock clock, Database db)
     {
         PrintWriter pw;
         
@@ -98,13 +98,11 @@ public class SaveManager implements SaveGameInterface
                     // Save name for DB is the filename without extension
                     String saveName = saveFile.replace(".sav", "");
                     // File path is just the filename here (could be a directory if needed)
-                    Database db = new Database();
                     // Only insert if not already present
                     if (!db.gameExists(saveName)) {
                         
                         db.insertGame(saveName, player1, player2, saveFile, clock.getWhitesTime(), clock.getBlacksTime());
                     }
-                    db.terminate();
                 }
             }
         } catch (Exception e) {
@@ -149,7 +147,7 @@ public class SaveManager implements SaveGameInterface
         return true;
     }
     
-    public boolean LoadGameFromFile(String file, HashMap<Team, Player> players)
+    public boolean LoadGameFromFile(String file, HashMap<Team, Player> players, Database db)
     {
         if(file.contains(" "))
         {
@@ -172,12 +170,10 @@ public class SaveManager implements SaveGameInterface
         players.clear();
         this.loadedGame.clear();
         
-        Database db = new Database();
         
         players.put(Team.WHITE, new Player(db.getPlayer1(file.replace(".sav", "")), Team.WHITE));
         players.put(Team.BLACK, new Player(db.getPlayer2(file.replace(".sav", "")), Team.BLACK));
         
-        db.terminate();
 
         try 
         {
@@ -207,8 +203,10 @@ public class SaveManager implements SaveGameInterface
      * Returns true if successful, false otherwise.
      * players will be filled with the loaded players.
      */
-    public boolean loadAndRemoveSaveFile(String saveFile, HashMap<Team, Player> players, ChessBoard boardToSimulate, Clock clock) {
-        boolean loaded = this.LoadGameFromFile(saveFile, players);
+    @Override
+    public boolean loadAndRemoveSaveFile(String saveFile, HashMap<Team, Player> players, ChessBoard boardToSimulate, Clock clock, Database db) 
+    {
+        boolean loaded = this.LoadGameFromFile(saveFile, players, db);
         if (!loaded || !players.containsKey(Team.WHITE) || !players.containsKey(Team.BLACK)) {
             System.out.println("Error: Save file missing player(s), cannot load.");
             return false;
@@ -216,7 +214,6 @@ public class SaveManager implements SaveGameInterface
 
         // Remove the save from the database after loading
         try {
-            Database db = new Database();
             String saveName = saveFile;
             if (saveName.endsWith(".sav")) {
                 saveName = saveName.substring(0, saveName.length() - 4);
@@ -225,7 +222,6 @@ public class SaveManager implements SaveGameInterface
             clock.setBlacksTime(db.getPlayer2Time(saveName));
             
             db.deleteGames(saveName);
-            db.terminate();
         } catch (Exception e) {
             System.out.println("Warning: Could not remove save from database: " + e.getMessage());
         }

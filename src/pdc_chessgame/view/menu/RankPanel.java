@@ -22,8 +22,9 @@ import pdc_chessgame.Database;
  */
 public class RankPanel extends JPanel {
     
-    private final Database database;
     private final Runnable backCallback;
+    
+    private Database database;
 
     private final JTextField usernameField;
     private final JLabel statusLabel;
@@ -33,8 +34,8 @@ public class RankPanel extends JPanel {
     
     public RankPanel(Database database, Runnable backCallback) 
     {
-        this.database = database;
         this.backCallback = backCallback;
+        this.database = database;
         
         this.usernameField = new JTextField();
         
@@ -209,9 +210,9 @@ public class RankPanel extends JPanel {
             this.statusLabel.setText("Guest's don't save Elo");
             this.eloLabel.setText("?");
         } 
-        else if (this.database.playerExists(username)) 
+        else if (database.playerExists(username)) 
         {
-            int elo = this.database.getElo(username);
+            int elo = database.getElo(username);
             this.statusLabel.setText("User found: " + username);
             this.eloLabel.setText(String.valueOf(elo));
         } 

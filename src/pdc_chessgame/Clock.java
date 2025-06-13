@@ -41,6 +41,14 @@ public class Clock extends Thread
         return this.playerTimes[0];
     }
     
+    public void setActive(Team team)
+    {
+        if(team == Team.WHITE)
+            this.activePlayer = 0;
+        else if(team == Team.BLACK)
+            this.activePlayer = 1;
+    }
+    
     public int getBlacksTime()
     {
         return this.playerTimes[1];

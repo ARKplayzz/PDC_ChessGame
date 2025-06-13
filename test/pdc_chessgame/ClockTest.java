@@ -5,11 +5,10 @@
 package pdc_chessgame;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -20,15 +19,7 @@ public class ClockTest {
     public ClockTest() {
     }
     
-    Clock instance = new Clock(25, 2);
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
+    Clock instance = new Clock(1, 2);
     
     @Before
     public void setUp() 
@@ -43,10 +34,39 @@ public class ClockTest {
     }
 
     @Test
-    void testSetTime()
+    public void testSetTime()
     {
         System.out.println("Setting time");
+        instance.setBlacksTime(20);
         
+        assertEquals(20, instance.getBlacksTime(), 0.0);
     }
     
+    @Test
+    public void testSwapClock()
+    {
+        System.out.println("Swapping clock");
+        instance.swapClock();
+        
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException ex) {
+            System.out.println("Error: "+ex.getMessage());
+        }
+        
+        assertNotEquals(20, instance.getTime(), 0.0);
+    }
+    
+    @Test 
+    public void testToString()
+    {
+        System.out.println("toString");
+        instance.setWhitesTime(1*60);
+        instance.setActive(Team.WHITE);
+        
+        String expected = "0:59";
+        String actual = instance.toString();
+        
+        assertEquals(expected, actual);
+    }
 }

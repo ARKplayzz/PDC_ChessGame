@@ -23,9 +23,9 @@ import pdc_chessgame.Database;
  *
  * @author Andrew
  */
-public class NewGamePanel extends JPanel {
-    
-    private final Database database;
+public class NewGamePanel extends JPanel 
+{
+    private Database database;
     private final ChessGame controller;
     private final Runnable backCallback;
     
@@ -43,9 +43,10 @@ public class NewGamePanel extends JPanel {
     
     public NewGamePanel(Database database, ChessGame controller, Runnable backCallback) 
     {
-        this.database = database;
         this.controller = controller;
         this.backCallback = backCallback;
+        
+        this.database = database;
         
         this.timeField = new JTextField("20", 10); // thinner
         this.username1Field = new JTextField(10);  // thinner
@@ -265,10 +266,10 @@ public class NewGamePanel extends JPanel {
             statusLabel.setText("Playing as a Guest");
             statusLabel2.setText("(Game Scores will not be Saved)");
         } 
-        else if (database.playerExists(username)) 
+        else if(this.database.playerExists(username)) 
         {
             statusLabel.setText("Welcome back, " + username + "!");
-            statusLabel2.setText("You currently have " + database.getElo(username) + " Elo");
+            statusLabel2.setText("You currently have " + this.database.getElo(username) + " Elo");
         } 
         else 
         {

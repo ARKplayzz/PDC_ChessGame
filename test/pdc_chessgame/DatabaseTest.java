@@ -5,8 +5,6 @@
 package pdc_chessgame;
 
 // do not delete any dependancies
-import java.sql.Connection;
-import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -77,8 +75,16 @@ public class DatabaseTest {
     {
         System.out.println("Inserting game");
         boolean expected = true;
-        boolean actual = instance.insertGame("TEST_SAVE_191930506432", "John smith", "fakename alias", "Fake path", 58, 57);
+        boolean actual = instance.insertGame("TEST_SAVE_191930506432", "TEST__USER_9@3467%4321", "fakename alias", "Fake path", 58, 57);
         assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void testGetSavesForUser()
+    {
+        System.out.println("Getting saves for user");
+        
+        
     }
     
     @Test

@@ -25,7 +25,7 @@ import pdc_chessgame.Database;
 public class MenuView extends JPanel 
 {
     private final ChessGame controller;
-    private final Database database;
+    private Database database;
     
     // Main menu components
     private final JLabel chessGameTitle;
@@ -43,10 +43,10 @@ public class MenuView extends JPanel
     private RankPanel rankPanel;
     private SavePanel savePanel;
     
-    public MenuView(ChessGame controller) 
+    public MenuView(ChessGame controller, Database database) 
     {
         this.controller = controller;
-        this.database = new Database();
+        this.database = database;
         
         //main menu panels
         this.chessGameTitle = new JLabel("Welcome to Chess");

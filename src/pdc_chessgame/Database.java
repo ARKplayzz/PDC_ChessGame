@@ -387,7 +387,8 @@ public class Database
     }
 
     // Returns the new Elo values for winner and loser after a game, but does not update the DB
-    public int[] calculateEloChange(String winner, String loser) {
+    public int[] calculateEloChange(String winner, String loser) 
+    {
         if (winner == null || loser == null) return new int[]{0, 0};
         if (winner.equalsIgnoreCase("guest") || loser.equalsIgnoreCase("guest")) return new int[]{0, 0};
         if (!playerExists(winner) || !playerExists(loser)) return new int[]{0, 0};
