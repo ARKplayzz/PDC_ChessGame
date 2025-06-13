@@ -36,6 +36,26 @@ public class Clock extends Thread
         return (String)((this.playerTimes[this.activePlayer] / 60) +":"+ ((int)(this.playerTimes[this.activePlayer] % 60)));
     }
     
+    public int getWhitesTime()
+    { // not great if we wanted to add more teams but it seems like we won't be doing that so oh well
+        return this.playerTimes[0];
+    }
+    
+    public int getBlacksTime()
+    {
+        return this.playerTimes[1];
+    }
+    
+    public void setWhitesTime(int time)
+    {
+        this.playerTimes[0] = time;
+    }
+    
+    public void setBlacksTime(int time)
+    {
+        this.playerTimes[1] = time;
+    }
+    
     public int getTime()
     {
         return this.playerTimes[this.activePlayer];
@@ -48,9 +68,10 @@ public class Clock extends Thread
             this.activePlayer++;
         else
             this.activePlayer = 0;
+        
 
         // add 10 seconds to the new active player's time
-        this.playerTimes[this.activePlayer] += 10;
+        //this.playerTimes[this.activePlayer].time += 10;
     }
     
     @Override
@@ -61,7 +82,10 @@ public class Clock extends Thread
         {
             // reduce this players limit
             if(this.playerTimes[this.activePlayer] > 0)
+            {
                 this.playerTimes[this.activePlayer]--;
+                //this.playerTimes[this.activePlayer].time--;
+            }
             
             try { // sleep for 1 second
                 Thread.sleep(1000L);

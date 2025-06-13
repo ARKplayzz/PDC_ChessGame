@@ -77,7 +77,7 @@ public class DatabaseTest {
     {
         System.out.println("Inserting game");
         boolean expected = true;
-        boolean actual = instance.insertGame("TEST_SAVE_191930506432", "John smith", "Moe lester", "Fake path");
+        boolean actual = instance.insertGame("TEST_SAVE_191930506432", "John smith", "fakename alias", "Fake path", 58, 57);
         assertEquals(expected, actual);
     }
     

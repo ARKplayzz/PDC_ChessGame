@@ -342,14 +342,17 @@ public class ManagerView extends JPanel
             teamLabel.setForeground(new Color(255, 255, 255)); 
         }
     }
+    
     public void updateClock(int time, String currentTeam)
     {
         startClock(time, currentTeam);
     }
+    
     private void updateClockLabel() 
     {
         currentPlayerClockLabel.setText("Time: " + formatTime(this.currentTime));
     }
+    
     private void setupButton(JButton button) 
     {
         Color normalBg = new Color(40, 40, 40);
@@ -374,6 +377,7 @@ public class ManagerView extends JPanel
             }
         });
     }
+    
     private String formatTime(int totalSeconds) 
     {
         int mins = totalSeconds / 60;

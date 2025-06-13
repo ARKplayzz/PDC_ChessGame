@@ -59,7 +59,7 @@ public class SaveManager
         }
     }
     
-    public void SaveGameToUser(HashMap<Team, Player> players, Turn history)
+    public void SaveGameToUser(HashMap<Team, Player> players, Turn history, Clock clock)
     {
         PrintWriter pw;
         
@@ -100,7 +100,8 @@ public class SaveManager
                     Database db = new Database();
                     // Only insert if not already present
                     if (!db.gameExists(saveName)) {
-                        db.insertGame(saveName, player1, player2, saveFile);
+                        
+                        db.insertGame(saveName, player1, player2, saveFile, clock.getWhitesTime(), clock.getBlacksTime());
                     }
                     db.terminate();
                 }
@@ -205,7 +206,7 @@ public class SaveManager
      * Returns true if successful, false otherwise.
      * players will be filled with the loaded players.
      */
-    public boolean loadAndRemoveSaveFile(String saveFile, HashMap<Team, Player> players, ChessBoard boardToSimulate) {
+    public boolean loadAndRemoveSaveFile(String saveFile, HashMap<Team, Player> players, ChessBoard boardToSimulate, Clock clock) {
         boolean loaded = this.LoadGameFromFile(saveFile, players);
         if (!loaded || !players.containsKey(Team.WHITE) || !players.containsKey(Team.BLACK)) {
             System.out.println("Error: Save file missing player(s), cannot load.");
@@ -219,6 +220,9 @@ public class SaveManager
             if (saveName.endsWith(".sav")) {
                 saveName = saveName.substring(0, saveName.length() - 4);
             }
+            clock.setWhitesTime(db.getPlayer1Time(saveName));
+            clock.setBlacksTime(db.getPlayer2Time(saveName));
+            
             db.deleteGames(saveName);
             db.terminate();
         } catch (Exception e) {

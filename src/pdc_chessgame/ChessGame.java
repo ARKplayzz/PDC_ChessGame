@@ -61,6 +61,7 @@ public class ChessGame implements ControllerManagerActions
     }
 
     // undo the last move in the current game
+    @Override
     public void currentGameUndo()
     {
         this.game.undoMove();
@@ -69,6 +70,7 @@ public class ChessGame implements ControllerManagerActions
     }
 
     // Handles resignation
+    @Override
     public void currentGameResignation()
     {
         this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
@@ -91,10 +93,11 @@ public class ChessGame implements ControllerManagerActions
     }
 
     // Saves the current game and returns to menu
+    @Override
     public void currentGameSaveAndQuit()
     {
         // Only this method should ever call SaveGameToUser!
-        this.store.SaveGameToUser(game.getPlayers(), game.getBoardHistory());
+        this.store.SaveGameToUser(game.getPlayers(), game.getBoardHistory(), this.game.getClock());
         this.endGame();
     }
 
@@ -164,7 +167,8 @@ public class ChessGame implements ControllerManagerActions
             db.updateEloAfterGame(winner, loser);
         }
 
-        managerView.setPlayersAndMenuView(
+        managerView.setPlayersAndMenuView
+        (
             this.game.getPlayers().get(Team.WHITE).getName(),
             this.game.getPlayers().get(Team.BLACK).getName(),
             this.menuView
@@ -197,7 +201,7 @@ public class ChessGame implements ControllerManagerActions
     {
         HashMap<Team, Player> players = new HashMap<>();
         GameManager tempGame = new GameManager(players);
-        boolean loadedSuccessfully = store.loadAndRemoveSaveFile(saveFile, players, tempGame.board);
+        boolean loadedSuccessfully = store.loadAndRemoveSaveFile(saveFile, players, tempGame.board, tempGame.getClock());
         if (!loadedSuccessfully) 
         {
             return false;
@@ -206,9 +210,11 @@ public class ChessGame implements ControllerManagerActions
         clear();
         this.game = new GameManager(players);
         this.game.board = tempGame.board;
+        this.game.setClock(tempGame.getClock());
 
         this.boardView = new ChessBoardView(this);
         this.display.addChessBoard(boardView);
+       
 
         this.managerView.setPlayersAndMenuView(
             players.get(Team.WHITE).getName(),

@@ -48,6 +48,16 @@ public class GameManager
         this.clock.start();
     }
     
+    public Clock getClock()
+    {
+        return this.clock;
+    }
+    
+    public void setClock(Clock clock)
+    {
+        this.clock = clock;
+    }
+    
     public MoveResult makeMove(Move move) 
     {
         Team currentTeam = board.getCurrentTeam();

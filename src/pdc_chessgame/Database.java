@@ -30,6 +30,9 @@ public class Database
 
     private final String URL =  "jdbc:derby:ChessDB;create=true";
     
+    // Use 1 as the starting Elo minimum
+    public static final int START_ELO = 100;
+    
     private Connection connection;
     private Statement statement;
     
@@ -134,6 +137,32 @@ public class Database
         return this.checkExists("GAMES", "name", name);
     }
     
+    public int getPlayer1Time(String name)
+    {
+        ResultSet rs = this.executeQuery("SELECT * FROM GAMES WHERE name = '"+name+"'");
+        try {
+            if (rs.next()) {
+                return rs.getInt("player_1_time");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error while getting time "+ex.getMessage());
+        }
+        return 5;
+    }
+    
+    public int getPlayer2Time(String name)
+    {
+        ResultSet rs = this.executeQuery("SELECT * FROM GAMES WHERE name = '"+name+"'");
+        try {
+            if (rs.next()) {
+                return rs.getInt("player_2_time");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error while getting time "+ex.getMessage());
+        }
+        return 5;
+    }
+    
     public ResultSet getLeaderboard()
     {
         return this.executeQuery("SELECT name, elo, games_won, games_lost FROM PLAYERS ORDER BY elo DESC");
@@ -151,11 +180,11 @@ public class Database
     
     // insert a new game, NOTE I WILL BE ASSUMING player1 IS WHITE
     // Add filePath parameter for directory column
-    public boolean insertGame(String saveName, String player1, String player2, String filePath)
+    public boolean insertGame(String saveName, String player1, String player2, String filePath, int player1time, int player2time)
     {
         // name = saveName, player_1 = player1, player_2 = player2, directory = filePath
         return this.executeSQL("INSERT INTO GAMES "+
-                "VALUES ('"+saveName+"','"+player1+"','"+player2+"','"+filePath+"')");
+                "VALUES ('"+saveName+"','"+player1+"','"+player2+"','"+filePath+"',"+player1time+","+player2time+")");
     }
     
     public String getPlayer1(String save)
@@ -295,7 +324,9 @@ public class Database
             + "  (name           VARCHAR(25) NOT NULL PRIMARY KEY,"
             + "   player_1       VARCHAR(25),"
             + "   player_2       VARCHAR(25),"
-            + "   directory      VARCHAR(35))";
+            + "   directory      VARCHAR(35),"
+            + "   player_1_time  INTEGER,"
+            + "   player_2_time  INTEGER)";
         
         this.executeSQL(createGames);
     }
@@ -355,9 +386,6 @@ public class Database
         return this.connection;
     }
 
-    // Use 1 as the starting Elo minimum
-    public static final int START_ELO = 1;
-
     // Returns the new Elo values for winner and loser after a game, but does not update the DB
     public int[] calculateEloChange(String winner, String loser) {
         if (winner == null || loser == null) return new int[]{0, 0};
@@ -391,8 +419,8 @@ public class Database
         if (!playerExists(winner) || !playerExists(loser)) 
             return;
 
-        int winnerEloBefore = this.getElo(winner);
-        int loserEloBefore = this.getElo(loser);
+        //int winnerEloBefore = this.getElo(winner);
+        //int loserEloBefore = this.getElo(loser);
 
         int[] newElos = calculateEloChange(winner, loser);
         int newWinnerElo = newElos[0];

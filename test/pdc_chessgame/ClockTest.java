@@ -4,7 +4,6 @@
  */
 package pdc_chessgame;
 
-import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,42 +15,38 @@ import static org.junit.Assert.*;
  *
  * @author finla
  */
-public class PieceTest {
+public class ClockTest {
     
-    ChessBoard board = new ChessBoard(8, 8);
-    Queen queen = new Queen(1, 1, Team.WHITE);
-    
-    public PieceTest() {
+    public ClockTest() {
     }
     
+    Clock instance = new Clock(25, 2);
+    
     @BeforeClass
-    public static void setUpClass() 
-    {
-        
+    public static void setUpClass() {
     }
     
     @AfterClass
-    public static void tearDownClass() 
-    {
-        
+    public static void tearDownClass() {
     }
     
     @Before
     public void setUp() 
     {
-        
-    }
-    
-    @Test
-    public void testMoveQueen()
-    {
-        System.out.println("Testing queen movement");
-        List<Tile> list = queen.canMove(board);
-        
+        instance.start();
     }
     
     @After
     public void tearDown() 
     {
+        instance.terminate();
     }
+
+    @Test
+    void testSetTime()
+    {
+        System.out.println("Setting time");
+        
+    }
+    
 }
