@@ -102,6 +102,7 @@ public class GameManager
     {
         this.board.undoMove();
         this.board.getNextTurn();
+        this.clock.swapClock(); // Flip the clock when undoing a move
     }
     
     // get the player for this team

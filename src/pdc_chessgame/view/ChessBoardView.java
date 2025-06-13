@@ -281,6 +281,7 @@ public class ChessBoardView extends JPanel
 
         this.repaint();
 
+        gameEnded = true; // Ensure gameEnded is set when overlay is shown
     }
     
     private void updateOverlaySize() 
@@ -428,10 +429,16 @@ public class ChessBoardView extends JPanel
         
         // Hide glass pane overlay if it exists
         JRootPane rootPane = SwingUtilities.getRootPane(this);
-        if (rootPane != null && rootPane.getGlassPane().isVisible()) {
+        if (rootPane != null && rootPane.getGlassPane().isVisible()) 
+        {
             rootPane.getGlassPane().setVisible(false);
         }
         
         clearSelection();
+    }
+    
+    public void setGameEnded(boolean ended) 
+    {
+        this.gameEnded = ended;
     }
 }

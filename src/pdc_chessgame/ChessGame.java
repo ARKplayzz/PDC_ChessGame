@@ -8,7 +8,7 @@ import pdc_chessgame.view.ChessBoardView;
 import pdc_chessgame.view.ControllerManagerActions;
 import pdc_chessgame.view.manager.ManagerView;
 import pdc_chessgame.view.MasterFrame;
-import pdc_chessgame.view.SideBar;
+import pdc_chessgame.view.SideBarPanel;
 import pdc_chessgame.view.menu.MenuView;
 
 /**
@@ -24,14 +24,14 @@ public class ChessGame implements ControllerManagerActions
     private ChessBoardView boardView;
     private final MenuView menuView;
     private final ManagerView managerView;
-    private final SideBar sideBar;
+    private final SideBarPanel sideBar;
     private final MasterFrame display;
 
     public ChessGame()
     {
         this.menuView = new MenuView(this);
         this.managerView = new ManagerView(this);
-        this.sideBar = new SideBar(this.menuView, this.managerView);
+        this.sideBar = new SideBarPanel(this.menuView, this.managerView);
         this.display = new MasterFrame(this.sideBar);
     } 
 
@@ -63,6 +63,7 @@ public class ChessGame implements ControllerManagerActions
     {
         this.game.undoMove();
         this.boardView.updateBoard();
+        this.boardView.clearSelection();
         updateDisplay();
     }
 
@@ -70,6 +71,7 @@ public class ChessGame implements ControllerManagerActions
     public void currentGameResignation()
     {
         this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
+        this.boardView.setGameEnded(true); // Block further input
         handleGameOver();
     }
     
@@ -85,6 +87,7 @@ public class ChessGame implements ControllerManagerActions
     public void currentGameClockEnd()
     {
         this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
+        this.boardView.setGameEnded(true); // Block further input
         handleGameOver();
     }
 

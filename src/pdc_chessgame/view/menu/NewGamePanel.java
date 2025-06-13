@@ -384,10 +384,12 @@ public class NewGamePanel extends JPanel {
         }
 
         // Ensure users exist in database (except guest)
-        if (!user1.equalsIgnoreCase("guest") && !database.playerExists(user1)) {
+        if (!user1.equalsIgnoreCase("guest") && !database.playerExists(user1)) 
+        {
             database.addPlayer(user1, Database.START_ELO);
         }
-        if (!user2.equalsIgnoreCase("guest") && !database.playerExists(user2)) {
+        if (!user2.equalsIgnoreCase("guest") && !database.playerExists(user2)) 
+        {
             database.addPlayer(user2, Database.START_ELO);
         }
 
