@@ -323,8 +323,10 @@ public class NewGamePanel extends JPanel {
             return;
         }
         if (user1.equals(user2)) {
-            showWarning("You can't play against yourself! Try using a 'Guest'.");
-            return;
+            if (!user1.equalsIgnoreCase("guest")) {
+                showWarning("You can't play against yourself! Try using a 'Guest'.");
+                return;
+            }
         }
         if (user1.contains(" ")) {
             showWarning("Player 1 username cannot contain spaces.");
@@ -334,11 +336,12 @@ public class NewGamePanel extends JPanel {
             showWarning("Player 2 username cannot contain spaces.");
             return;
         }
-        if (user1.length() < 4) {
+        // Skip length checks for "guest"
+        if (!user1.equalsIgnoreCase("guest") && user1.length() < 4) {
             showWarning("Player 1 username must be at least 4 characters.");
             return;
         }
-        if (user2.length() < 4) {
+        if (!user2.equalsIgnoreCase("guest") && user2.length() < 4) {
             showWarning("Player 2 username must be at least 4 characters.");
             return;
         }
@@ -351,8 +354,6 @@ public class NewGamePanel extends JPanel {
             return;
         }
         if (user1.equalsIgnoreCase("guest") && user2.equalsIgnoreCase("guest")) {
-            showWarning("At least one player must use a non-guest username.");
-            return;
         }
 
         // Time validation
@@ -390,15 +391,9 @@ public class NewGamePanel extends JPanel {
             database.addPlayer(user2, Database.START_ELO);
         }
 
-        // Defensive: check controller is not null before calling createGame
-        if (this.controller == null) {
-            showWarning("Internal error: ChessGame controller is not set.");
-            return;
-        }
-
         // All checks passed, start game
         this.controller.createGame(user1, user2, time);
-        clearInputs(); // Clear input fields after starting a game
+        clearInputs(); // Clear after starting a game
         backCallback.run();
     }
     

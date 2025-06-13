@@ -21,8 +21,6 @@ public class GameManager
     
     private Clock clock;
         
-    private final InputHandler inputHandler = new InputHandler(null);
-
     public GameManager(String p1, String p2, int time) 
     {
         this.board = new ChessBoard(8, 8);

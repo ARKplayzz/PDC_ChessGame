@@ -23,9 +23,10 @@ import pdc_chessgame.Pawn;
 
 /**
  *
- * @author ARKen
+ * @author Andrew
  */
-public class ChessBoardView extends JPanel {
+public class ChessBoardView extends JPanel 
+{
     
     private ChessGame controller;
     private JButton[][] boardTileButtons;

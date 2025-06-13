@@ -6,7 +6,7 @@ package pdc_chessgame;
 import java.util.HashMap;
 import pdc_chessgame.view.ChessBoardView;
 import pdc_chessgame.view.ControllerManagerActions;
-import pdc_chessgame.view.ManagerView;
+import pdc_chessgame.view.manager.ManagerView;
 import pdc_chessgame.view.MasterFrame;
 import pdc_chessgame.view.SideBar;
 import pdc_chessgame.view.menu.MenuView;
@@ -29,12 +29,10 @@ public class ChessGame implements ControllerManagerActions
 
     public ChessGame()
     {
-        System.out.println("=== Initializing Chess Database... ===");
         this.menuView = new MenuView(this);
         this.managerView = new ManagerView(this);
         this.sideBar = new SideBar(this.menuView, this.managerView);
         this.display = new MasterFrame(this.sideBar);
-        System.out.println("=== Chess Database initialized. ===");
     } 
 
     //Starts the application and shows the menu

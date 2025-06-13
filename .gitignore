@@ -7,3 +7,4 @@
 # this is for ignoring saves
 *.sav
 /nbproject/
+/dist/
