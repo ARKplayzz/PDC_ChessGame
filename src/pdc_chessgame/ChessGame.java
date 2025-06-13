@@ -152,18 +152,8 @@ public class ChessGame implements ControllerManagerActions
             winnerTeam = "WHITE";
         }
 
-        // ensure both winner and loser exist in the database (add if missing, not guest)
-        if (!winner.equalsIgnoreCase("guest") && !this.database.playerExists(winner)) 
-        {
-            this.database.addPlayer(winner, Database.START_ELO);
-        }
-        if (!loser.equalsIgnoreCase("guest") && !this.database.playerExists(loser)) 
-        {
-            this.database.addPlayer(loser, Database.START_ELO);
-        }
-
         // update Elo if both are not guest
-        if (!winner.equalsIgnoreCase("guest") && !loser.equalsIgnoreCase("guest")) 
+        if (!winner.equalsIgnoreCase("guest") || !loser.equalsIgnoreCase("guest"))
         {
             this.database.updateEloAfterGame(winner, loser);
         }
@@ -175,12 +165,15 @@ public class ChessGame implements ControllerManagerActions
             this.menuView
         );
         
-        int whiteElo = this.database.getElo(game.getPlayers().get(Team.WHITE).getName());
-        int blackElo = this.database.getElo(game.getPlayers().get(Team.BLACK).getName());
+        // Show "-" for guest Elo, otherwise show the actual EloAdd commentMore actions
+        String whiteName = this.game.getPlayers().get(Team.WHITE).getName();
+        String blackName = this.game.getPlayers().get(Team.BLACK).getName();
+        String whiteEloStr = whiteName.equalsIgnoreCase("guest") ? "-" : String.valueOf(this.database.getElo(whiteName));
+        String blackEloStr = blackName.equalsIgnoreCase("guest") ? "-" : String.valueOf(this.database.getElo(blackName));
         
         this.managerView.showGameOverPanel(winnerTeam, 
-            this.game.getPlayers().get(Team.WHITE).getName(), whiteElo,
-            this.game.getPlayers().get(Team.BLACK).getName(), blackElo);
+            whiteName, whiteEloStr,
+            blackName, blackEloStr);
     }
 
     public ChessBoard getBoard() 
