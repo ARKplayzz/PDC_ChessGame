@@ -17,13 +17,13 @@ import javax.swing.SwingConstants;
 import pdc_chessgame.ChessGame;
 import pdc_chessgame.Database;
 
-
 /**
  *
  * @author Andrew
  */
-public class MenuView extends JPanel {
-    
+
+public class MenuView extends JPanel 
+{
     private final ChessGame controller;
     private final Database database;
     
@@ -195,7 +195,8 @@ public class MenuView extends JPanel {
         this.repaint();
     }
 
-    public Database getDatabase() {
+    public Database getDatabase() 
+    {
         return this.database;
     }
 }

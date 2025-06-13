@@ -12,12 +12,12 @@ import java.awt.*;
  *
  * @author ARKen
  */
-public class SideBar extends JPanel {
+public class SideBarPanel extends JPanel {
 
     private JPanel menuPanel;
     private JPanel managerPanel;
     
-    public SideBar(JPanel menuPanel, JPanel managerPanel)
+    public SideBarPanel(JPanel menuPanel, JPanel managerPanel)
     {
         this.setBackground(new Color(30, 30, 30));
         this.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30, 2)));
