@@ -3,334 +3,222 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package pdc_chessgame;
-
 import java.util.HashMap;
+import pdc_chessgame.view.ChessBoardView;
+import pdc_chessgame.view.ControllerManagerActions;
+import pdc_chessgame.view.manager.ManagerView;
+import pdc_chessgame.view.MasterFrame;
+import pdc_chessgame.view.SideBarPanel;
+import pdc_chessgame.view.menu.MenuView;
 
 /**
  *
  * @author Andrew & Finlay
  */
-public class ChessGame 
+public class ChessGame implements ControllerManagerActions 
 {
-    // Do not make the board final please
-    private ChessBoard board;
-    // hashmap of the players and teams
-    private final HashMap<Team, Player> players;
-    
-    // the leaderboard
-    private final Ranking leaderboard;
-    
-    // the savemanager and clock
-    private SaveManager savemanager;
-    private Clock clock;
-    
-    public final Display display = new Display();
-    
-    //private final GameMenu menu = new GameMenu();
-    private final InputHandler inputHandler = new InputHandler(null);
+    GameManager game;
+    SaveGameInterface store = new SaveManager();
 
-    public ChessGame() 
+    // views/GUI inits
+    private ChessBoardView boardView;
+    private final MenuView menuView;
+    private final ManagerView managerView;
+    private final SideBarPanel sideBar;
+    private final MasterFrame display;
+    private Database database;
+
+    public ChessGame()
     {
-        this.board = new ChessBoard(8, 8);
-        this.leaderboard = new Ranking();
-        this.savemanager = new SaveManager();
-        
-        this.players = new HashMap<>(); // player count for flexabuility in assignement 2
+        this.database = new Database();
+        this.menuView = new MenuView(this, this.database);
+        this.managerView = new ManagerView(this);
+        this.sideBar = new SideBarPanel(this.menuView, this.managerView);
+        this.display = new MasterFrame(this.sideBar);
+    } 
 
-        players.put(Team.WHITE, new Player("Guest 1", Team.WHITE));
-        players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));
-        
-        this.leaderboard.getLeaderboard();
+    //Starts the application and shows the menu
+    public void start()
+    {
+        this.display.visible(true);
+        this.sideBar.displayMenu();
+    }
+
+    // Creates a new game with given player names and time
+    public void createGame(String p1, String p2, int time)
+    {
+        clear();
+        this.game = new GameManager(p1, p2, time);
+        this.boardView = new ChessBoardView(this);
+        this.display.addChessBoard(boardView);
+
+        this.managerView.setPlayersAndMenuView(p1, p2, this.menuView);
+
+        this.game.start();
+        updateDisplay();
+        this.managerView.showGamePanel();
+        this.sideBar.displayManager();
+    }
+
+    // undo the last move in the current game
+    @Override
+    public void currentGameUndo()
+    {
+        this.game.undoMove();
+        this.boardView.updateBoard();
+        this.boardView.clearSelection();
+        updateDisplay();
+    }
+
+    // Handles resignation
+    @Override
+    public void currentGameResignation()
+    {
+        this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
+        this.boardView.setGameEnded(true); // Block further input
+        handleGameOver();
     }
     
-    public void start() // this is recursive so it will start again after a game has finished
+    // Handles game loss
+    @Override
+    public void currentGameExit()
     {
-        
-        // reset the board, this is so 
-        this.board = new ChessBoard(8, 8);
-        this.board.getHistory().deleteMoveHistory();
-        display.displayWelcome(); 
-        // get the users choice
-        MenuOption userSelection = display.gameMenu.displayMenu(this.leaderboard, this.savemanager, this.players);
-        // start load or quit
-        if (userSelection == MenuOption.START_GAME) 
+        endGame();
+    }
+    
+    // Handles running out of time loss
+    @Override
+    public void currentGameClockEnd()
+    {
+        this.boardView.showGameOverOverlay(game.getBoardCurrentTeam().getOppositeTeam().toString());
+        this.boardView.setGameEnded(true); // Block further input
+        handleGameOver();
+    }
+
+    // Saves the current game and returns to menu
+    @Override
+    public void currentGameSaveAndQuit()
+    {
+        // Only this method should ever call SaveGameToUser!
+        this.store.SaveGameToUser(game.getPlayers(), game.getBoardHistory(), this.game.getClock(), this.database);
+        this.endGame();
+    }
+
+    // ends the current game and returns to menu
+    private void endGame()
+    {
+        this.display.addChessBoard(null);
+        this.sideBar.displayMenu();
+        clear();
+    }
+
+    //Passes a move to the game, updates board, and calls checkmate if needed
+    public MoveResult passMove(Move move) 
+    {
+        MoveResult result = game.makeMove(move);
+        this.boardView.updateBoard();
+        updateDisplay();
+
+        if (result == MoveResult.CHECKMATE)
         {
-            initialisePlayers();
-            
-            customiseClock();
-            
-            gameLoop();
-                    
-            start();
+            handleGameOver();
+        }
+        return result;
+    }
+
+    //Updates move history, current team, and clock in the manager view
+    private void updateDisplay()
+    {
+        this.managerView.updateMoveHistory(this.game.getBoardHistoryString());
+        this.managerView.updateCurrentTeam(this.game.getBoardCurrentTeam().toString());
+        this.managerView.updateClock(this.game.getCurrentplayerTime(), this.game.getBoardCurrentTeam().toString());
+    }
+
+    // handles Elo, database, and game over panel logic for both resignation and checkmate
+    private void handleGameOver()
+    {
+        String loserTeam = this.game.getBoardCurrentTeam().toString();
+        String winner, loser, winnerTeam;
+        if (loserTeam.equalsIgnoreCase("WHITE")) 
+        {
+            loser = this.game.getPlayers().get(Team.WHITE).getName();
+            winner = this.game.getPlayers().get(Team.BLACK).getName();
+            winnerTeam = "BLACK";
         } 
-        else if(userSelection == MenuOption.LOAD_SAVE)
-        { 
-            this.savemanager.simulateGame(this.board);
-            // I'm not bothering to save the clock because they might want to alter it + it's a bunch of effort for something irrelevent
-            customiseClock();
-            gameLoop();
-            start();
-        }
-        else if (userSelection == MenuOption.EXIT) 
+        else 
         {
-            Display.displayExit();
-            System.exit(0);
+            loser = this.game.getPlayers().get(Team.BLACK).getName();
+            winner = this.game.getPlayers().get(Team.WHITE).getName();
+            winnerTeam = "WHITE";
         }
-    }
-    
-    private void gameLoop() // This is the actaul main loop of the program
-    {
-        board.displayBoard();
-        this.clock.start(); // start the clock
-        
-        while (true) 
-        {           
-            Team currentTeam = board.getCurrentTeam();
-            Team enemyTeam = currentTeam.getOppositeTeam();
 
-            Player currentPlayer = getPlayerInTeam(currentTeam);
+        // update Elo if both are not guest
+        if (!winner.equalsIgnoreCase("guest") || !loser.equalsIgnoreCase("guest"))
+        {
+            this.database.updateEloAfterGame(winner, loser);
+        }
 
-            Move moveSet = getPlayerTurn(currentPlayer); //gets player move
-
-            if (moveSet == null)  //if player exits game (RESIGNATION)
-            {
-                display.displayResignation(currentTeam);
-                break;
-            }
-            
-            if(clock.getTime() < 1) // after the player enters his commmand check to see if he ran out of time during the wait
-            {
-                display.displayTimeOver(currentTeam);
-                break;
-            }
-
-            board.moveTile(moveSet); // Player move
-
-            if (board.isInCheck(currentTeam)) // is Player move in check
-            {
-                board.undoMove();
-                display.displayInCheckWarning(); 
-            }
-            else 
-            {
-                if (board.isCheckmate(enemyTeam)) { // ends game (CHECKMATE)
-                    display.displayGameOver(currentTeam);
-                    break;
-                }
-                else if (board.isInCheck(enemyTeam)) { // warns player of invalid move due to check
-                    display.displayInCheckNotification(enemyTeam);
-                }
-                if (board.isPawnPromotable()) { // Gets user input for PawnPromotion
-                    PawnOption promotionPiece = display.getPromotionPiece(currentTeam, currentPlayer);
-                    if (promotionPiece == PawnOption.EXIT_GAME) 
-                    {
-                        display.displayResignation(currentTeam);
-                        break;
-                    }
-                    else
-                    {
-                        board.promotePawn(promotionPiece);
-                    }
-                }
-                board.getNextTurn(); //next turn
-                this.clock.swapClock();
-                board.displayBoard();
-            } 
-        }    
+        managerView.setPlayersAndMenuView
+        (
+            this.game.getPlayers().get(Team.WHITE).getName(),
+            this.game.getPlayers().get(Team.BLACK).getName(),
+            this.menuView
+        );
         
-        this.clock.terminate(); // end the clock
-            
-        Player winner = getPlayerInTeam(board.getCurrentTeam().getOppositeTeam());
-        Player loser = getPlayerInTeam(board.getCurrentTeam());
-        double[] eloChanges = this.leaderboard.changeElo(winner.getName(), loser.getName()); // change the elos of the players
+        // Show "-" for guest Elo, otherwise show the actual EloAdd commentMore actions
+        String whiteName = this.game.getPlayers().get(Team.WHITE).getName();
+        String blackName = this.game.getPlayers().get(Team.BLACK).getName();
+        String whiteEloStr = whiteName.equalsIgnoreCase("guest") ? "-" : String.valueOf(this.database.getElo(whiteName));
+        String blackEloStr = blackName.equalsIgnoreCase("guest") ? "-" : String.valueOf(this.database.getElo(blackName));
         
-        int[] newElos = {this.leaderboard.getElo(winner.getName()), this.leaderboard.getElo(loser.getName())};
-        
-        display.displayEloChange(winner, loser, eloChanges, newElos);
-        
-        //saving scores to the file just before the program exits
-        this.leaderboard.saveScores();
-        
-        players.clear();
-        players.put(Team.WHITE, new Player("Guest 1", Team.WHITE));
-        players.put(Team.BLACK, new Player("Guest 2", Team.BLACK));
-    }
-    
-    private void initialisePlayers() //alows for multiple player support for assignment 2...
-    {
-        for (Team team : players.keySet()) 
-        {
-            playerLogin(players.get(team));
-        }
-        System.out.println("----------------------------------------------------");
-    }
-    
-    private void playerLogin(Player player) // this is the function that asks for your usernames
-    {
-        
-        String userInput = display.displayPlayerLogin(player.getTeam(), player.getName());
-
-        if (userInput.length() > 16) 
-        {
-            System.out.println("Please keep your username within 16 characters long");
-            return;
-        }
-        
-        if(userInput.contains("$"))
-        {
-            System.out.println("Please do not include '$' in your name");
-            playerLogin(player);
-            return;
-        }
-        
-        if(userInput.toUpperCase().contains("BLACK") || userInput.toUpperCase().contains("WHITE"))
-        {
-            System.out.println("Please refrain from using team names as logins");
-            playerLogin(player);
-            return;
-        }
-        
-        if(userInput.toUpperCase().equals("X"))
-        {
-            Display.displayExit();
-            System.exit(0);
-            return;
-        }
-        
-        if (userInput.toUpperCase().equals("GUEST"))
-        {   
-            System.out.println("----------------------------------------------------");
-            System.out.println("PROCEEDING AS: " + player.getName());
-            return;
-        }
-        System.out.println("----------------------------------------------------");
-        System.out.println("YOU HAVE SELECTED ["+ userInput + "]\n");
-        
-        if (this.leaderboard.hasPlayed(userInput) == false)
-        {
-            System.out.println("This account has not played before. By continuing,");
-            System.out.println("you will be granted with a base rank of 100 Elo");
-        }
-        else
-        {
-            System.out.println("This account currently has " + this.leaderboard.getElo(userInput) + " Elo");
-        }
-        System.out.println("");
-        
-        if (inputHandler.confirmAction("Confirm this selection is correct "))
-        {
-            player.setName(userInput);
-            System.out.println("----------------------------------------------------");
-            System.out.println("PROCEEDING AS: " + player.getName());
-            
-            if(this.leaderboard.hasPlayed(userInput) == false)
-                this.leaderboard.isNewUser(userInput);
-            return;
-        }
-        playerLogin(player);
-    }
-    
-    private void customiseClock()
-    {
-        int timeLimit = display.getClockTimeLimit();
-        System.out.println("Set players time limit as " + timeLimit + " minutes.");
-        System.out.println("----------------------------------------------------");
-        
-        this.clock = new Clock(timeLimit, 2);
-    }
-    
-    private Move getPlayerTurn(Player player)
-    {
-        String playerInput = display.displayPlayerMove(player, this.clock);
- 
-        if (playerInput.toUpperCase().trim().equals("X"))
-        {
-            return null;  //end
-        }
-        
-        if(playerInput.toUpperCase().trim().equals("T"))
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println("Remaining time: " +clock.toString());
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if (playerInput.toUpperCase().equals("H"))
-        {
-            display.displayHelp();
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if(playerInput.toUpperCase().equals("S"))
-        { // save the game
-            this.saveGame();
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if(playerInput.toUpperCase().equals("MH"))
-        { // show move history
-            display.printHistory(this.board);
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if(playerInput.toUpperCase().equals("B"))
-        {
-            this.board.displayBoard();
-            return getPlayerTurn(player);  //try again
-        }
-        
-        Move moveSet = MoveInput.getMoveInput(playerInput.trim().toUpperCase());
-        
-        if (moveSet == null)
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println("'"+playerInput+ "' Is not a valid chess Input, Eg 'A1 B2'");
-            
-            return getPlayerTurn(player);  //try again
-        }
-        
-        if (!isValidMove(moveSet, player.getTeam(), playerInput)) 
-        {
-            return getPlayerTurn(player);
-        }
-        
-        System.out.println("----------------------------------------------------");        
-        return moveSet;
+        this.managerView.showGameOverPanel(winnerTeam, 
+            whiteName, whiteEloStr,
+            blackName, blackEloStr);
     }
 
-    private void saveGame() /// will prompt the user to save the game
+    public ChessBoard getBoard() 
     {
-        String fileName = display.getSaveFileName();
-        boolean success = this.savemanager.SaveGameToFile(fileName, this.board.getHistory(), this.players);
-        display.displaySaveResult(success, fileName);
+        if (this.game != null) {
+            return this.game.board;
+        }
+        return null;
     }
-    
-    private boolean isValidMove(Move move, Team team, String input) 
+
+    private void clear()
     {
-        if (board.getTile(move.getFromX(), move.getFromY()) == null || board.getTile(move.getFromX(), move.getFromY()).getPiece() == null) 
+        this.game = null;
+        this.boardView = null;
+    }
+
+    // loads a game from a save file (filename only no extension)
+    public boolean loadGameFromSaveFile(String saveFile) 
+    {
+        HashMap<Team, Player> players = new HashMap<>();
+        GameManager tempGame = new GameManager(players);
+        boolean loadedSuccessfully = store.loadAndRemoveSaveFile(saveFile, players, tempGame.board, tempGame.getClock(), this.database);
+        if (!loadedSuccessfully) 
         {
-            System.out.println("----------------------------------------------------");
-            System.out.println(input.charAt(0) +""+ input.charAt(1) + " Does not contain a piece, Eg 'A1 B2'");
             return false;
         }
-        Piece piece = board.getTile(move.getFromX(), move.getFromY()).getPiece();
-        if (piece.getPieceTeam() != team) 
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println(input.charAt(0) +""+ input.charAt(1) + " Is not your Piece, please try again");
-            return false;
-        }
-        if (!piece.canMove(board).contains(board.getTile(move.getToX(), move.getToY()))) 
-        {
-            System.out.println("----------------------------------------------------");
-            System.out.println(input + " is an invalid move for this piece, try again");
-            return false;
-        }
+
+        clear();
+        this.game = new GameManager(players);
+        this.game.board = tempGame.board;
+        this.game.setClock(tempGame.getClock());
+
+        this.boardView = new ChessBoardView(this);
+        this.display.addChessBoard(boardView);
+       
+
+        this.managerView.setPlayersAndMenuView(
+            players.get(Team.WHITE).getName(),
+            players.get(Team.BLACK).getName(),
+            this.menuView
+        );
+
+        updateDisplay();
+        this.managerView.showGamePanel();
+        this.sideBar.displayManager();
         return true;
     }
-    
-    private Player getPlayerInTeam(Team team) 
-    { // get the player for this team
-        return players.get(team);
-    }    
 }

@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +24,7 @@ import java.util.logging.Logger;
  */
 
 // this class manages saving and loading the game
-public class SaveManager 
+public class SaveManager implements SaveGameInterface
 {
     // the commands from movehistory are loaded into here in order
     // DO NOT MAKE THIS FINAL
@@ -57,6 +59,58 @@ public class SaveManager
         }
     }
     
+    @Override
+    public void SaveGameToUser(HashMap<Team, Player> players, Turn history, Clock clock, Database db)
+    {
+        PrintWriter pw;
+        
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm"); //format may be modified if format is to hard to sort
+        
+        // add the actaul file extension, this is so the .gitignore will work and the markers won't end up with our saves in their copy
+        String saveFile = currentDateTime.format(dateFormat).concat(".sav");
+        
+        try {
+            pw = new PrintWriter(new FileOutputStream(saveFile));
+        } 
+        catch (FileNotFoundException ex) 
+        {
+            System.out.println("Failed to create file, game has not been saved");
+            return;
+        }
+        //save the game
+        
+        for(int i = 0; i < history.getMoveCount(); i++)
+        { // print all of the players commands into the terminal
+            pw.println(history.getHistoryEntry(i).getStringInput());
+        }
+        
+        //exit & save
+        pw.close();
+        
+        // Add to database under both players' usernames
+        try {
+            // Only add to DB if both players are not guests
+            String player1 = players.get(Team.WHITE) != null ? players.get(Team.WHITE).getName() : null;
+            String player2 = players.get(Team.BLACK) != null ? players.get(Team.BLACK).getName() : null;
+            if (player1 != null && player2 != null) {
+                if (!player1.equalsIgnoreCase("guest") || !player2.equalsIgnoreCase("guest")) {
+                    // Save name for DB is the filename without extension
+                    String saveName = saveFile.replace(".sav", "");
+                    // File path is just the filename here (could be a directory if needed)
+                    // Only insert if not already present
+                    if (!db.gameExists(saveName)) {
+                        
+                        db.insertGame(saveName, player1, player2, saveFile, clock.getWhitesTime(), clock.getBlacksTime());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Warning: Could not add save to database: " + e.getMessage());
+        }
+    }
+    
+    //legacy game saver
     public boolean SaveGameToFile(String file, Turn history, HashMap<Team, Player> players)
     {
         PrintWriter pw;
@@ -83,13 +137,6 @@ public class SaveManager
         }
         //save the game
         
-        // Print all the players names onto the first line of the save file
-        for(Map.Entry<Team, Player> entry : players.entrySet())
-        {
-            // the $ is to denote that this line should be interpreted as a player
-            pw.println("$"+(String)entry.getValue().getName() + " " +(String)entry.getKey().teamName());
-        }
-        
         for(int i = 0; i < history.getMoveCount(); i++)
         { // print all of the players commands into the terminal
             pw.println(history.getHistoryEntry(i).getStringInput());
@@ -100,22 +147,18 @@ public class SaveManager
         return true;
     }
     
-    public boolean LoadGameFromFile(String file, HashMap<Team, Player> players)
+    public boolean LoadGameFromFile(String file, HashMap<Team, Player> players, Database db)
     {
-        // check for a users file extension
-        if(file.contains("."))
-        {
-            System.out.println("Please do not enter anything that could be\ninterpreted a a file extension");
-            return false;
-        }
         if(file.contains(" "))
         {
             System.out.println("Please no whitespace");
             return false;
         }
-        FileReader f = null;
-        file = file.concat(".sav");
-        // create the buffered reader
+        // Only add .sav if not already present
+        if (!file.endsWith(".sav")) {
+            file = file.concat(".sav");
+        }
+        FileReader f;
         try {
             f = new FileReader(file);
         } catch (FileNotFoundException ex) {
@@ -123,32 +166,22 @@ public class SaveManager
             return false;
         }
         BufferedReader fp = new BufferedReader(f);
-        //load the game
-        
-        String currentLine = null;
-        // clear any existing players from previous games
+
         players.clear();
-        // actully load the history while checking for errors
+        this.loadedGame.clear();
+        
+        
+        players.put(Team.WHITE, new Player(db.getPlayer1(file.replace(".sav", "")), Team.WHITE));
+        players.put(Team.BLACK, new Player(db.getPlayer2(file.replace(".sav", "")), Team.BLACK));
+        
+
         try 
         {
-            // loop through the whole save file
-            while((currentLine=fp.readLine())!= null)
+            String currentLine;
+            while((currentLine = fp.readLine()) != null)
             {
-                if(currentLine.startsWith("$"))
-                { // if the current line contains player info
-                    currentLine = currentLine.replace("$", "");
-                    String[] parts = currentLine.trim().toUpperCase().split(" ");
-                    
-                    // actully add the players to the hashmap
-                    if(parts[1].equals("BLACK"))
-                        players.put(Team.BLACK, new Player(parts[0], Team.BLACK));
-                    else if(parts[1].equals("WHITE"))
-                        players.put(Team.WHITE, new Player(parts[0], Team.WHITE));
-                    
-                    
-                }
-                else
-                { // if the current line contains move info
+                if(!currentLine.startsWith("$"))
+                {
                     this.loadedGame.add(currentLine);
                 }
             }
@@ -156,14 +189,61 @@ public class SaveManager
             System.out.println("Program failed to load a line");
             return false;
         }
-        
-        //exit
         try {
            fp.close();
         } catch (IOException ex) {
-           Logger.getLogger(Ranking.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(SaveManager.class.getName()).log(Level.SEVERE, null, ex);
            return false;
         }
+        return true;
+    }
+    
+    /**
+     * Loads a game from a save file, removes the save from the database and disk, and simulates the moves.
+     * Returns true if successful, false otherwise.
+     * players will be filled with the loaded players.
+     */
+    @Override
+    public boolean loadAndRemoveSaveFile(String saveFile, HashMap<Team, Player> players, ChessBoard boardToSimulate, Clock clock, Database db) 
+    {
+        boolean loaded = this.LoadGameFromFile(saveFile, players, db);
+        if (!loaded || !players.containsKey(Team.WHITE) || !players.containsKey(Team.BLACK)) {
+            System.out.println("Error: Save file missing player(s), cannot load.");
+            return false;
+        }
+
+        // Remove the save from the database after loading
+        try {
+            String saveName = saveFile;
+            if (saveName.endsWith(".sav")) {
+                saveName = saveName.substring(0, saveName.length() - 4);
+            }
+            clock.setWhitesTime(db.getPlayer1Time(saveName));
+            clock.setBlacksTime(db.getPlayer2Time(saveName));
+            
+            db.deleteGames(saveName);
+        } catch (Exception e) {
+            System.out.println("Warning: Could not remove save from database: " + e.getMessage());
+        }
+
+        // Remove the .sav file from disk if it exists
+        try {
+            String filePath = saveFile.endsWith(".sav") ? saveFile : saveFile + ".sav";
+            java.io.File file = new java.io.File(filePath);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    System.out.println("Warning: Could not delete save file: " + filePath);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Warning: Could not delete save file: " + e.getMessage());
+        }
+
+        // Simulate moves to restore board state
+        if (boardToSimulate != null) {
+            this.simulateGame(boardToSimulate);
+        }
+
         return true;
     }
 }

@@ -10,7 +10,7 @@ package pdc_chessgame;
  * @author Andrew & Finlay
  */
 
-enum PawnOption 
+public enum PawnOption 
 {
     EXIT_GAME,
     ROOK,

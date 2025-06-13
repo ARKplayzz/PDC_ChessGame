@@ -1,9 +1,10 @@
 /nbproject/private/
 /build/
-/dist/
+#/dist/
 
 #This is for ignoring the rankings file
-*.txt
+#*.txt
 # this is for ignoring saves
-*.sav
+#*.sav
 /nbproject/
+/dist/

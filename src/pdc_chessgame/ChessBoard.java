@@ -63,8 +63,8 @@ public class ChessBoard implements BoardState
         setTile(new Rook(0, 0, Team.WHITE), 0, 0);
         setTile(new Knight(1, 0, Team.WHITE), 1, 0);
         setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
-        setTile(new Queen(3, 0, Team.WHITE), 3, 0);
-        setTile(new King(4, 0, Team.WHITE), 4, 0);
+        setTile(new King(3, 0, Team.WHITE), 3, 0);
+        setTile(new Queen(4, 0, Team.WHITE), 4, 0);
         setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
         setTile(new Knight(6, 0, Team.WHITE), 6, 0);
         setTile(new Rook(7, 0, Team.WHITE), 7, 0);
@@ -121,7 +121,9 @@ public class ChessBoard implements BoardState
         {}
         
         // add move to history
+        
         this.turnCounter.addMoveToHistory(targetPiece, getTile(moveSet.getToX(), moveSet.getToY()).getPiece(), getTile(moveSet.getFromX(), moveSet.getFromY()), getTile(moveSet.getToX(), moveSet.getToY()), moveSet.getInput());
+        
         // check if a piece needs to be captured before its Tile is overridden
         if (getTile(moveSet.getToX(), moveSet.getToY()).getPiece() != null){
             captureTile(moveSet.getToX(), moveSet.getToY());
@@ -195,14 +197,14 @@ public class ChessBoard implements BoardState
         return false;
     }
     
-    public void promotePawn(PawnOption promotionPiece)
+    public void promotePawn(PawnOption promotionPiece, Pawn pawn)
     { // promoting a pawn
         Tile toTile = this.turnCounter.getPriorMove(0).getToTile();
         Piece newPiece = null;
         
-        int x = toTile.getX();
-        int y = toTile.getY();
-        Team team = toTile.getPiece().getPieceTeam();
+        int x = pawn.getX();
+        int y = pawn.getY();
+        Team team = pawn.getPieceTeam();
 
         switch (promotionPiece) {
             case ROOK:
@@ -280,45 +282,16 @@ public class ChessBoard implements BoardState
         return (n % 2 == 0);
     }
     
-    public void displayBoard()
-    { //update this to use tile.white so we don't have to run isOdd 4 times every time we print
-        // again changed from i,j to x,y to clear up confusion
-        for(int y = 0; y < this.height; y++)
-        {
-            for(int k = 1; k < 4; k++)
-            { // three rows
-                if(k == 2)
-                    System.out.print(" "+(y+1)+"  "); // new row labels based on y
-                else
-                    System.out.print("    ");
-
-                for(int x = 0; x < this.width; x++) // inner loop over what were rows (now columns)
-                {
-                    if(k == 2 && this.board[x][y].getPiece() != null)
-                    {
-                        if(isOdd(x+1) == isOdd(y+1))
-                            System.out.print(" # "+ this.board[x][y].getPiece().getPieceUnicode() +" #");
-                        else
-                            System.out.print("   "+ this.board[x][y].getPiece().getPieceUnicode() +"  ");
-                    }
-                    else
-                    {
-                        if(isOdd(x+1) == isOdd(y+1))
-                            System.out.print(" # # #");
-                        else
-                            System.out.print("      ");
-                    }
-                }
-                System.out.print("\n");
-            }
-        }
+    public String getHistoryString() 
+    {
+        StringBuilder sb = new StringBuilder();
+        Turn history = this.getHistory();
         
-        System.out.print("\n    ");
-        for(int i = 0; i < this.width; i++)
+        for (int i = 0; i < history.getMoveCount(); i++) 
         {
-            System.out.print("   "+(char)(i+65)+"  ");
+            sb.append((i + 1) + ". " + history.toString(i) + "\n");
         }
-        System.out.print("\n");
+        return sb.toString();
     }
     
     private List<Tile> getPiecePath(Tile tileFrom, Tile tileTo) 
