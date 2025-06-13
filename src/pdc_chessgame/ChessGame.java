@@ -152,18 +152,9 @@ public class ChessGame implements ControllerManagerActions
 
         Database db = this.menuView.getDatabase();
 
-        // ensure both winner and loser exist in the database (add if missing, not guest)
-        if (!winner.equalsIgnoreCase("guest") && !db.playerExists(winner)) 
-        {
-            db.addPlayer(winner, Database.START_ELO);
-        }
-        if (!loser.equalsIgnoreCase("guest") && !db.playerExists(loser)) 
-        {
-            db.addPlayer(loser, Database.START_ELO);
-        }
+        // update Elo if both are not guest
+        if (!winner.equalsIgnoreCase("guest") && !loser.equalsIgnoreCase("guest")) 
 
-        // Elo update logic: update Elo for any non-guest player
-        if (!winner.equalsIgnoreCase("guest") || !loser.equalsIgnoreCase("guest")) 
         {
             db.updateEloAfterGame(winner, loser);
         }
