@@ -69,6 +69,11 @@ public class Clock extends Thread
         return this.playerTimes[this.activePlayer];
     }
     
+    public void setTime(int time)
+    {
+        this.playerTimes[this.activePlayer] = time;
+    }
+    
     public void swapClock()
     {
         // switch active player first

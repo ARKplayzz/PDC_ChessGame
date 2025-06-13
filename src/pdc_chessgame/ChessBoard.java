@@ -63,8 +63,8 @@ public class ChessBoard implements BoardState
         setTile(new Rook(0, 0, Team.WHITE), 0, 0);
         setTile(new Knight(1, 0, Team.WHITE), 1, 0);
         setTile(new Bishop(2, 0, Team.WHITE), 2, 0);
-        setTile(new Queen(3, 0, Team.WHITE), 3, 0);
-        setTile(new King(4, 0, Team.WHITE), 4, 0);
+        setTile(new King(3, 0, Team.WHITE), 3, 0);
+        setTile(new Queen(4, 0, Team.WHITE), 4, 0);
         setTile(new Bishop(5, 0, Team.WHITE), 5, 0);
         setTile(new Knight(6, 0, Team.WHITE), 6, 0);
         setTile(new Rook(7, 0, Team.WHITE), 7, 0);
