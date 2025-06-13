@@ -12,6 +12,8 @@ import pdc_chessgame.Move;
 import pdc_chessgame.MoveResult;
 import pdc_chessgame.Pawn;
 import pdc_chessgame.Team;
+import pdc_chessgame.King;
+import pdc_chessgame.Rook;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
@@ -54,17 +56,19 @@ public class ChessSpecialsTest {
     @Test
     public void testCastling()
     {
-        // clear pieces between king and rook for white kingside castling
+        // remove pieces between king and rook for white kingside castling
         board.setTile(null, 5, 0); // f1
         board.setTile(null, 6, 0); // g1
 
-        // make sure king and rook have not moved
+        board.setTile(new King(4, 0, Team.WHITE), 4, 0); // e1
+        board.setTile(new Rook(7, 0, Team.WHITE), 7, 0); // h1
+
         // kingside castle E1G1
         Move castleMove = new Move(4, 0, 6, 0);
         MoveResult result = gameManager.makeMove(castleMove);
 
         assertEquals(MoveResult.SUCCESS, result);
-        // King should now be at F1 and rook at D1
+        // the king should now be at G1 and rook at F1
         assertTrue(board.getTile(6, 0).getPiece() instanceof King);
         assertTrue(board.getTile(5, 0).getPiece() instanceof Rook);
         assertNull(board.getTile(4, 0).getPiece());
