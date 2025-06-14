@@ -7,6 +7,7 @@ package pdc_chessgame;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import pdc_chessgame.view.GraphicsUtil;
 /**
  *
  * @author Finlay & Andrew
@@ -37,20 +38,16 @@ public class Database
     
     public Database()
     {
-        try {
+        try 
+        {
             this.connection = DriverManager.getConnection(this.URL);
-        } catch (SQLException ex) {
-            if (ex.getSQLState() != null && ex.getSQLState().equals("XSDB6")) {
-                System.out.println("FATAL ERROR: Derby database is already open in another process or was not shut down cleanly.");
-                System.out.println("Please close all other Java programs using this database, and/or delete db.lck and dbex.lck in the ChessDB folder, then try again.");
-            } else {
-                System.out.println("FATAL ERROR: could not establish a connection to the database\n"+ex.getMessage());
-                System.exit(1);
-            }
-            ex.printStackTrace();
-            System.exit(0);
         }
-        
+            catch (SQLException ex) 
+            {
+                // Show alert and exit if DB is locked
+                System.out.println("FATAL ERROR: could not establish a connection to the database\n"+ex.getMessage());
+                GraphicsUtil.showAlreadyRunningAlertAndExit();
+            }
         try {
             this.statement = this.connection.createStatement(); // create the statement
         } catch (SQLException ex) {

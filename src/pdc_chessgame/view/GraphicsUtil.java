@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -46,5 +47,17 @@ public class GraphicsUtil
                 button.setBackground(normalBg);
             }
         });
+    }
+
+    // Show an alert dialog and exit the program
+    public static void showAlreadyRunningAlertAndExit() 
+    {
+        JOptionPane.showMessageDialog(
+            null,
+            "You can only run one game of chess at time!\nPlease close your current game before trying again :)",
+            "Program Already Running",
+            JOptionPane.ERROR_MESSAGE
+        );
+        System.exit(0);
     }
 }
