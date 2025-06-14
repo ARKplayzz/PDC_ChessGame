@@ -58,10 +58,32 @@ public class Database
             System.exit(0);
         }
         
-        //this.createTables();
+        // create the tables for the database
+        this.createTables();
 
         // Print tables, columns, and row counts
         printDatabaseInfo();
+    }
+    
+    private void createTables()
+    { // find a better way to do this
+        String createPlayers = "CREATE TABLE PLAYERS"
+            + "  (name           VARCHAR(25) NOT NULL PRIMARY KEY,"
+            + "   elo            INTEGER,"
+            + "   games_won      INTEGER,"
+            + "   games_lost     INTEGER)";
+        
+        this.executeSQL(createPlayers);
+        
+        String createGames = "CREATE TABLE GAMES" 
+            + "  (name           VARCHAR(25) NOT NULL PRIMARY KEY,"
+            + "   player_1       VARCHAR(25),"
+            + "   player_2       VARCHAR(25),"
+            + "   directory      VARCHAR(35),"
+            + "   player_1_time  INTEGER,"
+            + "   player_2_time  INTEGER)";
+        
+        this.executeSQL(createGames);
     }
     
     // used for adding a new player to the database
@@ -314,27 +336,6 @@ public class Database
             System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
             return null;
         }
-    }
-    
-    private void createTables()
-    { // find a better way to do this
-        String createPlayers = "CREATE TABLE PLAYERS"
-            + "  (name           VARCHAR(25) NOT NULL PRIMARY KEY,"
-            + "   elo            INTEGER,"
-            + "   games_won      INTEGER,"
-            + "   games_lost     INTEGER)";
-        
-        this.executeSQL(createPlayers);
-        
-        String createGames = "CREATE TABLE GAMES" 
-            + "  (name           VARCHAR(25) NOT NULL PRIMARY KEY,"
-            + "   player_1       VARCHAR(25),"
-            + "   player_2       VARCHAR(25),"
-            + "   directory      VARCHAR(35),"
-            + "   player_1_time  INTEGER,"
-            + "   player_2_time  INTEGER)";
-        
-        this.executeSQL(createGames);
     }
     
     // Add this method to print tables, columns, and row counts
