@@ -46,27 +46,24 @@ public class ClockTest {
     public void testSwapClock()
     {
         System.out.println("Swapping clock");
-        instance.swapClock();
-        
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException ex) {
-            System.out.println("Error: "+ex.getMessage());
-        }
-        
-        assertNotEquals(20, instance.getTime(), 0.0);
+        Clock clock = new Clock(20, 2);
+        clock.setBlacksTime(25);
+        clock.swapClock();
+        clock.terminate();
+        assertNotEquals(25*60, instance.getTime(), 0.0);
     }
     
     @Test 
     public void testToString()
     {
         System.out.println("toString");
-        instance.setWhitesTime(1*60);
-        instance.setActive(Team.WHITE);
+        Clock clock = new Clock(20, 2);
+        clock.setWhitesTime(1*60);
+        clock.setActive(Team.WHITE);
         
         String expected = "0:59";
         String actual = instance.toString();
-        
+        clock.terminate();
         assertEquals(expected, actual);
     }
 }
