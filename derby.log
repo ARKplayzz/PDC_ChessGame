@@ -1,4 +1,4 @@
-Sat Jun 14 23:12:22 NZST 2025 Thread[#1,main,5,main] Cleanup action starting
+Sat Jun 14 23:24:39 NZST 2025 Thread[#1,main,5,main] Cleanup action starting
 java.sql.SQLException: Failed to start database 'ChessDB' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3f99bd52, see the next exception for details.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
@@ -14,7 +14,7 @@ java.sql.SQLException: Failed to start database 'ChessDB' with class loader jdk.
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:682)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
-	at pdc_chessgame.Database.<init>(Database.java:41)
+	at pdc_chessgame.Database.<init>(Database.java:43)
 	at pdc_chessgame.ChessGame.<init>(ChessGame.java:36)
 	at pdc_chessgame.PDC_ChessGame.main(PDC_ChessGame.java:21)
 Caused by: ERROR XJ040: Failed to start database 'ChessDB' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3f99bd52, see the next exception for details.
@@ -84,7 +84,7 @@ java.sql.SQLException: Another instance of Derby may have already booted the dat
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:682)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
-	at pdc_chessgame.Database.<init>(Database.java:41)
+	at pdc_chessgame.Database.<init>(Database.java:43)
 	at pdc_chessgame.ChessGame.<init>(ChessGame.java:36)
 	at pdc_chessgame.PDC_ChessGame.main(PDC_ChessGame.java:21)
 Caused by: ERROR XSDB6: Another instance of Derby may have already booted the database C:\Users\finla\OneDrive\Documents\NetBeansProjects\PDC_ChessGame\ChessDB.
@@ -195,7 +195,7 @@ ERROR XSDB6: Another instance of Derby may have already booted the database C:\U
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:682)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
-	at pdc_chessgame.Database.<init>(Database.java:41)
+	at pdc_chessgame.Database.<init>(Database.java:43)
 	at pdc_chessgame.ChessGame.<init>(ChessGame.java:36)
 	at pdc_chessgame.PDC_ChessGame.main(PDC_ChessGame.java:21)
 ============= end nested exception, level (2) ===========

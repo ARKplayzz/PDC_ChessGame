@@ -41,13 +41,12 @@ public class Database
         try 
         {
             this.connection = DriverManager.getConnection(this.URL);
+        }catch (SQLException ex) 
+        {
+            // Show alert and exit if DB is locked
+            System.out.println("FATAL ERROR: could not establish a connection to the database\n"+ex.getMessage());
+            GraphicsUtil.showAlreadyRunningAlertAndExit();
         }
-            catch (SQLException ex) 
-            {
-                // Show alert and exit if DB is locked
-                System.out.println("FATAL ERROR: could not establish a connection to the database\n"+ex.getMessage());
-                GraphicsUtil.showAlreadyRunningAlertAndExit();
-            }
         try {
             this.statement = this.connection.createStatement(); // create the statement
         } catch (SQLException ex) {
