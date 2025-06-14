@@ -68,7 +68,8 @@ public class LeaderboardPanel extends JPanel
         this.leaderboardText.setForeground(new Color(153, 233, 255));
         this.leaderboardText.setLineWrap(false); // Disable line wrap for table formatting
         this.leaderboardText.setWrapStyleWord(false);
-        this.leaderboardText.setFont(new Font("Monospaced", Font.PLAIN, 16)); // Use monospaced font for alignment
+        // Use a monospaced font for perfect alignment
+        this.leaderboardText.setFont(new Font("Consolas", Font.PLAIN, 14));
     }
     
     // Make the leaderboard scrollable
@@ -104,8 +105,9 @@ public class LeaderboardPanel extends JPanel
         int panelWidth = getWidth();
         if (panelWidth > 0) 
         {
-            int fontSize = Math.max(14, Math.min(20, panelWidth / 15));
-            this.leaderboardText.setFont(new Font("Helvetica", Font.PLAIN, fontSize));
+            // Make text scale slightly smaller on average
+            int fontSize = Math.max(12, Math.min(18, panelWidth / 22));
+            this.leaderboardText.setFont(new Font("Consolas", Font.PLAIN, fontSize));
         }
     }
     

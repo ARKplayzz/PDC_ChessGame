@@ -338,9 +338,10 @@ public class Database
 
             int rank = 1;
             boolean hasRows = false;
-            // Table header
-            content.append(String.format("%-5s %-16s %-6s %-6s %-6s\n", "Rank", "Username", "Elo", "Wins", "Loss"));
-            content.append("---------------------------------------------------\n");
+            // Compact header and columns for better alignment
+            content.append("╔════╦════════════════╦═════╦════╦════╗\n");
+            content.append(String.format("║%3s ║ %-14s ║%4s ║%3s ║%3s ║\n", "No", "Username", "Elo", "W", "L"));
+            content.append("╠════╬════════════════╬═════╬════╬════╣\n");
             while (rs.next()) {
                 hasRows = true;
                 String name = rs.getString("name");
@@ -348,14 +349,15 @@ public class Database
                 int won = rs.getInt("games_won");
                 int lost = rs.getInt("games_lost");
                 // Truncate/pad username for consistent width
-                String displayName = name.length() > 16 ? name.substring(0, 16) : name;
-                content.append(String.format("%-5d %-16s %-6d %-6d %-6d\n", rank++, displayName, elo, won, lost));
+                String displayName = name.length() > 14 ? name.substring(0, 14) : name;
+                content.append(String.format("║%3d ║ %-14s ║%4d ║%3d ║%3d ║\n", rank++, displayName, elo, won, lost));
             }
             rs.close();
+            content.append("╚════╩════════════════╩═════╩════╩════╝\n");
             if (!hasRows) {
                 content.append("The leaderboard appears to be empty.\nPlay some games to see rankings here!");
             } else {
-                content.append("\nPlay more games to improve your ranking!");
+                content.append("\nPlay more games to improve your rank!");
             }
         }catch (Exception e) {
             content.append("Error loading leaderboard: ").append(e.getMessage());
