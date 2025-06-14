@@ -82,6 +82,7 @@ public class DatabaseTest {
     @Test
     public void testAlterPlayer() 
     {
+        System.out.println("Altering player");
         boolean updated = instance.alterPlayer("TEST__USER_9@3467%4321", 42, 3, 2);
         assertTrue(updated);
         assertEquals(42, instance.getElo("TEST__USER_9@3467%4321"));
@@ -92,6 +93,7 @@ public class DatabaseTest {
     @Test
     public void testDeleteGames() 
     {
+        System.out.println("Deleting game");
         instance.insertGame("TEST_SAVE_191930506432", "TEST__USER_9@3467%4321", "fakename alias", "Fake path", 58, 57);
         boolean deleted = instance.deleteGames("TEST_SAVE_191930506432");
         assertTrue(deleted);
@@ -110,6 +112,7 @@ public class DatabaseTest {
     @Test
     public void testGameExists() 
     {
+        System.out.println("Game exists?");
         instance.insertGame("TEST_SAVE_191930506432", "TEST__USER_9@3467%4321", "fakename alias", "Fake path", 58, 57);
         assertTrue(instance.gameExists("TEST_SAVE_191930506432"));
         instance.deleteGames("TEST_SAVE_191930506432");
@@ -119,6 +122,7 @@ public class DatabaseTest {
     @Test
     public void testGetSavesForUser() 
     {
+        System.out.println("Getting user saves");
         instance.insertGame("TEST_SAVE_191930506432", "TEST__USER_9@3467%4321", "fakename alias", "Fake path", 58, 57);
         var saves = instance.getSavesForUser("TEST__USER_9@3467%4321");
         assertFalse(saves.isEmpty());
@@ -128,6 +132,7 @@ public class DatabaseTest {
     @Test
     public void testGetLeaderboard() 
     {
+        System.out.println("Getting leaderboard");
         String leaderboard = instance.getLeaderboard().toString();
         assertNotNull(leaderboard);
         assertTrue(leaderboard.contains("Username"));
