@@ -9,9 +9,10 @@ package pdc_chessgame;
  * @author Andrew & Finlay
  */
 
+
+// Main class of the program, constructs and starts the game
 public class PDC_ChessGame 
 {
-
     /**
      * @param args the command line arguments
      */

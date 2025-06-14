@@ -7,12 +7,14 @@ package pdc_chessgame.view.manager;
 import java.awt.*;
 import javax.swing.*;
 import pdc_chessgame.view.ControllerManagerActions;
+import pdc_chessgame.view.GraphicsUtil;
 
 /**
  *
- * @author Andrew
+ * @author Andrew & Finlay
  */
 
+// Panel used for the game itself
 public class GamePanel extends JPanel 
 {
     private JTextArea moveHistoryArea;
@@ -50,10 +52,10 @@ public class GamePanel extends JPanel
         resignButton = new JButton("Resign");
         saveQuitButton = new JButton("Save & Quit");
         
-        setupButton(helpButton);
-        setupButton(undoButton);
-        setupButton(resignButton);
-        setupButton(saveQuitButton);
+        GraphicsUtil.setupButton(helpButton);
+        GraphicsUtil.setupButton(undoButton);
+        GraphicsUtil.setupButton(resignButton);
+        GraphicsUtil.setupButton(saveQuitButton);
 
         helpButton.addActionListener(e -> {
             moveHistoryArea.append(
@@ -100,36 +102,6 @@ public class GamePanel extends JPanel
         add(rowPanelGrid, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(rowButtonGrid, BorderLayout.SOUTH);
-    }
-
-    private void setupButton(JButton button) 
-    {
-        Color normalBg = new Color(40, 40, 40);
-        Color hoverBg = new Color(50, 50, 50);
-        Color textColor = new Color(153, 233, 255);
-        
-        button.setBackground(normalBg);
-        button.setForeground(textColor);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.setMargin(new Insets(2, 2, 2, 2));
-        button.setFont(new Font("Helvetica", Font.BOLD, 16));
-        
-        button.addMouseListener(new java.awt.event.MouseAdapter() 
-        {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(hoverBg);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(normalBg);
-            }
-        });
     }
 
     // public methods for ManagerView to update gui

@@ -8,6 +8,8 @@ package pdc_chessgame;
  *
  * @author Andrew & Finlay
  */
+
+// simple class used to represent the players
 public class Player 
 {
     private String name;

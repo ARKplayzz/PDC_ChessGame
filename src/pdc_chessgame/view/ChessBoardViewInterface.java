@@ -6,9 +6,10 @@ package pdc_chessgame.view;
 
 /**
  *
- * @author Andrew
+ * @author Andrew & Finlay
  */
 
+// interface implemented by ChessBoardView.java
 public interface ChessBoardViewInterface 
 {
     void updateBoard();

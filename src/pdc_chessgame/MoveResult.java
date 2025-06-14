@@ -8,7 +8,10 @@ package pdc_chessgame;
  *
  * @author ARKen
  */
-public enum MoveResult {
+
+// enum of all the possible results for a given move
+public enum MoveResult 
+{
     SUCCESS,
     INVALID,
     CHECK,

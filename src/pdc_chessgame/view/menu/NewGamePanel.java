@@ -18,11 +18,14 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import pdc_chessgame.ChessGame;
 import pdc_chessgame.Database;
+import pdc_chessgame.view.GraphicsUtil;
         
 /**
  *
  * @author Andrew
  */
+
+// Panel used when creating a new game
 public class NewGamePanel extends JPanel 
 {
     private Database database;
@@ -147,52 +150,26 @@ public class NewGamePanel extends JPanel
     
     private void setupButtons() 
     {
-        setupButton(startButton);
-        setupButton(backButton);
-    }
-    
-    private void setupButton(JButton button) 
-    {
-        Color normalBg = new Color(40, 40, 40);
-        Color hoverBg = new Color(50, 50, 50);
-        Color textColor = new Color(153, 233, 255);
-
-        button.setBackground(normalBg);
-        button.setForeground(textColor);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.setMargin(new Insets(2, 2, 2, 2));
-        button.setFont(new Font("Helvetica", Font.BOLD, 16));
-
-        button.addMouseListener(new java.awt.event.MouseAdapter() 
-        {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(hoverBg);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(normalBg);
-            }
-        });
+        GraphicsUtil.setupButton(startButton);
+        GraphicsUtil.setupButton(backButton);
     }
         
+    // Override all needed event handlers
     private void setupEventHandlers() 
     {
         username1Field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
         {
+            @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateUserStatus(username1Field, username1Status, username1Status2); 
             }
+            @Override
             public void removeUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateUserStatus(username1Field, username1Status, username1Status2); 
             }
+            @Override
             public void changedUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateUserStatus(username1Field, username1Status, username1Status2); 
@@ -201,14 +178,17 @@ public class NewGamePanel extends JPanel
         
         username2Field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
         {
+            @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateUserStatus(username2Field, username2Status, username2Status2); 
             }
+            @Override
             public void removeUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateUserStatus(username2Field, username2Status, username2Status2); 
             }
+            @Override
             public void changedUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateUserStatus(username2Field, username2Status, username2Status2); 
@@ -217,14 +197,17 @@ public class NewGamePanel extends JPanel
         
         timeField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
         {
+            @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateTimeStatus(); 
             }
+            @Override
             public void removeUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateTimeStatus(); 
             }
+            @Override
             public void changedUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateTimeStatus(); 

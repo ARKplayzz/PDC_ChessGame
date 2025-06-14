@@ -12,8 +12,10 @@ import java.awt.*;
  *
  * @author ARKen
  */
-public class SideBarPanel extends JPanel {
 
+// class used for the side panel that holds the buttons for starting loading resigning and saving
+public class SideBarPanel extends JPanel 
+{
     private JPanel menuPanel;
     private JPanel managerPanel;
     

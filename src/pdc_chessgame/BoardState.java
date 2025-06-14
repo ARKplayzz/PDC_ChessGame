@@ -8,8 +8,9 @@ package pdc_chessgame;
  *
  * @author Andrew & Finlay
  */
-public interface BoardState {
-    
+public interface BoardState // interface used for the chessboard
+{
+    // all these methods do exactly what they say they do
     Tile getTile(int x, int y);
     int getWidth();
     int getHeight();

@@ -13,11 +13,6 @@ import java.util.List;
  */
 public class ChessBoard implements BoardState
 {
-    /*
-        When changing to graphical for part2 make a tile class that
-        holds piece and colour.
-    */
-    
     private Tile[][] board;
     private List<Piece> capturedPieces;
         
@@ -190,35 +185,23 @@ public class ChessBoard implements BoardState
     public boolean isPawnPromotable()
     { // check to see if a pawn can turn into a queen
         Piece targetPiece = this.turnCounter.getPriorMove(0).getPiece();
-        if (targetPiece instanceof Pawn && ((Pawn) targetPiece).canPromotion(this))
-        {
-            return true;
-        }
-        return false;
+        return targetPiece instanceof Pawn && ((Pawn) targetPiece).canPromotion(this);
     }
     
     public void promotePawn(PawnOption promotionPiece, Pawn pawn)
     { // promoting a pawn
-        Tile toTile = this.turnCounter.getPriorMove(0).getToTile();
         Piece newPiece = null;
         
         int x = pawn.getX();
         int y = pawn.getY();
         Team team = pawn.getPieceTeam();
 
-        switch (promotionPiece) {
-            case ROOK:
-                newPiece = new Rook(x, y, team);
-                break;
-            case BISHOP:
-                newPiece = new Bishop(x, y, team);
-                break;
-            case KNIGHT:
-                newPiece = new Knight(x, y, team);
-                break;
-            case QUEEN:
-                newPiece = new Queen(x, y, team);
-                break;
+        switch (promotionPiece) 
+        {
+            case ROOK -> newPiece = new Rook(x, y, team);
+            case BISHOP -> newPiece = new Bishop(x, y, team);
+            case KNIGHT -> newPiece = new Knight(x, y, team);
+            case QUEEN -> newPiece = new Queen(x, y, team);
         }
 
         if (newPiece != null) {
@@ -267,6 +250,7 @@ public class ChessBoard implements BoardState
         return turnCounter.getPieceLastMove(piece);
     }
     
+    // switch to the next turn
     public void getNextTurn() 
     {
         turnCounter.nextTurn();
@@ -277,11 +261,7 @@ public class ChessBoard implements BoardState
         return turnCounter.getTeam();
     }
     
-    private static boolean isOdd(int n)
-    {
-        return (n % 2 == 0);
-    }
-    
+    // return the move history as a string
     public String getHistoryString() 
     {
         StringBuilder sb = new StringBuilder();
@@ -289,7 +269,7 @@ public class ChessBoard implements BoardState
         
         for (int i = 0; i < history.getMoveCount(); i++) 
         {
-            sb.append((i + 1) + ". " + history.toString(i) + "\n");
+            sb.append(i).append(1).append(". ").append(history.toString(i)).append("\n");
         }
         return sb.toString();
     }

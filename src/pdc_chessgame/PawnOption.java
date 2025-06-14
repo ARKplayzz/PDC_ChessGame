@@ -10,6 +10,7 @@ package pdc_chessgame;
  * @author Andrew & Finlay
  */
 
+// List of options for when promoting a pawn, EXIT_GAME is legacy from when this was a console app
 public enum PawnOption 
 {
     EXIT_GAME,

@@ -6,12 +6,14 @@ package pdc_chessgame.view.manager;
 
 import java.awt.*;
 import javax.swing.*;
+import pdc_chessgame.view.GraphicsUtil;
 
 /**
  *
- * @author Andrew
+ * @author Andrew & Finlay
  */
 
+// panel used in the game over screen
 public class GameOverPanel extends JPanel 
 {
     private JLabel gameOverLabel;
@@ -35,7 +37,7 @@ public class GameOverPanel extends JPanel
         gameOverLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         helpButton = new JButton("Help");
-        setupButton(helpButton);
+        GraphicsUtil.setupButton(helpButton);
         helpButton.addActionListener(e -> {
             gameOverArea.append(
                 "\nChess Help:\n" +
@@ -53,7 +55,7 @@ public class GameOverPanel extends JPanel
         JPanel exitPanel = new JPanel(new GridLayout(1, 1, 1, 1));
         exitPanel.setOpaque(false);
         exitButton = new JButton("Exit");
-        setupButton(exitButton);
+        GraphicsUtil.setupButton(exitButton);
         exitButton.addActionListener(e -> onExit.run());
         exitPanel.add(exitButton);
 
@@ -73,35 +75,6 @@ public class GameOverPanel extends JPanel
         add(gameOverTopPanel, BorderLayout.NORTH);
         add(gameOverScroll, BorderLayout.CENTER);
         add(exitPanel, BorderLayout.SOUTH);
-    }
-
-    private void setupButton(JButton button) 
-    {
-        Color normalBg = new Color(40, 40, 40);
-        Color hoverBg = new Color(50, 50, 50);
-        Color textColor = new Color(153, 233, 255);
-        
-        button.setBackground(normalBg);
-        button.setForeground(textColor);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.setMargin(new Insets(2, 2, 2, 2));
-        button.setFont(new Font("Helvetica", Font.BOLD, 16));
-        button.addMouseListener(new java.awt.event.MouseAdapter() 
-        {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(hoverBg);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(normalBg);
-            }
-        });
     }
 
     // public methods for ManagerView to update gui

@@ -12,8 +12,10 @@ import javax.swing.*;
  *
  * @author Andrew & Finlay
  */
-public class MasterFrame extends JFrame {
-    
+
+// The master display class, instance is in ChessGame
+public class MasterFrame extends JFrame 
+{
     private JPanel boardHolderPanel;
     private JPanel sideBarPanel;
     

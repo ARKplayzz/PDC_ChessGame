@@ -8,6 +8,8 @@ package pdc_chessgame.view;
  *
  * @author Andrew
  */
+
+// interface implemented by ChessGame.java, and used in GamePanel
 public interface ControllerManagerActions 
 {
     void currentGameUndo();

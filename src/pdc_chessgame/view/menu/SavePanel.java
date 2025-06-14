@@ -9,13 +9,16 @@ import java.util.List;
 import javax.swing.*;
 import pdc_chessgame.ChessGame;
 import pdc_chessgame.Database;
+import pdc_chessgame.view.GraphicsUtil;
 
 /**
  *
- * @author Andrew
+ * @author Andrew & Finlay
  */
-public class SavePanel extends JPanel {
 
+// JPanel used when saving the game
+public class SavePanel extends JPanel 
+{
     private final Database database;
     private final ChessGame controller;
     private final Runnable backCallback;
@@ -85,7 +88,7 @@ public class SavePanel extends JPanel {
         userPanel.add(usernameStatus2);
 
         // Search button
-        setupButton(searchButton);
+        GraphicsUtil.setupButton(searchButton);
         searchButton.setPreferredSize(new Dimension(0, 38));
         searchButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
 
@@ -123,7 +126,7 @@ public class SavePanel extends JPanel {
         // Back button at the bottom
         JPanel buttonGrid = new JPanel(new GridLayout(1, 1, 0, 1));
         buttonGrid.setBackground(new Color(30, 30, 30));
-        setupButton(backButton);
+        GraphicsUtil.setupButton(backButton);
         backButton.setPreferredSize(new Dimension(0, 38));
         backButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
         buttonGrid.add(backButton);
@@ -141,42 +144,15 @@ public class SavePanel extends JPanel {
         }
     }
 
-    private void setupButton(JButton button) 
-    {
-        Color normalBg = new Color(40, 40, 40);
-        Color hoverBg = new Color(50, 50, 50);
-        Color textColor = new Color(153, 233, 255);
-
-        button.setBackground(normalBg);
-        button.setForeground(textColor);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.setMargin(new Insets(2, 2, 2, 2));
-        button.setFont(new Font("Helvetica", Font.BOLD, 16));
-
-        button.addMouseListener(new java.awt.event.MouseAdapter() 
-        {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(hoverBg);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(normalBg);
-            }
-        });
-    }
-
     private void setupEventHandlers() 
     {
         usernameField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
         {
+            @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(); }
+            @Override
             public void removeUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(); }
+            @Override
             public void changedUpdate(javax.swing.event.DocumentEvent e) { updateUserStatus(); }
         });
 
@@ -250,7 +226,7 @@ public class SavePanel extends JPanel {
                     JButton saveBtn = new JButton(
                         String.format("%s vs %s | %s", save.player1, save.player2, save.saveFile)
                     );
-                    setupButton(saveBtn);
+                    GraphicsUtil.setupButton(saveBtn);
                     saveBtn.setFont(new Font("Helvetica", Font.PLAIN, 14));
                     saveBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
                     saveBtn.addActionListener(e -> handleLoadSave(save.directory));

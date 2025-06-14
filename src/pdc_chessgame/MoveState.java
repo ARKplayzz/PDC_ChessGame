@@ -8,8 +8,11 @@ package pdc_chessgame;
  *
  * @author Andrew & Finlay
  */
+
+// a class used to store entrys of the game's history in a list in Turn.java
 public class MoveState
 {
+    // actual move information
     private Piece piece;
     private Piece capturedPiece;
     private Tile from;
@@ -27,7 +30,7 @@ public class MoveState
     }
 
     @Override
-    public String toString()
+    public String toString() // toString for printing to a savefile
     {
         return (String)(this.piece.getPieceUnicode()+" "+this.from.getX()+","+this.from.getY()+" "+this.to.getX()+","+this.to.getY()+" "+this.moveNo);
     }

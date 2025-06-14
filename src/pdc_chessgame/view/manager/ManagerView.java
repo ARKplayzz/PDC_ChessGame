@@ -10,11 +10,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.Timer;
 import pdc_chessgame.view.ControllerManagerActions;
 import pdc_chessgame.view.menu.MenuView;
@@ -23,6 +19,8 @@ import pdc_chessgame.view.menu.MenuView;
  *
  * @author ARKen
  */
+
+// Panel used for rendering the game manager, (Game history and time etc)
 public class ManagerView extends JPanel
 {
     // Panels

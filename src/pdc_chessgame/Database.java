@@ -12,9 +12,7 @@ import java.util.List;
  * @author Finlay & Andrew
  */
 
-// ONLY WORKS UNDER CERTAIN CIRCUMSTANCES RN 
-// STILL DOING THE NETBEANS INTERGRATION
-
+// class used for interfacing with the ChessDB
 public class Database 
 {
     // Ensure Derby embedded driver is loaded
@@ -58,12 +56,40 @@ public class Database
             System.exit(0);
         }
         
-        // create the tables for the database
+        // create the tables for the database if they don't already exist
         this.createTables();
 
         // Print tables, columns, and row counts
         printDatabaseInfo();
     }
+    
+    
+    private boolean executeSQL(String sql)
+    {
+        try {
+            this.statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException ex) {
+            // Ignore "table already exists" error for CREATE TABLE
+            if (ex.getSQLState() != null && ex.getSQLState().equals("X0Y32")) {
+                return true;
+            }
+            System.out.println("ERROR: failed to execute SQL command: "+sql+"\n"+ex.getMessage());
+            return false;
+        }
+    }
+    
+    
+    private ResultSet executeQuery(String sql)
+    {
+        try {
+            return this.statement.executeQuery(sql);
+        } catch (SQLException ex) {
+            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
+            return null;
+        }
+    }
+    
     
     private void createTables()
     { // find a better way to do this
@@ -86,257 +112,6 @@ public class Database
         this.executeSQL(createGames);
     }
     
-    // used for adding a new player to the database
-    public boolean addPlayer(String name, int elo)
-    {
-        if(this.playerExists(name))
-            return false;
-        
-        return this.executeSQL("INSERT INTO PLAYERS "+
-                "VALUES ('"+name+"',"+elo+",0,0)");
-    }
-    
-    // used for altering an existing player
-    public boolean alterPlayer(String name, int elo, int gamesWon, int gamesLost)
-    {
-        // Don't update the primary key (name)
-        boolean result = this.executeSQL("UPDATE PLAYERS SET elo = "+elo+", games_won = "+gamesWon+", games_lost = "+gamesLost+" WHERE name = '"+name+"'");
-        if (result) {
-            System.out.println("Updated player: " + name + " Elo=" + elo + " Won=" + gamesWon + " Lost=" + gamesLost);
-        } else {
-            System.out.println("Failed to update player: " + name);
-        }
-        return result;
-    }
-    
-    public int getElo(String name)
-    {
-        ResultSet rs = this.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
-        try {
-            if (rs.next()) {
-                return rs.getInt("elo");
-            }
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-        } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException e) {}
-        }
-        return 0;
-    }
-
-    public int getGamesWon(String name)
-    {
-        ResultSet rs = this.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
-        try {
-            if (rs.next()) {
-                return rs.getInt("games_won");
-            }
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-        } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException e) {}
-        }
-        return 0;
-    }
-
-    public int getGamesLost(String name)
-    {
-        ResultSet rs = this.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
-        try {
-            if (rs.next()) {
-                return rs.getInt("games_lost");
-            }
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-        } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException e) {}
-        }
-        return 0;
-    }
-    
-    // returns true if the specified player exists inside the database
-    public boolean playerExists(String name)
-    {
-        return this.checkExists("PLAYERS", "name", name);
-    }
-    
-    public boolean gameExists(String name)
-    {
-        return this.checkExists("GAMES", "name", name);
-    }
-    
-    public int getPlayer1Time(String name)
-    {
-        ResultSet rs = this.executeQuery("SELECT * FROM GAMES WHERE name = '"+name+"'");
-        try {
-            if (rs.next()) {
-                return rs.getInt("player_1_time");
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error while getting time "+ex.getMessage());
-        }
-        return 5;
-    }
-    
-    public int getPlayer2Time(String name)
-    {
-        ResultSet rs = this.executeQuery("SELECT * FROM GAMES WHERE name = '"+name+"'");
-        try {
-            if (rs.next()) {
-                return rs.getInt("player_2_time");
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error while getting time "+ex.getMessage());
-        }
-        return 5;
-    }
-    
-    public ResultSet getLeaderboard()
-    {
-        return this.executeQuery("SELECT name, elo, games_won, games_lost FROM PLAYERS ORDER BY elo DESC");
-    }
-    
-    public boolean deleteGames(String name)
-    {
-        return this.executeSQL("DELETE FROM GAMES WHERE name = '" + name + "'");
-    }
-    
-    public boolean deletePlayers(String name)
-    {
-        return this.executeSQL("DELETE FROM PLAYERS WHERE name = '" + name + "'");
-    }
-    
-    // insert a new game, NOTE I WILL BE ASSUMING player1 IS WHITE
-    // Add filePath parameter for directory column
-    public boolean insertGame(String saveName, String player1, String player2, String filePath, int player1time, int player2time)
-    {
-        // name = saveName, player_1 = player1, player_2 = player2, directory = filePath
-        return this.executeSQL("INSERT INTO GAMES "+
-                "VALUES ('"+saveName+"','"+player1+"','"+player2+"','"+filePath+"',"+player1time+","+player2time+")");
-    }
-    
-    public String getPlayer1(String save)
-    {
-        ResultSet rs = this.executeQuery("SELECT player_1 FROM GAMES WHERE name = '"+save+"'");
-        
-        try {
-            if(rs.next())
-            {
-                return rs.getString("player_1");
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error with player query "+ex.getMessage());
-        }
-        
-        return "null";
-    }
-    
-    public String getPlayer2(String save)
-    {
-        ResultSet rs = this.executeQuery("SELECT player_2 FROM GAMES WHERE name = '"+save+"'");
-        
-        try {
-            if(rs.next())
-            {
-                return rs.getString("player_2");
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error with player query "+ex.getMessage());
-        }
-        
-        return "null";
-    }
-    
-    // Helper class for save info
-    public static class SaveInfo 
-    {
-        public final String saveFile;
-        public final String player1;
-        public final String player2;
-        public final String directory;
-        public SaveInfo(String saveFile, String player1, String player2, String directory) 
-        {
-            this.saveFile = saveFile;
-            this.player1 = player1;
-            this.player2 = player2;
-            this.directory = directory;
-        }
-    }
-
-    // Returns all saves where username is player_1 or player_2
-    @SuppressWarnings("UseSpecificCatch")
-    public List<SaveInfo> getSavesForUser(String username) 
-    {
-        List<SaveInfo> saves = new ArrayList<>();
-        try {
-            var conn = getConnection();
-            try (java.sql.PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT name, player_1, player_2, directory FROM GAMES WHERE player_1 = ? OR player_2 = ? ORDER BY name DESC"
-            )) {
-                stmt.setString(1, username);
-                stmt.setString(2, username);
-                var rs = stmt.executeQuery();
-                while (rs.next()) {
-                    saves.add(new SaveInfo(
-                            rs.getString("name"),
-                            rs.getString("player_1"),
-                            rs.getString("player_2"),
-                            rs.getString("directory")
-                    ));
-                }   rs.close();
-                // Do not close conn here, as it's the main connection
-            }
-        } catch (Exception e) {
-            System.out.println("error in getSavesForUser(): "+e.getMessage());
-        }
-        return saves;
-    }
-    
-    // need to test this some more
-    private boolean checkExists(String table, String col, String data)
-    {
-        ResultSet rs = null;
-        try {
-            rs = this.statement.executeQuery("SELECT * FROM "+table+" WHERE "+col+" = '"+data+"'");
-            while(rs.next())
-            {
-                if(rs.getString(col).equals(data))
-                {
-                    return true;
-                }
-            }
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-        } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException e) {}
-        }
-        return false;
-    }
-    
-    private boolean executeSQL(String sql)
-    {
-        try {
-            this.statement.executeUpdate(sql);
-            return true;
-        } catch (SQLException ex) {
-            // Ignore "table already exists" error for CREATE TABLE
-            if (ex.getSQLState() != null && ex.getSQLState().equals("X0Y32")) {
-                return true;
-            }
-            System.out.println("ERROR: failed to execute SQL command: "+sql+"\n"+ex.getMessage());
-            return false;
-        }
-    }
-    
-    private ResultSet executeQuery(String sql)
-    {
-        try {
-            return this.statement.executeQuery(sql);
-        } catch (SQLException ex) {
-            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
-            return null;
-        }
-    }
     
     // Add this method to print tables, columns, and row counts
     private void printDatabaseInfo() 
@@ -378,20 +153,286 @@ public class Database
         }
     }
     
-    public void terminate()
+    
+    // used for adding a new player to the database
+    public boolean addPlayer(String name, int elo)
     {
+        if(this.playerExists(name))
+            return false;
+        
+        return this.executeSQL("INSERT INTO PLAYERS "+
+                "VALUES ('"+name+"',"+elo+",0,0)");
+    }
+    
+    
+    // used for altering an existing player
+    public boolean alterPlayer(String name, int elo, int gamesWon, int gamesLost)
+    {
+        // Don't update the primary key (name)
+        boolean result = this.executeSQL("UPDATE PLAYERS SET elo = "+elo+", games_won = "+gamesWon+", games_lost = "+gamesLost+" WHERE name = '"+name+"'");
+        if (result) {
+            System.out.println("Updated player: " + name + " Elo=" + elo + " Won=" + gamesWon + " Lost=" + gamesLost);
+        } else {
+            System.out.println("Failed to update player: " + name);
+        }
+        return result;
+    }
+    
+    
+    // returns true if the specified player exists inside the database
+    public boolean playerExists(String name)
+    {
+        return this.checkExists("PLAYERS", "name", name);
+    }
+    
+    
+    public int getElo(String name)
+    {
+        ResultSet rs = this.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
         try {
-            if (this.statement != null) this.statement.close();
-            if (this.connection != null) this.connection.close();
+            if (rs.next()) {
+                return rs.getInt("elo");
+            }
         } catch (SQLException ex) {
-            System.out.println("An error occured while terminating the connection to the database\n"+ex.getMessage());
+            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
+        }
+        return 0;
+    }
+    
+
+    public int getGamesWon(String name)
+    {
+        ResultSet rs = this.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
+        try {
+            if (rs.next()) {
+                return rs.getInt("games_won");
+            }
+        } catch (SQLException ex) {
+            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
+        }
+        return 0;
+    }
+    
+
+    public int getGamesLost(String name)
+    {
+        ResultSet rs = this.executeQuery("SELECT * FROM PLAYERS WHERE name = '"+name+"'");
+        try {
+            if (rs.next()) {
+                return rs.getInt("games_lost");
+            }
+        } catch (SQLException ex) {
+            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
+        }
+        return 0;
+    }
+    
+    
+    public boolean deletePlayers(String name)
+    {
+        return this.executeSQL("DELETE FROM PLAYERS WHERE name = '" + name + "'");
+    }
+    
+    
+    // insert a new game, NOTE I WILL BE ASSUMING player1 IS WHITE
+    // Add filePath parameter for directory column
+    public boolean insertGame(String saveName, String player1, String player2, String filePath, int player1time, int player2time)
+    {
+        // name = saveName, player_1 = player1, player_2 = player2, directory = filePath
+        return this.executeSQL("INSERT INTO GAMES "+
+                "VALUES ('"+saveName+"','"+player1+"','"+player2+"','"+filePath+"',"+player1time+","+player2time+")");
+    }
+    
+    
+    public boolean gameExists(String name)
+    {
+        return this.checkExists("GAMES", "name", name);
+    }
+    
+    
+    public int getPlayer1Time(String name)
+    {
+        ResultSet rs = this.executeQuery("SELECT * FROM GAMES WHERE name = '"+name+"'");
+        try {
+            if (rs.next()) {
+                return rs.getInt("player_1_time");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error while getting time "+ex.getMessage());
+        }
+        return 5;
+    }
+    
+    
+    public int getPlayer2Time(String name)
+    {
+        ResultSet rs = this.executeQuery("SELECT * FROM GAMES WHERE name = '"+name+"'");
+        try {
+            if (rs.next()) {
+                return rs.getInt("player_2_time");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error while getting time "+ex.getMessage());
+        }
+        return 5;
+    }
+    
+    
+    public boolean deleteGames(String name)
+    {
+        return this.executeSQL("DELETE FROM GAMES WHERE name = '" + name + "'");
+    }
+    
+    
+    public StringBuilder getLeaderboard()
+    {
+        StringBuilder content = new StringBuilder();
+        try{
+            ResultSet rs = this.executeQuery("SELECT name, elo, games_won, games_lost FROM PLAYERS ORDER BY elo DESC");
+
+            int rank = 1;
+            boolean hasRows = false;
+            // Table header
+            content.append(String.format("%-5s %-16s %-6s %-6s %-6s\n", "Rank", "Username", "Elo", "Wins", "Loss"));
+            content.append("---------------------------------------------------\n");
+            while (rs.next()) {
+                hasRows = true;
+                String name = rs.getString("name");
+                int elo = rs.getInt("elo");
+                int won = rs.getInt("games_won");
+                int lost = rs.getInt("games_lost");
+                // Truncate/pad username for consistent width
+                String displayName = name.length() > 16 ? name.substring(0, 16) : name;
+                content.append(String.format("%-5d %-16s %-6d %-6d %-6d\n", rank++, displayName, elo, won, lost));
+            }
+            rs.close();
+            if (!hasRows) {
+                content.append("The leaderboard appears to be empty.\nPlay some games to see rankings here!");
+            } else {
+                content.append("\nPlay more games to improve your ranking!");
+            }
+        }catch (Exception e) {
+            content.append("Error loading leaderboard: ").append(e.getMessage());
+        }
+        
+        return content;
+    }
+    
+    
+    public String getPlayer1(String save)
+    {
+        ResultSet rs = this.executeQuery("SELECT player_1 FROM GAMES WHERE name = '"+save+"'");
+        
+        try {
+            if(rs.next())
+            {
+                return rs.getString("player_1");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error with player query "+ex.getMessage());
+        }
+        
+        return "null";
+    }
+    
+    
+    public String getPlayer2(String save)
+    {
+        ResultSet rs = this.executeQuery("SELECT player_2 FROM GAMES WHERE name = '"+save+"'");
+        
+        try {
+            if(rs.next())
+            {
+                return rs.getString("player_2");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error with player query "+ex.getMessage());
+        }
+        
+        return "null";
+    }
+    
+    
+    // Helper class for save info
+    public static class SaveInfo 
+    {
+        public final String saveFile;
+        public final String player1;
+        public final String player2;
+        public final String directory;
+        public SaveInfo(String saveFile, String player1, String player2, String directory) 
+        {
+            this.saveFile = saveFile;
+            this.player1 = player1;
+            this.player2 = player2;
+            this.directory = directory;
         }
     }
+    
+
+    // Returns all saves where username is player_1 or player_2
+    @SuppressWarnings("UseSpecificCatch")
+    public List<SaveInfo> getSavesForUser(String username) 
+    {
+        List<SaveInfo> saves = new ArrayList<>();
+        try {
+            var conn = getConnection();
+            try (java.sql.PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT name, player_1, player_2, directory FROM GAMES WHERE player_1 = ? OR player_2 = ? ORDER BY name DESC"
+            )) {
+                stmt.setString(1, username);
+                stmt.setString(2, username);
+                var rs = stmt.executeQuery();
+                while (rs.next()) {
+                    saves.add(new SaveInfo(
+                            rs.getString("name"),
+                            rs.getString("player_1"),
+                            rs.getString("player_2"),
+                            rs.getString("directory")
+                    ));
+                }   rs.close();
+                // Do not close conn here, as it's the main connection
+            }
+        } catch (Exception e) {
+            System.out.println("error in getSavesForUser(): "+e.getMessage());
+        }
+        return saves;
+    }
+    
+    
+    // need to test this some more
+    private boolean checkExists(String table, String col, String data)
+    {
+        ResultSet rs = null;
+        try {
+            rs = this.statement.executeQuery("SELECT * FROM "+table+" WHERE "+col+" = '"+data+"'");
+            while(rs.next())
+            {
+                if(rs.getString(col).equals(data))
+                {
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("ERROR: failed to execute query\n"+ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
+        }
+        return false;
+    }
+    
 
     private Connection getConnection() 
     {
         return this.connection;
     }
+    
 
     // Returns the new Elo values for winner and loser after a game, but does not update the DB
     public int[] calculateEloChange(String winner, String loser) 
@@ -462,6 +503,17 @@ public class Database
             alterPlayer(loser, newLoserElo, loserGamesWon, loserGamesLost);
 
             System.out.println("Elo update after game: " + winner + " -> " + newWinnerElo + ", " + loser + " -> " + newLoserElo);
+        }
+    }
+    
+    
+    public void terminate()
+    {
+        try {
+            if (this.statement != null) this.statement.close();
+            if (this.connection != null) this.connection.close();
+        } catch (SQLException ex) {
+            System.out.println("An error occured while terminating the connection to the database\n"+ex.getMessage());
         }
     }
 }

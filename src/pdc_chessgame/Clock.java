@@ -11,12 +11,13 @@ import java.util.logging.Logger;
  *
  * @author Andrew & Finlay
  */
-public class Clock extends Thread
+public class Clock extends Thread // Chess clock that runs in another thread and ticks down the user's time
 {   
     // for quitting the clock from another thread
     private boolean quit = false;
     
     private int activePlayer;
+    @SuppressWarnings("FieldMayBeFinal")
     private int[] playerTimes;
     
     // playerTime is the amount of time each player gets
@@ -64,6 +65,7 @@ public class Clock extends Thread
         this.playerTimes[1] = time;
     }
     
+    // get the remaining time of the currently active player
     public int getTime()
     {
         return this.playerTimes[this.activePlayer];

@@ -20,6 +20,7 @@ public abstract class Piece
         
     private int x, y;
     
+    @SuppressWarnings("FieldMayBeFinal")
     private Team pieceTeam;  
 
     public Piece(int x, int y, String pieceUnicode, Team pieceTeam) 
@@ -63,6 +64,7 @@ public abstract class Piece
     // movement function oveeridden by the subclasses
     public abstract int[][] getDirection();
     
+    // abstract getName function, overridden by the subclasses
     public abstract String getName();
     
     //returns a list of all tiles that the piece can move to

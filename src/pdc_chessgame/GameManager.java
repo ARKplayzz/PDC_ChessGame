@@ -12,13 +12,15 @@ import java.util.HashMap;
  * @author Andrew & Finlay
  */
 
+// contains various functions to interface between classes and the ui & chessgame
 public class GameManager 
 {       
     // Do not make the board final please
     public ChessBoard board;
     // hashmap of the players and teams
+    @SuppressWarnings("FieldMayBeFinal")
     private HashMap<Team, Player> players;
-
+    
     private Clock clock;
         
     public GameManager(String p1, String p2, int time) 
@@ -41,16 +43,19 @@ public class GameManager
         this.clock = new Clock(20, 2);
     }
     
+    // start the clock
     public void start()
     {
         this.clock.start();
     }
     
+    // get the clock
     public Clock getClock()
     {
         return this.clock;
     }
     
+    // copy another clock, used in save loading
     public void setClock(Clock clock)
     {
         this.clock = clock;

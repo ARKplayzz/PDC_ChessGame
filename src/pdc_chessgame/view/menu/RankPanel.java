@@ -7,7 +7,6 @@ package pdc_chessgame.view.menu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -15,13 +14,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import pdc_chessgame.Database;
+import pdc_chessgame.view.GraphicsUtil;
 
 /**
  *
  * @author Andrew
  */
-public class RankPanel extends JPanel {
-    
+// JPanel used for the rank screen
+public class RankPanel extends JPanel 
+{
     private final Runnable backCallback;
     
     private Database database;
@@ -61,7 +62,7 @@ public class RankPanel extends JPanel {
         contentPanel.setBorder(BorderFactory.createEmptyBorder(18, 38, 8, 38)); // decreased by 2px
 
         setupLabels();
-        setupButton(this.backButton);
+        GraphicsUtil.setupButton(this.backButton);
 
         JLabel titleLabel = createTitleLabel();
 
@@ -128,49 +129,22 @@ public class RankPanel extends JPanel {
         this.usernameField.setHorizontalAlignment(JTextField.CENTER);
     }
     
-    private void setupButton(JButton button) 
-    {
-        Color normalBg = new Color(40, 40, 40);
-        Color hoverBg = new Color(50, 50, 50);
-        Color textColor = new Color(153, 233, 255);
-
-        button.setBackground(normalBg);
-        button.setForeground(textColor);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.setMargin(new Insets(2, 2, 2, 2));
-        button.setFont(new Font("Helvetica", Font.BOLD, 16));
-
-        button.addMouseListener(new java.awt.event.MouseAdapter() 
-        {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(hoverBg);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(normalBg);
-            }
-        });
-    }
-    
     private void setupEventHandlers() 
     {
         // Username listener for dynamicness
         this.usernameField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() 
         {
+            @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateEloStatus(); 
             }
+            @Override
             public void removeUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateEloStatus(); 
             }
+            @Override
             public void changedUpdate(javax.swing.event.DocumentEvent e) 
             { 
                 updateEloStatus(); 

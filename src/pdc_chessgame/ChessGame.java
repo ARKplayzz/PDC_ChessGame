@@ -15,7 +15,7 @@ import pdc_chessgame.view.menu.MenuView;
  *
  * @author Andrew & Finlay
  */
-public class ChessGame implements ControllerManagerActions 
+public class ChessGame implements ControllerManagerActions // Pretty much the main class of the game, every other class is in some way related to this one
 {
     GameManager game;
     SaveGameInterface store = new SaveManager();
@@ -26,10 +26,13 @@ public class ChessGame implements ControllerManagerActions
     private final ManagerView managerView;
     private final SideBarPanel sideBar;
     private final MasterFrame display;
+    
+    // database
+    @SuppressWarnings("FieldMayBeFinal")
     private Database database;
 
     public ChessGame()
-    {
+    { // init values
         this.database = new Database();
         this.menuView = new MenuView(this, this.database);
         this.managerView = new ManagerView(this);
@@ -175,7 +178,8 @@ public class ChessGame implements ControllerManagerActions
             whiteName, whiteEloStr,
             blackName, blackEloStr);
     }
-
+    
+    // get the chessboard
     public ChessBoard getBoard() 
     {
         if (this.game != null) {
@@ -183,7 +187,8 @@ public class ChessGame implements ControllerManagerActions
         }
         return null;
     }
-
+    
+    // reset the game, used for when you exit your current game
     private void clear()
     {
         this.game = null;

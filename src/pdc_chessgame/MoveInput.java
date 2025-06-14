@@ -8,8 +8,11 @@ package pdc_chessgame;
  *
  * @author Andrew & Finlay
  */
-public class MoveInput {
-    
+
+// Used for translating a string input into a move and vice-versa
+public class MoveInput 
+{    
+    // turns a string into a move
     public static Move getMoveInput(String userMovement) 
     { 
         String[] parts = userMovement.trim().toUpperCase().split(" ");// chops by spaces

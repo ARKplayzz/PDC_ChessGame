@@ -11,6 +11,8 @@ import java.util.List;
  *
  * @author Finlay & Andrew
  */
+
+// class used for storing the moveHistory and handling turn transitions
 public class Turn 
 {
     // current turn number and current team taking its turn

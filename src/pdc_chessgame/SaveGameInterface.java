@@ -11,6 +11,7 @@ package pdc_chessgame;
 
 import java.util.HashMap;
 
+// interface implemented by SaveManager
 public interface SaveGameInterface 
 {
     void SaveGameToUser(HashMap<Team, Player> players, Turn history, Clock clock, Database db);

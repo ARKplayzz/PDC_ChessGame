@@ -23,11 +23,13 @@ import pdc_chessgame.Pawn;
 
 /**
  *
- * @author Andrew
+ * @author Andrew & Finlay
  */
+
+// class used for displaying the board graphicly and handling user interactions with it
 public class ChessBoardView extends JPanel implements ChessBoardViewInterface
 {
-    
+    @SuppressWarnings("FieldMayBeFinal")
     private ChessGame controller;
     private JButton[][] boardTileButtons;
     private Tile selectedTile;
@@ -45,6 +47,7 @@ public class ChessBoardView extends JPanel implements ChessBoardViewInterface
     private final Color VALID_MOVE_SQUARE = new Color(0, 255, 0, 128);
     private final Color CHECK_SQUARE = new Color(255, 0, 0, 128);
     
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public ChessBoardView(ChessGame controller) 
     {
         this.controller = controller;
@@ -233,6 +236,7 @@ public class ChessBoardView extends JPanel implements ChessBoardViewInterface
         updateBoard();
     }
     
+    @Override
     public void showGameOverOverlay(String winningTeam) 
     {
         String resourcePath = "/pdc_chessgame/resources/" + winningTeam + "_win.png";
@@ -314,6 +318,7 @@ public class ChessBoardView extends JPanel implements ChessBoardViewInterface
         }
     }
  
+    @Override
     public void updateBoard() 
     {
         for (int x = 0; x < 8; x++) 
@@ -399,6 +404,7 @@ public class ChessBoardView extends JPanel implements ChessBoardViewInterface
         return new Color(r, g, b);
     }
     
+    @Override
     public void clearSelection() 
     {
         deselectTile();
@@ -437,6 +443,7 @@ public class ChessBoardView extends JPanel implements ChessBoardViewInterface
         clearSelection();
     }
     
+    @Override
     public void setGameEnded(boolean ended) 
     {
         this.gameEnded = ended;

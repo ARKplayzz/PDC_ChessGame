@@ -8,7 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,12 +15,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import pdc_chessgame.ChessGame;
 import pdc_chessgame.Database;
+import pdc_chessgame.view.GraphicsUtil;
 
 /**
  *
- * @author Andrew
+ * @author Andrew & Finlay
  */
 
+// Panel used for the main menu shown when you first open up the game
 public class MenuView extends JPanel 
 {
     private final ChessGame controller;
@@ -62,6 +63,7 @@ public class MenuView extends JPanel
         setupEventHandlers();
     }
     
+    // create all the buttons and actionns needed for the menu
     private void initializeMainMenu() 
     {
         setBackground(new Color(30, 30, 30));
@@ -77,11 +79,11 @@ public class MenuView extends JPanel
         this.buttonContainer.setOpaque(false);
         
         //setup all buttons
-        setupButton(this.menuStartButton);
-        setupButton(this.menuSaveButton);
-        setupButton(this.menuRankButton);
-        setupButton(this.menuLeaderboardButton);
-        setupButton(this.menuExitButton);
+        GraphicsUtil.setupButton(this.menuStartButton);
+        GraphicsUtil.setupButton(this.menuSaveButton);
+        GraphicsUtil.setupButton(this.menuRankButton);
+        GraphicsUtil.setupButton(this.menuLeaderboardButton);
+        GraphicsUtil.setupButton(this.menuExitButton);
         
         //add buttons to containers
         JPanel dualButtonGrid = new JPanel(new GridLayout(1, 2, 1, 1));
@@ -101,6 +103,7 @@ public class MenuView extends JPanel
         setVisible(true);
     }
     
+    // setup all the required event handlers
     private void setupEventHandlers() 
     {
         this.menuStartButton.addActionListener(e -> showNewGamePanel());
@@ -108,36 +111,6 @@ public class MenuView extends JPanel
         this.menuRankButton.addActionListener(e -> showRankPanel());
         this.menuLeaderboardButton.addActionListener(e -> showLeaderboardPanel());
         this.menuExitButton.addActionListener(e -> System.exit(0));
-    }
-    
-    private void setupButton(JButton button) 
-    {
-        Color normalBg = new Color(40, 40, 40);
-        Color hoverBg = new Color(50, 50, 50);
-        Color textColor = new Color(153, 233, 255);
-
-        button.setBackground(normalBg);
-        button.setForeground(textColor);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.setMargin(new Insets(2, 2, 2, 2));
-        button.setFont(new Font("Helvetica", Font.BOLD, 16));
-
-        button.addMouseListener(new java.awt.event.MouseAdapter() 
-        {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(hoverBg);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) 
-            {
-                button.setBackground(normalBg);
-            }
-        });
     }
     
     private void showNewGamePanel() 
