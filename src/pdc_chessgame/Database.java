@@ -31,6 +31,7 @@ public class Database
     // Use 1 as the starting Elo minimum
     public static final int START_ELO = 100;
     
+    // connection and statement used in the program
     private Connection connection;
     private Statement statement;
     
@@ -50,7 +51,7 @@ public class Database
         }
         
         try {
-            this.statement = this.connection.createStatement();
+            this.statement = this.connection.createStatement(); // create the statement
         } catch (SQLException ex) {
             System.out.println("FATAL ERROR: failed to create statement\n"+ex.getMessage());
             System.exit(0);
@@ -58,12 +59,10 @@ public class Database
         
         // create the tables for the database if they don't already exist
         this.createTables();
-
-        // Print tables, columns, and row counts
-        printDatabaseInfo();
     }
     
     
+    // method to execute the given sql while catching any sql errors
     private boolean executeSQL(String sql)
     {
         try {
@@ -80,6 +79,7 @@ public class Database
     }
     
     
+    // method to run the provided sql and return a resultset
     private ResultSet executeQuery(String sql)
     {
         try {
@@ -91,6 +91,7 @@ public class Database
     }
     
     
+    // method used to create the tables used in ChessDB
     private void createTables()
     { // find a better way to do this
         String createPlayers = "CREATE TABLE PLAYERS"
@@ -112,46 +113,6 @@ public class Database
         this.executeSQL(createGames);
     }
     
-    
-    // Add this method to print tables, columns, and row counts
-    private void printDatabaseInfo() 
-    {
-        try {
-            DatabaseMetaData meta = connection.getMetaData();
-            ResultSet tables = meta.getTables(null, null, "%", new String[] {"TABLE"});
-            System.out.println("=== Database Tables Overview ===");
-            while (tables.next()) 
-            {
-                String tableName = tables.getString("TABLE_NAME");
-                System.out.println("Table: " + tableName);
-
-                // Print columns
-                ResultSet columns = meta.getColumns(null, null, tableName, "%");
-                System.out.print("  Columns: ");
-                boolean first = true;
-                while (columns.next()) {
-                    if (!first) System.out.print(", ");
-                    System.out.print(columns.getString("COLUMN_NAME"));
-                    first = false;
-                }
-                columns.close();
-
-                // Print row count
-                int rowCount = 0;
-                try (Statement st = connection.createStatement();
-                     ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM " + tableName)) {
-                    if (rs.next()) rowCount = rs.getInt(1);
-                } catch (SQLException e) {
-                    // ignore
-                }
-                System.out.println("\n  Rows: " + rowCount);
-            }
-            tables.close();
-            System.out.println("=== End Database Tables Overview ===");
-        } catch (SQLException e) {
-            System.out.println("ERROR: Could not print database info: " + e.getMessage());
-        }
-    }
     
     
     // used for adding a new player to the database
@@ -234,6 +195,7 @@ public class Database
     }
     
     
+    // delete all players with the provided name
     public boolean deletePlayers(String name)
     {
         return this.executeSQL("DELETE FROM PLAYERS WHERE name = '" + name + "'");
@@ -253,6 +215,40 @@ public class Database
     public boolean gameExists(String name)
     {
         return this.checkExists("GAMES", "name", name);
+    }
+    
+    
+    public String getPlayer1(String save)
+    {
+        ResultSet rs = this.executeQuery("SELECT player_1 FROM GAMES WHERE name = '"+save+"'");
+        
+        try {
+            if(rs.next())
+            {
+                return rs.getString("player_1");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error with player query "+ex.getMessage());
+        }
+        
+        return "null";
+    }
+    
+    
+    public String getPlayer2(String save)
+    {
+        ResultSet rs = this.executeQuery("SELECT player_2 FROM GAMES WHERE name = '"+save+"'");
+        
+        try {
+            if(rs.next())
+            {
+                return rs.getString("player_2");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error with player query "+ex.getMessage());
+        }
+        
+        return "null";
     }
     
     
@@ -284,6 +280,7 @@ public class Database
     }
     
     
+    // delete all games with the provided name
     public boolean deleteGames(String name)
     {
         return this.executeSQL("DELETE FROM GAMES WHERE name = '" + name + "'");
@@ -327,38 +324,6 @@ public class Database
     }
     
     
-    public String getPlayer1(String save)
-    {
-        ResultSet rs = this.executeQuery("SELECT player_1 FROM GAMES WHERE name = '"+save+"'");
-        
-        try {
-            if(rs.next())
-            {
-                return rs.getString("player_1");
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error with player query "+ex.getMessage());
-        }
-        
-        return "null";
-    }
-    
-    
-    public String getPlayer2(String save)
-    {
-        ResultSet rs = this.executeQuery("SELECT player_2 FROM GAMES WHERE name = '"+save+"'");
-        
-        try {
-            if(rs.next())
-            {
-                return rs.getString("player_2");
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error with player query "+ex.getMessage());
-        }
-        
-        return "null";
-    }
     
     
     // Helper class for save info
@@ -474,7 +439,6 @@ public class Database
             int winnerGamesWon = getGamesWon(winner) + 1;
             int winnerGamesLost = getGamesLost(winner);
             alterPlayer(winner, newWinnerElo, winnerGamesWon, winnerGamesLost);
-            System.out.println("Elo update after game: " + winner + " -> " + newWinnerElo);
         }
 
         // If loser is not guest, update their stats
@@ -484,7 +448,6 @@ public class Database
             int loserGamesWon = getGamesWon(loser);
             int loserGamesLost = getGamesLost(loser) + 1;
             alterPlayer(loser, newLoserElo, loserGamesWon, loserGamesLost);
-            System.out.println("Elo update after game: " + loser + " -> " + newLoserElo);
         }
 
         // If both are real players, use normal Elo calculation (already handled above, but for clarity)
@@ -503,12 +466,11 @@ public class Database
 
             alterPlayer(winner, newWinnerElo, winnerGamesWon, winnerGamesLost);
             alterPlayer(loser, newLoserElo, loserGamesWon, loserGamesLost);
-
-            System.out.println("Elo update after game: " + winner + " -> " + newWinnerElo + ", " + loser + " -> " + newLoserElo);
         }
     }
     
     
+    // close the database
     public void terminate()
     {
         try {
