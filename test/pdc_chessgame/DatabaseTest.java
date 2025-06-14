@@ -97,6 +97,15 @@ public class DatabaseTest {
         assertTrue(deleted);
         assertFalse(instance.gameExists("TEST_SAVE_191930506432"));
     }
+    
+    @Test
+    public void testDeletePlayer() 
+    {
+        System.out.println("Deleting player");
+        boolean expected = true;
+        boolean actual = instance.deletePlayers("TEST__USER_9@3467%4321");
+        assertEquals(expected, actual);
+    }
 
     @Test
     public void testGameExists() 
@@ -124,4 +133,6 @@ public class DatabaseTest {
         assertTrue(leaderboard.contains("Username"));
         assertTrue(leaderboard.length() > 0);
     }
+    
+
 }
