@@ -59,9 +59,6 @@ public class Database
         
         // create the tables for the database if they don't already exist
         this.createTables();
-
-        // Print tables, columns, and row counts
-        printDatabaseInfo();
     }
     
     
@@ -116,46 +113,6 @@ public class Database
         this.executeSQL(createGames);
     }
     
-    
-    // Add this method to print tables, columns, and row counts
-    private void printDatabaseInfo() 
-    {
-        try {
-            DatabaseMetaData meta = connection.getMetaData();
-            ResultSet tables = meta.getTables(null, null, "%", new String[] {"TABLE"});
-            System.out.println("=== Database Tables Overview ===");
-            while (tables.next()) 
-            {
-                String tableName = tables.getString("TABLE_NAME");
-                System.out.println("Table: " + tableName);
-
-                // Print columns
-                ResultSet columns = meta.getColumns(null, null, tableName, "%");
-                System.out.print("  Columns: ");
-                boolean first = true;
-                while (columns.next()) {
-                    if (!first) System.out.print(", ");
-                    System.out.print(columns.getString("COLUMN_NAME"));
-                    first = false;
-                }
-                columns.close();
-
-                // Print row count
-                int rowCount = 0;
-                try (Statement st = connection.createStatement();
-                     ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM " + tableName)) {
-                    if (rs.next()) rowCount = rs.getInt(1);
-                } catch (SQLException e) {
-                    // ignore
-                }
-                System.out.println("\n  Rows: " + rowCount);
-            }
-            tables.close();
-            System.out.println("=== End Database Tables Overview ===");
-        } catch (SQLException e) {
-            System.out.println("ERROR: Could not print database info: " + e.getMessage());
-        }
-    }
     
     
     // used for adding a new player to the database
