@@ -45,6 +45,7 @@ public class Database
                 System.out.println("Please close all other Java programs using this database, and/or delete db.lck and dbex.lck in the ChessDB folder, then try again.");
             } else {
                 System.out.println("FATAL ERROR: could not establish a connection to the database\n"+ex.getMessage());
+                System.exit(1);
             }
             ex.printStackTrace();
             System.exit(0);
